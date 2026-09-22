@@ -332,7 +332,7 @@ export function SemesterDashboard() {
   const [selectedMonthIndex, setSelectedMonthIndex] = useState(1) // 2026년 10월 기본 선택
   const [selectedDate, setSelectedDate] = useState<string>('2026-10-15')
   const [selectedWeekId, setSelectedWeekId] = useState<string>('w42')
-  const [dark, setDark] = useState(true)
+  const [dark, setDark] = useState(false) // 라이트 모드 기본
   const [newOpen, setNewOpen] = useState(false)
 
   // ⭐️ Scientific Computing Drop Simulator Toggle
@@ -351,15 +351,15 @@ export function SemesterDashboard() {
   const [newRouteBDesc, setNewRouteBDesc] = useState('')
   const [newNotes, setNewNotes] = useState('')
 
-  // Theme Sync
+  // Theme Sync (Default: Light)
   useEffect(() => {
     const savedTheme = window.localStorage.getItem('semester-theme-2026')
-    if (savedTheme === 'light') {
-      setDark(false)
-      document.documentElement.classList.remove('dark')
-    } else {
+    if (savedTheme === 'dark') {
       setDark(true)
       document.documentElement.classList.add('dark')
+    } else {
+      setDark(false)
+      document.documentElement.classList.remove('dark')
     }
   }, [])
 
@@ -580,10 +580,10 @@ export function SemesterDashboard() {
               <Button
                 variant="outline"
                 size="sm"
-                className="gap-1.5 border-indigo-200 bg-indigo-50/80 font-bold text-indigo-700 hover:bg-indigo-100 hover:text-indigo-800 dark:border-indigo-900/80 dark:bg-indigo-950/60 dark:text-indigo-300 dark:hover:bg-indigo-900/60 shadow-xs text-xs"
+                className="gap-1.5 border-zinc-300 bg-zinc-50 font-semibold text-zinc-800 hover:bg-zinc-100 hover:text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-750 text-xs shadow-xs"
               >
-                <Users className="size-3.5" />
-                <span>친구 초대 / 여행 제안서 ✈️</span>
+                <Compass className="size-3.5 text-indigo-600 dark:text-indigo-400" />
+                <span>여행 후보 목록 & 일정 조율</span>
               </Button>
             </Link>
 
