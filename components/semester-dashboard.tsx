@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
+import Link from 'next/link'
 import {
   AlertCircle,
   Calendar as CalendarIcon,
@@ -27,6 +28,7 @@ import {
   Sun,
   TentTree,
   Trash2,
+  Users,
   X,
 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
@@ -573,6 +575,18 @@ export function SemesterDashboard() {
 
           {/* Actions */}
           <div className="flex items-center gap-2">
+            {/* Link to Travel Invite / Share Page */}
+            <Link href="/invite">
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-1.5 border-indigo-200 bg-indigo-50/80 font-bold text-indigo-700 hover:bg-indigo-100 hover:text-indigo-800 dark:border-indigo-900/80 dark:bg-indigo-950/60 dark:text-indigo-300 dark:hover:bg-indigo-900/60 shadow-xs text-xs"
+              >
+                <Users className="size-3.5" />
+                <span>친구 초대 / 여행 제안서 ✈️</span>
+              </Button>
+            </Link>
+
             {/* Theme Toggle */}
             <Button
               variant="outline"
