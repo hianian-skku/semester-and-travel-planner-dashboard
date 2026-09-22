@@ -12,6 +12,7 @@ import {
   Info,
   MapPin,
   Moon,
+  Navigation,
   Plane,
   Sparkles,
   Sun,
@@ -22,7 +23,6 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Switch } from '@/components/ui/switch'
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { cn } from '@/lib/utils'
 
 // Types
@@ -34,6 +34,32 @@ export interface TripDestination {
   duration: string // 권장 박수
   description: string
 }
+
+export interface VisitedTrip {
+  id: string
+  destination: string
+  startDate: string
+  endDate: string
+  badgeText: string
+}
+
+// 이미 다녀온 여행 목록 (빨간색 박스 표시 대상)
+export const completedTrips: VisitedTrip[] = [
+  {
+    id: 'v-cph',
+    destination: '코펜하겐',
+    startDate: '2026-09-14',
+    endDate: '2026-09-15',
+    badgeText: '코펜하겐 (다녀옴)',
+  },
+  {
+    id: 'v-munich',
+    destination: '뮌헨',
+    startDate: '2026-09-20',
+    endDate: '2026-09-21',
+    badgeText: '뮌헨 (다녀옴)',
+  },
+]
 
 // 사용자가 제공한 6개 권역, 27개 여행지 목록
 export const travelDestinations: TripDestination[] = [
@@ -298,7 +324,7 @@ export const travelDestinations: TripDestination[] = [
   },
 ]
 
-// TimeEdit 스케줄 데이터 (수업 구분)
+// 9월 초 시간표를 포함한 전체 TimeEdit 수업 데이터 (2026.09.01 ~ 2027.01.17)
 interface ClassEvent {
   date: string // YYYY-MM-DD
   time: string
@@ -308,13 +334,44 @@ interface ClassEvent {
 }
 
 const timeEditClasses: ClassEvent[] = [
-  // 9월
-  { date: '2026-09-21', time: '10:15 - 12:00', course: 'Applied Geophysics', room: 'Geocentrum', isZoom: false },
-  { date: '2026-09-22', time: '13:15 - 15:00', course: 'Applied Geophysics', room: 'Geocentrum', isZoom: false },
+  // ⭐️ 9월 초 (추가 첨부 PDF 반영)
+  // w36
+  { date: '2026-09-01', time: '10:15 - 12:00', course: 'Applied Geophysics', room: 'Stuffen, Geocentrum', isZoom: false },
+  { date: '2026-09-01', time: '13:15 - 15:00', course: 'Project with XR', room: 'Ångström 11240', isZoom: false },
+  { date: '2026-09-02', time: '10:15 - 12:00', course: 'Applied Geophysics', room: 'Båthsalen, Geocentrum', isZoom: false },
+  { date: '2026-09-02', time: '15:15 - 17:00', course: 'Project with XR', room: '101142, Ångström', isZoom: false },
+  { date: '2026-09-03', time: '11:00 - 12:00', course: 'Project with XR', room: 'Via Zoom', isZoom: true }, // 줌 수업만!
+  { date: '2026-09-04', time: '10:15 - 12:00', course: 'Applied Geophysics', room: 'Skåne, Geocentrum', isZoom: false },
+
+  // w37
+  { date: '2026-09-07', time: '08:15 - 10:00', course: 'Applied Geophysics', room: 'Dk235, Geocentrum', isZoom: false },
+  { date: '2026-09-07', time: '15:15 - 17:00', course: 'Applied Geophysics', room: 'Norrland II Gm116', isZoom: false },
+  { date: '2026-09-08', time: '15:15 - 17:00', course: 'Applied Geophysics', room: 'Skåne, Geocentrum', isZoom: false },
+  // 9/9 (수) 수업 없음
+  { date: '2026-09-10', time: '10:15 - 12:00', course: 'Applied Geophysics', room: 'Skåne, Geocentrum', isZoom: false },
+  { date: '2026-09-10', time: '10:30 - 12:00', course: 'Project with XR', room: 'Via Zoom', isZoom: true },
+  { date: '2026-09-11', time: '10:15 - 12:00', course: 'Applied Geophysics', room: 'Skåne, Geocentrum', isZoom: false },
+
+  // w38
+  { date: '2026-09-14', time: '13:15 - 15:00', course: 'Applied Geophysics', room: 'Norrland I Gm118', isZoom: false },
+  { date: '2026-09-15', time: '10:15 - 12:00', course: 'Project with XR', room: 'Via Zoom', isZoom: true }, // 줌 수업만!
+  { date: '2026-09-16', time: '08:30 - 10:00', course: 'Project with XR', room: 'Via Zoom', isZoom: true },
+  { date: '2026-09-16', time: '13:15 - 15:00', course: 'Applied Geophysics', room: 'Båthsalen, Geocentrum', isZoom: false },
+  { date: '2026-09-16', time: '13:15 - 15:00', course: 'Project with XR (Seminar)', room: '11134, Ångström', isZoom: false },
+  { date: '2026-09-16', time: '15:15 - 17:00', course: 'Applied Geophysics', room: 'Skåne, Geocentrum', isZoom: false },
+  { date: '2026-09-17', time: '13:15 - 15:00', course: 'Applied Geophysics', room: 'Dk235, Geocentrum', isZoom: false },
+  { date: '2026-09-17', time: '15:15 - 17:00', course: 'Applied Geophysics', room: 'Skåne, Geocentrum', isZoom: false },
+  { date: '2026-09-18', time: '13:15 - 15:00', course: 'Applied Geophysics', room: 'Norrland I Gm118', isZoom: false },
+
+  // w39
+  { date: '2026-09-21', time: '10:15 - 12:00', course: 'Applied Geophysics', room: 'Skåne, Geocentrum', isZoom: false },
+  { date: '2026-09-22', time: '13:15 - 15:00', course: 'Applied Geophysics', room: 'Småland, Geocentrum', isZoom: false },
   { date: '2026-09-23', time: '08:30 - 10:00', course: 'Project with XR', room: 'Zoom', isZoom: true },
-  { date: '2026-09-23', time: '15:15 - 17:00', course: 'Applied Geophysics', room: 'Geocentrum', isZoom: false },
-  { date: '2026-09-24', time: '10:15 - 12:00', course: 'Applied Geophysics', room: 'Geocentrum', isZoom: false },
-  { date: '2026-09-25', time: '10:15 - 12:00', course: 'Applied Geophysics', room: 'Geocentrum', isZoom: false },
+  { date: '2026-09-23', time: '15:15 - 17:00', course: 'Applied Geophysics', room: 'Skåne, Geocentrum', isZoom: false },
+  { date: '2026-09-24', time: '10:15 - 12:00', course: 'Applied Geophysics', room: 'Båthsalen, Geocentrum', isZoom: false },
+  { date: '2026-09-25', time: '10:15 - 12:00', course: 'Applied Geophysics', room: 'Skåne, Geocentrum', isZoom: false },
+
+  // w40 (야외 실습)
   { date: '2026-09-28', time: '08:15 - 17:00', course: 'Geophysics Field studies', room: 'Field', isZoom: false },
   { date: '2026-09-29', time: '08:15 - 17:00', course: 'Geophysics Field studies', room: 'Field', isZoom: false },
   { date: '2026-09-30', time: '08:15 - 17:00', course: 'Geophysics Field studies', room: 'Field', isZoom: false },
@@ -378,10 +435,20 @@ const calendarMonths = [
   { year: 2027, month: 1, name: '2027년 1월', startDay: 5, days: 31 },
 ]
 
+const regionFilterTabs = [
+  { key: 'all', label: '전체 보기' },
+  { key: 'nordic', label: '1. 북유럽/극지방' },
+  { key: 'uk', label: '2. 영국/아일랜드' },
+  { key: 'central', label: '3. 중유럽/독일' },
+  { key: 'west', label: '4. 서유럽' },
+  { key: 'south', label: '5. 남유럽/발트' },
+  { key: 'longhaul', label: '6. 대형 장거리' },
+]
+
 export function SemesterPlannerMain() {
-  const [selectedMonthIdx, setSelectedMonthIdx] = useState(1) // 10월 기본
+  const [selectedMonthIdx, setSelectedMonthIdx] = useState(0) // 9월 기본으로 시작
   const [selectedRegion, setSelectedRegion] = useState<string>('all')
-  const [selectedDate, setSelectedDate] = useState<string>('2026-10-16')
+  const [selectedDate, setSelectedDate] = useState<string>('2026-09-14')
   const [selectedDestination, setSelectedDestination] = useState<TripDestination | null>(null)
   const [copySuccess, setCopySuccess] = useState(false)
 
@@ -429,10 +496,10 @@ export function SemesterPlannerMain() {
   }, [selectedRegion])
 
   // Helper: 날짜별 수업 상태 판정
-  // 1. 수업 없는 날 -> 연한 초록색
-  // 2. 줌 수업만 있는 날 -> 연한 주황색
-  // 3. 그 외 대면 수업/실습/시험 -> 연한 회색
   const getDateStatus = (dateStr: string) => {
+    // 1. 이미 다녀온 여행인지 확인 (빨간색 박스 표기!)
+    const visited = completedTrips.find((vt) => dateStr >= vt.startDate && dateStr <= vt.endDate)
+
     const classes = timeEditClasses.filter((c) => {
       if (c.date !== dateStr) return false
       if (!showSciComp && c.course.includes('Scientific Computing')) return false
@@ -443,8 +510,13 @@ export function SemesterPlannerMain() {
       return {
         type: 'free',
         label: '수업 없음',
-        bgClass: 'bg-emerald-50 text-emerald-900 border-emerald-200/80 hover:bg-emerald-100/70 dark:bg-emerald-950/40 dark:text-emerald-200 dark:border-emerald-900/60',
-        badgeClass: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/80 dark:text-emerald-200',
+        visited,
+        bgClass: visited
+          ? 'bg-red-50 text-red-950 border-2 border-red-500 shadow-sm dark:bg-red-950/40 dark:text-red-200 dark:border-red-600'
+          : 'bg-emerald-50 text-emerald-900 border-emerald-200/80 hover:bg-emerald-100/70 dark:bg-emerald-950/40 dark:text-emerald-200 dark:border-emerald-900/60',
+        badgeClass: visited
+          ? 'bg-red-600 text-white font-bold dark:bg-red-600 dark:text-white'
+          : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/80 dark:text-emerald-200',
         classes,
       }
     }
@@ -454,8 +526,13 @@ export function SemesterPlannerMain() {
       return {
         type: 'zoom',
         label: '줌(온라인) 수업',
-        bgClass: 'bg-amber-50 text-amber-900 border-amber-200/80 hover:bg-amber-100/70 dark:bg-amber-950/40 dark:text-amber-200 dark:border-amber-900/60',
-        badgeClass: 'bg-amber-100 text-amber-800 dark:bg-amber-900/80 dark:text-amber-200',
+        visited,
+        bgClass: visited
+          ? 'bg-red-50 text-red-950 border-2 border-red-500 shadow-sm dark:bg-red-950/40 dark:text-red-200 dark:border-red-600'
+          : 'bg-amber-50 text-amber-900 border-amber-200/80 hover:bg-amber-100/70 dark:bg-amber-950/40 dark:text-amber-200 dark:border-amber-900/60',
+        badgeClass: visited
+          ? 'bg-red-600 text-white font-bold dark:bg-red-600 dark:text-white'
+          : 'bg-amber-100 text-amber-800 dark:bg-amber-900/80 dark:text-amber-200',
         classes,
       }
     }
@@ -463,8 +540,13 @@ export function SemesterPlannerMain() {
     return {
       type: 'class',
       label: '대면 수업/실습',
-      bgClass: 'bg-zinc-100 text-zinc-800 border-zinc-200 hover:bg-zinc-200/70 dark:bg-zinc-850 dark:text-zinc-200 dark:border-zinc-750',
-      badgeClass: 'bg-zinc-200 text-zinc-700 dark:bg-zinc-750 dark:text-zinc-300',
+      visited,
+      bgClass: visited
+        ? 'bg-red-50 text-red-950 border-2 border-red-500 shadow-sm dark:bg-red-950/40 dark:text-red-200 dark:border-red-600'
+        : 'bg-zinc-100 text-zinc-800 border-zinc-200 hover:bg-zinc-200/70 dark:bg-zinc-850 dark:text-zinc-200 dark:border-zinc-750',
+      badgeClass: visited
+        ? 'bg-red-600 text-white font-bold dark:bg-red-600 dark:text-white'
+        : 'bg-zinc-200 text-zinc-700 dark:bg-zinc-750 dark:text-zinc-300',
       classes,
     }
   }
@@ -530,14 +612,14 @@ export function SemesterPlannerMain() {
               수업 없는 날 확인 및 관심 여행지 리스트
             </h1>
             <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
-              달력의 녹색(수업 없음)과 주황색(온라인 수업) 날짜를 참고하여 여행 일정을 조율할 수 있습니다.
+              녹색(수업 없음)과 주황색(온라인 줌) 날짜를 참고하여 여행 일정을 조율할 수 있습니다. 이미 다녀온 여행은 <span className="font-bold text-red-600 dark:text-red-400">빨간색 테두리 박스</span>로 표기되어 있습니다.
             </p>
           </div>
 
           {/* Scientific Computing ON/OFF Toggle (기본 OFF: 드랍 모드) */}
-          <div className="flex items-center gap-2.5 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-1.5 dark:border-zinc-800 dark:bg-zinc-850">
+          <div className="flex items-center gap-2.5 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-1.5 dark:border-zinc-800 dark:bg-zinc-850 self-start sm:self-auto">
             <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-              Scientific Computing 수업 표시:
+              Scientific Computing 표시:
             </span>
             <Switch checked={showSciComp} onCheckedChange={setShowSciComp} />
             <span className={cn('text-xs font-bold', showSciComp ? 'text-indigo-600 dark:text-indigo-400' : 'text-amber-700 dark:text-amber-400')}>
@@ -549,7 +631,7 @@ export function SemesterPlannerMain() {
 
       {/* 3. Main Split View: Left (Calendar) + Right (Travel Destinations List) */}
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
-        <div className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
+        <div className="grid gap-6 lg:grid-cols-[1.12fr_0.88fr]">
           {/* LEFT: CALENDAR (달력) */}
           <div className="flex flex-col gap-4">
             <Card className="border-zinc-200 bg-white shadow-xs dark:border-zinc-800 dark:bg-[#13161f]">
@@ -601,7 +683,7 @@ export function SemesterPlannerMain() {
                   </div>
                 </div>
 
-                {/* Color Legend (사용자가 요청한 색상 규칙) */}
+                {/* Color Legend (수업 상태 + 빨간색 다녀온 여행) */}
                 <div className="flex flex-wrap items-center gap-2.5 text-[11px]">
                   <span className="flex items-center gap-1">
                     <span className="size-2.5 rounded bg-emerald-100 border border-emerald-300" />
@@ -614,6 +696,10 @@ export function SemesterPlannerMain() {
                   <span className="flex items-center gap-1">
                     <span className="size-2.5 rounded bg-zinc-200 border border-zinc-300" />
                     <span className="text-zinc-600 dark:text-zinc-400 font-medium">수업/시험 (회색)</span>
+                  </span>
+                  <span className="flex items-center gap-1 font-bold text-red-600 dark:text-red-400">
+                    <span className="size-2.5 rounded border-2 border-red-500 bg-red-100" />
+                    <span>다녀온 여행 (빨강)</span>
                   </span>
                 </div>
               </CardHeader>
@@ -644,29 +730,42 @@ export function SemesterPlannerMain() {
                     const dayOfWeek = (curMonth.startDay + idx) % 7 // 0=Sun, 1=Mon, ..., 6=Sat
                     const status = getDateStatus(dateStr)
                     const isSelected = selectedDate === dateStr
+                    const isVisited = !!status.visited
 
                     return (
                       <div
                         key={dateStr}
                         onClick={() => setSelectedDate(dateStr)}
                         className={cn(
-                          'h-20 rounded border p-1.5 text-xs transition-all cursor-pointer flex flex-col justify-between',
+                          'h-20 rounded border p-1.5 text-xs transition-all cursor-pointer flex flex-col justify-between relative',
                           status.bgClass,
-                          isSelected && 'ring-2 ring-indigo-600 shadow-xs'
+                          isSelected && 'ring-2 ring-indigo-600 shadow-md'
                         )}
                       >
                         <div className="flex items-center justify-between">
-                          <span className={cn('font-bold', dayOfWeek === 0 && 'text-rose-600 dark:text-rose-400')}>
+                          <span className={cn('font-bold', dayOfWeek === 0 && 'text-rose-600 dark:text-rose-400', isVisited && 'text-red-700 font-extrabold')}>
                             {dayNum}
                           </span>
-                          <span className={cn('text-[9px] font-bold px-1 rounded', status.badgeClass)}>
-                            {status.label}
-                          </span>
+
+                          {/* Visited Red Badge vs Class status */}
+                          {isVisited ? (
+                            <span className="text-[9px] font-bold px-1 py-0.2 rounded bg-red-600 text-white shadow-2xs">
+                              {status.visited?.destination}
+                            </span>
+                          ) : (
+                            <span className={cn('text-[9px] font-bold px-1 rounded', status.badgeClass)}>
+                              {status.label}
+                            </span>
+                          )}
                         </div>
 
-                        {/* Class preview */}
+                        {/* Visited trip label or Class preview */}
                         <div className="overflow-hidden">
-                          {status.classes.length > 0 ? (
+                          {isVisited ? (
+                            <div className="text-[10px] font-bold text-red-700 dark:text-red-300 truncate">
+                              ✓ 다녀옴 ({status.visited?.destination})
+                            </div>
+                          ) : status.classes.length > 0 ? (
                             <div className="text-[10px] leading-tight opacity-90 truncate font-medium">
                               {status.classes[0].course.split(' ')[0]} {status.classes.length > 1 && `+${status.classes.length - 1}`}
                             </div>
@@ -686,32 +785,41 @@ export function SemesterPlannerMain() {
             {/* Selected Date Inspector (간단한 날짜 상태 정보) */}
             {dateInfo && (
               <div className="rounded-lg border border-zinc-200 bg-white p-3.5 text-xs text-zinc-700 dark:border-zinc-800 dark:bg-[#13161f] dark:text-zinc-300 flex items-center justify-between">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   <span className="font-bold text-zinc-900 dark:text-zinc-100">
                     {dateInfo.date} ({dateInfo.dayOfWeek})
                   </span>
+
+                  {dateInfo.visited && (
+                    <Badge className="bg-red-600 text-white font-bold text-[10px]">
+                      🚩 {dateInfo.visited.destination} (다녀온 여행)
+                    </Badge>
+                  )}
+
                   <Badge variant="outline" className={cn('text-[10px] font-bold', dateInfo.badgeClass)}>
                     {dateInfo.label}
                   </Badge>
+
                   {dateInfo.classes.length > 0 && (
-                    <span className="text-zinc-500">
+                    <span className="text-zinc-600 dark:text-zinc-400">
                       {dateInfo.classes.map((c) => `${c.course} (${c.time})`).join(', ')}
                     </span>
                   )}
-                  {dateInfo.classes.length === 0 && (
+
+                  {dateInfo.classes.length === 0 && !dateInfo.visited && (
                     <span className="text-emerald-700 dark:text-emerald-400 font-medium">
-                      수업 없는 날 (여행하기 좋은 일정입니다)
+                      수업 없는 날 (여행 일정 편성 가능)
                     </span>
                   )}
                 </div>
-                <span className="text-[11px] text-zinc-400">날짜를 클릭해 상세 확인</span>
+                <span className="text-[11px] text-zinc-400 hidden sm:inline">날짜 클릭 시 갱신</span>
               </div>
             )}
           </div>
 
-          {/* RIGHT: TRAVEL DESTINATIONS LIST (우측 여행지 리스트) */}
+          {/* RIGHT: TRAVEL DESTINATIONS LIST (우측 여행지 리스트 - 글자 겹침 버그 완벽 수정!) */}
           <div className="flex flex-col gap-3">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-200 pb-2 dark:border-zinc-800">
+            <div className="flex items-center justify-between border-b border-zinc-200 pb-2 dark:border-zinc-800">
               <div>
                 <h2 className="text-base font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5">
                   <Compass className="size-4 text-indigo-600" />
@@ -722,26 +830,32 @@ export function SemesterPlannerMain() {
                 </p>
               </div>
 
-              <span className="text-xs text-zinc-400 font-medium">
+              <span className="text-xs text-zinc-400 font-semibold">
                 {filteredDestinations.length}곳
               </span>
             </div>
 
-            {/* Region Tabs */}
-            <Tabs value={selectedRegion} onValueChange={setSelectedRegion} className="w-full">
-              <TabsList className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-3 gap-1 h-auto p-1 bg-zinc-100 dark:bg-zinc-850 border border-zinc-200 dark:border-zinc-800 w-full text-xs">
-                <TabsTrigger value="all" className="text-xs py-1">전체 보기</TabsTrigger>
-                <TabsTrigger value="nordic" className="text-xs py-1">북유럽/극지방</TabsTrigger>
-                <TabsTrigger value="uk" className="text-xs py-1">영국/아일랜드</TabsTrigger>
-                <TabsTrigger value="central" className="text-xs py-1">중유럽/독일</TabsTrigger>
-                <TabsTrigger value="west" className="text-xs py-1">서유럽</TabsTrigger>
-                <TabsTrigger value="south" className="text-xs py-1">남유럽/발트</TabsTrigger>
-                <TabsTrigger value="longhaul" className="text-xs py-1">대형 장거리</TabsTrigger>
-              </TabsList>
-            </Tabs>
+            {/* Region Filter Buttons (겹침 버그를 완전히 방지하는 깔끔한 칩 버튼 그룹) */}
+            <div className="flex flex-wrap gap-1.5 pb-1">
+              {regionFilterTabs.map((tab) => (
+                <button
+                  key={tab.key}
+                  type="button"
+                  onClick={() => setSelectedRegion(tab.key)}
+                  className={cn(
+                    'px-2.5 py-1 rounded-md text-xs font-semibold transition-all border',
+                    selectedRegion === tab.key
+                      ? 'bg-zinc-900 text-white border-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 dark:border-zinc-100 shadow-2xs'
+                      : 'bg-white text-zinc-600 border-zinc-200 hover:bg-zinc-100 dark:bg-zinc-900 dark:text-zinc-400 dark:border-zinc-800 dark:hover:bg-zinc-800'
+                  )}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
 
-            {/* Clean List Items */}
-            <div className="flex flex-col gap-2 max-h-[640px] overflow-y-auto pr-1">
+            {/* Clean List Items (독립된 높이와 스크롤 컨테이너로 글자 겹침 원천 차단) */}
+            <div className="flex flex-col gap-2 max-h-[600px] overflow-y-auto pr-1">
               {filteredDestinations.map((dest) => (
                 <div
                   key={dest.id}
@@ -753,10 +867,10 @@ export function SemesterPlannerMain() {
                   )}
                 >
                   <div className="flex flex-col">
-                    <span className="text-xs text-zinc-400 font-medium">
+                    <span className="text-[11px] text-zinc-400 font-medium">
                       {dest.regionName}
                     </span>
-                    <span className="font-bold text-sm text-zinc-900 group-hover:text-indigo-600 dark:text-zinc-100 dark:group-hover:text-indigo-400">
+                    <span className="font-bold text-sm text-zinc-900 group-hover:text-indigo-600 dark:text-zinc-100 dark:group-hover:text-indigo-400 mt-0.5">
                       {dest.name}
                     </span>
                   </div>
