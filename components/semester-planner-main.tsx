@@ -35,29 +35,57 @@ export interface TripDestination {
   description: string
 }
 
-export interface VisitedTrip {
+export type TripCategory = 'visited' | 'confirmed' | 'planned'
+
+export interface ScheduledTrip {
   id: string
   destination: string
   startDate: string
   endDate: string
+  category: TripCategory
   badgeText: string
+  note?: string
 }
 
-// 이미 다녀온 여행 목록 (빨간색 박스 표시 대상)
-export const completedTrips: VisitedTrip[] = [
+// 1. 이미 다녀온 여행 (빨간색)
+// 2. 확정된 여행 (하늘색): 10/9~10/11 핀란드 헬싱키 (외국인 친구들이랑)
+// 3. 고민 중인 여행 (보라색): 10/13~10/21 영국
+export const scheduledTrips: ScheduledTrip[] = [
   {
     id: 'v-cph',
     destination: '코펜하겐',
     startDate: '2026-09-14',
     endDate: '2026-09-15',
+    category: 'visited',
     badgeText: '코펜하겐 (다녀옴)',
+    note: '다녀온 여행',
   },
   {
     id: 'v-munich',
     destination: '뮌헨',
     startDate: '2026-09-20',
     endDate: '2026-09-21',
+    category: 'visited',
     badgeText: '뮌헨 (다녀옴)',
+    note: '다녀온 여행',
+  },
+  {
+    id: 'c-helsinki',
+    destination: '핀란드 헬싱키',
+    startDate: '2026-10-09',
+    endDate: '2026-10-11',
+    category: 'confirmed',
+    badgeText: '헬싱키 (확정)',
+    note: '외국인 친구들이랑 (확정된 여행)',
+  },
+  {
+    id: 'p-uk',
+    destination: '영국',
+    startDate: '2026-10-13',
+    endDate: '2026-10-21',
+    category: 'planned',
+    badgeText: '영국 (고민 중)',
+    note: '갈까 고민 중인 여행',
   },
 ]
 
@@ -495,10 +523,10 @@ export function SemesterPlannerMain() {
     return travelDestinations.filter((d) => d.region === selectedRegion)
   }, [selectedRegion])
 
-  // Helper: 날짜별 수업 상태 판정
+  // Helper: 날짜별 수업 상태 및 여행 상태 판정
   const getDateStatus = (dateStr: string) => {
-    // 1. 이미 다녀온 여행인지 확인 (빨간색 박스 표기!)
-    const visited = completedTrips.find((vt) => dateStr >= vt.startDate && dateStr <= vt.endDate)
+    // 여행 상태 판정 (우선순위: visited 빨강, confirmed 하늘, planned 보라)
+    const trip = scheduledTrips.find((t) => dateStr >= t.startDate && dateStr <= t.endDate)
 
     const classes = timeEditClasses.filter((c) => {
       if (c.date !== dateStr) return false
@@ -506,17 +534,47 @@ export function SemesterPlannerMain() {
       return true
     })
 
+    if (trip) {
+      if (trip.category === 'visited') {
+        // 이미 다녀온 여행: 빨간색
+        return {
+          type: 'visited' as const,
+          label: '다녀온 여행',
+          trip,
+          bgClass: 'bg-red-50 text-red-950 border-2 border-red-500 shadow-xs dark:bg-red-950/40 dark:text-red-200 dark:border-red-600',
+          badgeClass: 'bg-red-600 text-white font-bold dark:bg-red-600 dark:text-white',
+          classes,
+        }
+      } else if (trip.category === 'confirmed') {
+        // 확정된 여행: 하늘색
+        return {
+          type: 'confirmed' as const,
+          label: '확정된 여행',
+          trip,
+          bgClass: 'bg-sky-50 text-sky-950 border-2 border-sky-400 shadow-xs dark:bg-sky-950/40 dark:text-sky-200 dark:border-sky-500',
+          badgeClass: 'bg-sky-500 text-white font-bold dark:bg-sky-500 dark:text-white',
+          classes,
+        }
+      } else {
+        // 고민 중인 여행: 보라색
+        return {
+          type: 'planned' as const,
+          label: '고민 중인 여행',
+          trip,
+          bgClass: 'bg-purple-50 text-purple-950 border-2 border-purple-400 shadow-xs dark:bg-purple-950/40 dark:text-purple-200 dark:border-purple-500',
+          badgeClass: 'bg-purple-600 text-white font-bold dark:bg-purple-600 dark:text-white',
+          classes,
+        }
+      }
+    }
+
     if (classes.length === 0) {
       return {
-        type: 'free',
+        type: 'free' as const,
         label: '수업 없음',
-        visited,
-        bgClass: visited
-          ? 'bg-red-50 text-red-950 border-2 border-red-500 shadow-sm dark:bg-red-950/40 dark:text-red-200 dark:border-red-600'
-          : 'bg-emerald-50 text-emerald-900 border-emerald-200/80 hover:bg-emerald-100/70 dark:bg-emerald-950/40 dark:text-emerald-200 dark:border-emerald-900/60',
-        badgeClass: visited
-          ? 'bg-red-600 text-white font-bold dark:bg-red-600 dark:text-white'
-          : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/80 dark:text-emerald-200',
+        trip: null,
+        bgClass: 'bg-emerald-50 text-emerald-900 border-emerald-200/80 hover:bg-emerald-100/70 dark:bg-emerald-950/40 dark:text-emerald-200 dark:border-emerald-900/60',
+        badgeClass: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/80 dark:text-emerald-200',
         classes,
       }
     }
@@ -524,29 +582,21 @@ export function SemesterPlannerMain() {
     const isAllZoom = classes.every((c) => c.isZoom)
     if (isAllZoom) {
       return {
-        type: 'zoom',
+        type: 'zoom' as const,
         label: '줌(온라인) 수업',
-        visited,
-        bgClass: visited
-          ? 'bg-red-50 text-red-950 border-2 border-red-500 shadow-sm dark:bg-red-950/40 dark:text-red-200 dark:border-red-600'
-          : 'bg-amber-50 text-amber-900 border-amber-200/80 hover:bg-amber-100/70 dark:bg-amber-950/40 dark:text-amber-200 dark:border-amber-900/60',
-        badgeClass: visited
-          ? 'bg-red-600 text-white font-bold dark:bg-red-600 dark:text-white'
-          : 'bg-amber-100 text-amber-800 dark:bg-amber-900/80 dark:text-amber-200',
+        trip: null,
+        bgClass: 'bg-amber-50 text-amber-900 border-amber-200/80 hover:bg-amber-100/70 dark:bg-amber-950/40 dark:text-amber-200 dark:border-amber-900/60',
+        badgeClass: 'bg-amber-100 text-amber-800 dark:bg-amber-900/80 dark:text-amber-200',
         classes,
       }
     }
 
     return {
-      type: 'class',
+      type: 'class' as const,
       label: '대면 수업/실습',
-      visited,
-      bgClass: visited
-        ? 'bg-red-50 text-red-950 border-2 border-red-500 shadow-sm dark:bg-red-950/40 dark:text-red-200 dark:border-red-600'
-        : 'bg-zinc-100 text-zinc-800 border-zinc-200 hover:bg-zinc-200/70 dark:bg-zinc-850 dark:text-zinc-200 dark:border-zinc-750',
-      badgeClass: visited
-        ? 'bg-red-600 text-white font-bold dark:bg-red-600 dark:text-white'
-        : 'bg-zinc-200 text-zinc-700 dark:bg-zinc-750 dark:text-zinc-300',
+      trip: null,
+      bgClass: 'bg-zinc-100 text-zinc-800 border-zinc-200 hover:bg-zinc-200/70 dark:bg-zinc-850 dark:text-zinc-200 dark:border-zinc-750',
+      badgeClass: 'bg-zinc-200 text-zinc-700 dark:bg-zinc-750 dark:text-zinc-300',
       classes,
     }
   }
@@ -573,7 +623,7 @@ export function SemesterPlannerMain() {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
           <div className="flex items-center gap-2">
             <span className="font-bold text-sm text-zinc-900 dark:text-zinc-100">
-              학기 일정 & 여행 플래너
+              여행계획 아이디어보드
             </span>
             <span className="rounded bg-zinc-100 px-2 py-0.5 text-xs text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300 font-medium">
               2026.09 ~ 2027.01
@@ -609,10 +659,10 @@ export function SemesterPlannerMain() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h1 className="text-lg sm:text-xl font-bold text-zinc-900 dark:text-zinc-100">
-              수업 없는 날 확인 및 관심 여행지 리스트
+              여행계획 아이디어보드
             </h1>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
-              녹색(수업 없음)과 주황색(온라인 줌) 날짜를 참고하여 여행 일정을 조율할 수 있습니다. 이미 다녀온 여행은 <span className="font-bold text-red-600 dark:text-red-400">빨간색 테두리 박스</span>로 표기되어 있습니다.
+            <p className="text-xs text-zinc-600 dark:text-zinc-300 mt-1 leading-relaxed">
+              녹색(수업 없음)과 주황색(온라인 줌) 날짜를 참고하여 여행 일정을 조율할 수 있음. 확정된 여행은 하늘색, 고민 중인 여행은 보라색이야. 여행 같이 가면 좋으니 겹치면 같이 가자!!!
             </p>
           </div>
 
@@ -638,23 +688,24 @@ export function SemesterPlannerMain() {
               {/* Calendar Header with Month Selector */}
               <CardHeader className="p-4 pb-3 border-b border-zinc-100 dark:border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-1 rounded border border-zinc-200 bg-zinc-50 p-0.5 dark:border-zinc-700 dark:bg-zinc-850">
+                  {/* 월 선택 박스: 가로 폭을 넉넉히 하고 whitespace-nowrap 적용하여 '2027년 1월' 줄바꿈 방지 */}
+                  <div className="flex items-center gap-1 rounded-md border border-zinc-200 bg-zinc-50 p-1 dark:border-zinc-700 dark:bg-zinc-850">
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="size-6"
+                      className="size-6 shrink-0"
                       disabled={selectedMonthIdx === 0}
                       onClick={() => setSelectedMonthIdx((p) => Math.max(0, p - 1))}
                     >
                       <ChevronLeft className="size-3.5" />
                     </Button>
-                    <span className="px-2 text-xs font-bold text-zinc-900 dark:text-zinc-100">
+                    <span className="px-3 text-xs font-bold text-zinc-900 dark:text-zinc-100 whitespace-nowrap min-w-[96px] text-center shrink-0">
                       {curMonth.name}
                     </span>
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="size-6"
+                      className="size-6 shrink-0"
                       disabled={selectedMonthIdx === calendarMonths.length - 1}
                       onClick={() => setSelectedMonthIdx((p) => Math.min(calendarMonths.length - 1, p + 1))}
                     >
@@ -683,8 +734,8 @@ export function SemesterPlannerMain() {
                   </div>
                 </div>
 
-                {/* Color Legend (수업 상태 + 빨간색 다녀온 여행) */}
-                <div className="flex flex-wrap items-center gap-2.5 text-[11px]">
+                {/* Color Legend (수업 상태 + 다녀온/확정/고민중 여행) */}
+                <div className="flex flex-wrap items-center gap-2 text-[11px]">
                   <span className="flex items-center gap-1">
                     <span className="size-2.5 rounded bg-emerald-100 border border-emerald-300" />
                     <span className="text-zinc-600 dark:text-zinc-400 font-medium">수업 없음 (초록)</span>
@@ -695,11 +746,19 @@ export function SemesterPlannerMain() {
                   </span>
                   <span className="flex items-center gap-1">
                     <span className="size-2.5 rounded bg-zinc-200 border border-zinc-300" />
-                    <span className="text-zinc-600 dark:text-zinc-400 font-medium">수업/시험 (회색)</span>
+                    <span className="text-zinc-600 dark:text-zinc-400 font-medium">수업/실습 (회색)</span>
                   </span>
                   <span className="flex items-center gap-1 font-bold text-red-600 dark:text-red-400">
                     <span className="size-2.5 rounded border-2 border-red-500 bg-red-100" />
-                    <span>다녀온 여행 (빨강)</span>
+                    <span>다녀옴 (빨강)</span>
+                  </span>
+                  <span className="flex items-center gap-1 font-bold text-sky-600 dark:text-sky-400">
+                    <span className="size-2.5 rounded border-2 border-sky-400 bg-sky-100" />
+                    <span>확정 여행 (하늘)</span>
+                  </span>
+                  <span className="flex items-center gap-1 font-bold text-purple-600 dark:text-purple-400">
+                    <span className="size-2.5 rounded border-2 border-purple-400 bg-purple-100" />
+                    <span>고민 중 (보라)</span>
                   </span>
                 </div>
               </CardHeader>
@@ -730,7 +789,7 @@ export function SemesterPlannerMain() {
                     const dayOfWeek = (curMonth.startDay + idx) % 7 // 0=Sun, 1=Mon, ..., 6=Sat
                     const status = getDateStatus(dateStr)
                     const isSelected = selectedDate === dateStr
-                    const isVisited = !!status.visited
+                    const trip = status.trip
 
                     return (
                       <div
@@ -743,14 +802,22 @@ export function SemesterPlannerMain() {
                         )}
                       >
                         <div className="flex items-center justify-between">
-                          <span className={cn('font-bold', dayOfWeek === 0 && 'text-rose-600 dark:text-rose-400', isVisited && 'text-red-700 font-extrabold')}>
+                          <span
+                            className={cn(
+                              'font-bold',
+                              dayOfWeek === 0 && 'text-rose-600 dark:text-rose-400',
+                              trip?.category === 'visited' && 'text-red-700 font-extrabold',
+                              trip?.category === 'confirmed' && 'text-sky-800 dark:text-sky-200 font-extrabold',
+                              trip?.category === 'planned' && 'text-purple-800 dark:text-purple-200 font-extrabold'
+                            )}
+                          >
                             {dayNum}
                           </span>
 
-                          {/* Visited Red Badge vs Class status */}
-                          {isVisited ? (
-                            <span className="text-[9px] font-bold px-1 py-0.2 rounded bg-red-600 text-white shadow-2xs">
-                              {status.visited?.destination}
+                          {/* Badge based on trip type or class status */}
+                          {trip ? (
+                            <span className={cn('text-[9px] font-bold px-1 py-0.2 rounded shadow-2xs', status.badgeClass)}>
+                              {trip.destination}
                             </span>
                           ) : (
                             <span className={cn('text-[9px] font-bold px-1 rounded', status.badgeClass)}>
@@ -759,11 +826,24 @@ export function SemesterPlannerMain() {
                           )}
                         </div>
 
-                        {/* Visited trip label or Class preview */}
+                        {/* Trip label or Class preview */}
                         <div className="overflow-hidden">
-                          {isVisited ? (
-                            <div className="text-[10px] font-bold text-red-700 dark:text-red-300 truncate">
-                              ✓ 다녀옴 ({status.visited?.destination})
+                          {trip ? (
+                            <div className="text-[10px] font-bold leading-tight truncate">
+                              {trip.category === 'visited' && (
+                                <span className="text-red-700 dark:text-red-300">✓ 다녀옴 ({trip.destination})</span>
+                              )}
+                              {trip.category === 'confirmed' && (
+                                <span className="text-sky-700 dark:text-sky-300">✈️ 확정 ({trip.destination})</span>
+                              )}
+                              {trip.category === 'planned' && (
+                                <span className="text-purple-700 dark:text-purple-300">💡 고민 중 ({trip.destination})</span>
+                              )}
+                              {status.classes.length > 0 && (
+                                <span className="block text-[9px] font-normal opacity-85">
+                                  수업: {status.classes[0].course.split(' ')[0]}
+                                </span>
+                              )}
                             </div>
                           ) : status.classes.length > 0 ? (
                             <div className="text-[10px] leading-tight opacity-90 truncate font-medium">
@@ -790,9 +870,21 @@ export function SemesterPlannerMain() {
                     {dateInfo.date} ({dateInfo.dayOfWeek})
                   </span>
 
-                  {dateInfo.visited && (
+                  {dateInfo.trip && dateInfo.trip.category === 'visited' && (
                     <Badge className="bg-red-600 text-white font-bold text-[10px]">
-                      🚩 {dateInfo.visited.destination} (다녀온 여행)
+                      🚩 {dateInfo.trip.destination} (다녀온 여행)
+                    </Badge>
+                  )}
+
+                  {dateInfo.trip && dateInfo.trip.category === 'confirmed' && (
+                    <Badge className="bg-sky-500 text-white font-bold text-[10px]">
+                      ✈️ {dateInfo.trip.destination} (확정: {dateInfo.trip.note})
+                    </Badge>
+                  )}
+
+                  {dateInfo.trip && dateInfo.trip.category === 'planned' && (
+                    <Badge className="bg-purple-600 text-white font-bold text-[10px]">
+                      💡 {dateInfo.trip.destination} (고민 중: {dateInfo.trip.note})
                     </Badge>
                   )}
 
@@ -802,11 +894,11 @@ export function SemesterPlannerMain() {
 
                   {dateInfo.classes.length > 0 && (
                     <span className="text-zinc-600 dark:text-zinc-400">
-                      {dateInfo.classes.map((c) => `${c.course} (${c.time})`).join(', ')}
+                      수업: {dateInfo.classes.map((c) => `${c.course} (${c.time})`).join(', ')}
                     </span>
                   )}
 
-                  {dateInfo.classes.length === 0 && !dateInfo.visited && (
+                  {dateInfo.classes.length === 0 && !dateInfo.trip && (
                     <span className="text-emerald-700 dark:text-emerald-400 font-medium">
                       수업 없는 날 (여행 일정 편성 가능)
                     </span>
