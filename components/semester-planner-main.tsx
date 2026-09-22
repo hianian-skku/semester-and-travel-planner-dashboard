@@ -476,7 +476,8 @@ const regionFilterTabs = [
 export function SemesterPlannerMain() {
   const [selectedMonthIdx, setSelectedMonthIdx] = useState(0) // 9월 기본으로 시작
   const [selectedRegion, setSelectedRegion] = useState<string>('all')
-  const [selectedDate, setSelectedDate] = useState<string>('2026-09-14')
+  const [selectedDate, setSelectedDate] = useState<string>('2026-09-23')
+  const [todayStr, setTodayStr] = useState<string>('2026-09-23')
   const [selectedDestination, setSelectedDestination] = useState<TripDestination | null>(null)
   const [copySuccess, setCopySuccess] = useState(false)
 
@@ -487,6 +488,7 @@ export function SemesterPlannerMain() {
   const [dark, setDark] = useState<boolean>(false)
 
   useEffect(() => {
+    // 1. 저장된 테마 불러오기
     const savedTheme = window.localStorage.getItem('planner-theme-v3')
     if (savedTheme === 'dark') {
       setDark(true)
@@ -494,6 +496,22 @@ export function SemesterPlannerMain() {
     } else {
       setDark(false)
       document.documentElement.classList.remove('dark')
+    }
+
+    // 2. 접속 시 오늘 날짜 감지 및 자동 포커스
+    const now = new Date()
+    const y = now.getFullYear()
+    const m = String(now.getMonth() + 1).padStart(2, '0')
+    const d = String(now.getDate()).padStart(2, '0')
+    const curToday = `${y}-${m}-${d}`
+
+    setTodayStr(curToday)
+    setSelectedDate(curToday)
+
+    // 오늘 날짜가 속한 달로 자동 이동
+    const monthIdx = calendarMonths.findIndex((cm) => cm.year === y && cm.month === now.getMonth() + 1)
+    if (monthIdx !== -1) {
+      setSelectedMonthIdx(monthIdx)
     }
   }, [])
 
@@ -734,7 +752,7 @@ export function SemesterPlannerMain() {
                   </div>
                 </div>
 
-                {/* Color Legend (수업 상태 + 다녀온/확정/고민중 여행) */}
+                {/* Color Legend (수업 상태 + 다녀온/확정/고민중 여행 + 오늘) */}
                 <div className="flex flex-wrap items-center gap-2 text-[11px]">
                   <span className="flex items-center gap-1">
                     <span className="size-2.5 rounded bg-emerald-100 border border-emerald-300" />
@@ -759,6 +777,10 @@ export function SemesterPlannerMain() {
                   <span className="flex items-center gap-1 font-bold text-purple-600 dark:text-purple-400">
                     <span className="size-2.5 rounded border-2 border-purple-400 bg-purple-100" />
                     <span>고민 중 (보라)</span>
+                  </span>
+                  <span className="flex items-center gap-1 font-bold text-blue-600 dark:text-blue-400">
+                    <span className="size-2.5 rounded border-2 border-blue-600 bg-blue-100 shadow-2xs" />
+                    <span>오늘 (파랑 박스)</span>
                   </span>
                 </div>
               </CardHeader>
@@ -789,6 +811,7 @@ export function SemesterPlannerMain() {
                     const dayOfWeek = (curMonth.startDay + idx) % 7 // 0=Sun, 1=Mon, ..., 6=Sat
                     const status = getDateStatus(dateStr)
                     const isSelected = selectedDate === dateStr
+                    const isToday = dateStr === todayStr
                     const trip = status.trip
 
                     return (
@@ -798,21 +821,32 @@ export function SemesterPlannerMain() {
                         className={cn(
                           'h-20 rounded border p-1.5 text-xs transition-all cursor-pointer flex flex-col justify-between relative',
                           status.bgClass,
+                          // ⭐️ 오늘 날짜에 선명한 파란색 박스 강조 표시!
+                          isToday && 'border-2 !border-blue-600 shadow-md ring-2 ring-blue-500/40 z-10',
                           isSelected && 'ring-2 ring-indigo-600 shadow-md'
                         )}
                       >
                         <div className="flex items-center justify-between">
-                          <span
-                            className={cn(
-                              'font-bold',
-                              dayOfWeek === 0 && 'text-rose-600 dark:text-rose-400',
-                              trip?.category === 'visited' && 'text-red-700 font-extrabold',
-                              trip?.category === 'confirmed' && 'text-sky-800 dark:text-sky-200 font-extrabold',
-                              trip?.category === 'planned' && 'text-purple-800 dark:text-purple-200 font-extrabold'
+                          <div className="flex items-center gap-1">
+                            <span
+                              className={cn(
+                                'font-bold',
+                                dayOfWeek === 0 && 'text-rose-600 dark:text-rose-400',
+                                trip?.category === 'visited' && 'text-red-700 font-extrabold',
+                                trip?.category === 'confirmed' && 'text-sky-800 dark:text-sky-200 font-extrabold',
+                                trip?.category === 'planned' && 'text-purple-800 dark:text-purple-200 font-extrabold',
+                                isToday && 'text-blue-700 dark:text-blue-300 font-black'
+                              )}
+                            >
+                              {dayNum}
+                            </span>
+                            {/* 오늘 표시 뱃지 */}
+                            {isToday && (
+                              <span className="rounded bg-blue-600 px-1 py-0.2 text-[8px] font-black text-white shadow-2xs">
+                                오늘
+                              </span>
                             )}
-                          >
-                            {dayNum}
-                          </span>
+                          </div>
 
                           {/* Badge based on trip type or class status */}
                           {trip ? (
@@ -869,6 +903,12 @@ export function SemesterPlannerMain() {
                   <span className="font-bold text-zinc-900 dark:text-zinc-100">
                     {dateInfo.date} ({dateInfo.dayOfWeek})
                   </span>
+
+                  {dateInfo.date === todayStr && (
+                    <Badge className="bg-blue-600 text-white font-bold text-[10px]">
+                      📍 오늘 (TODAY)
+                    </Badge>
+                  )}
 
                   {dateInfo.trip && dateInfo.trip.category === 'visited' && (
                     <Badge className="bg-red-600 text-white font-bold text-[10px]">
