@@ -22,6 +22,7 @@ import {
   MoveRight,
   Plane,
   Plus,
+  Power,
   Sparkles,
   Sun,
   TentTree,
@@ -97,6 +98,7 @@ export interface AcademicMilestone {
   type: 'exam' | 'presentation' | 'field' | 'holiday'
   description: string
   week: string
+  courseKey?: 'scicomp' | 'geophysics' | 'xr' | 'physics' | 'holiday'
 }
 
 // Actual Schedule Extracted from TimeEdit (2026-09-21 - 2027-01-17)
@@ -110,12 +112,12 @@ export const realScheduleEvents: ScheduledClass[] = [
   { id: 'ev-6', date: '2026-09-25', week: 'w39', time: '10:15 - 12:00', course: 'Applied Geophysics and Rock Physics', room: 'Skåne, Geocentrum', reason: 'Lecture', teacher: 'Alireza Malehmir', comment: 'Fieldcourse prep' },
 
   // w40 (Full week field studies!)
-  { id: 'ev-7', date: '2026-09-28', week: 'w40', time: '08:15 - 17:00', course: 'Applied Geophysics and Rock Physics', room: 'Field', reason: 'Field studies', teacher: 'Alireza Malehmir', isCrucial: true, comment: '야외 지질물리 실습 (전일 출석)' },
-  { id: 'ev-8', date: '2026-09-29', week: 'w40', time: '08:15 - 17:00', course: 'Applied Geophysics and Rock Physics', room: 'Field', reason: 'Field studies', teacher: 'Alireza Malehmir', isCrucial: true, comment: '야외 지질물리 실습 (전일 출석)' },
-  { id: 'ev-9', date: '2026-09-30', week: 'w40', time: '08:15 - 17:00', course: 'Applied Geophysics and Rock Physics', room: 'Field', reason: 'Field studies', teacher: 'Alireza Malehmir', isCrucial: true, comment: '야외 지질물리 실습 (전일 출석)' },
+  { id: 'ev-7', date: '2026-09-28', week: 'w40', time: '08:15 - 17:00', course: 'Applied Geophysics and Rock Physics', room: 'Field', reason: 'Field studies', teacher: 'Alireza Malehmir', isCrucial: true, comment: '야외 지질물리 실습 (전일 출석 필수)' },
+  { id: 'ev-8', date: '2026-09-29', week: 'w40', time: '08:15 - 17:00', course: 'Applied Geophysics and Rock Physics', room: 'Field', reason: 'Field studies', teacher: 'Alireza Malehmir', isCrucial: true, comment: '야외 지질물리 실습 (전일 출석 필수)' },
+  { id: 'ev-9', date: '2026-09-30', week: 'w40', time: '08:15 - 17:00', course: 'Applied Geophysics and Rock Physics', room: 'Field', reason: 'Field studies', teacher: 'Alireza Malehmir', isCrucial: true, comment: '야외 지질물리 실습 (전일 출석 필수)' },
   { id: 'ev-10', date: '2026-09-30', week: 'w40', time: '08:30 - 10:00', course: 'Project with Extended Reality', room: 'See Comments', reason: 'Supervision', teacher: 'Kaveh Amouzgar', comment: 'Online' },
-  { id: 'ev-11', date: '2026-10-01', week: 'w40', time: '08:15 - 17:00', course: 'Applied Geophysics and Rock Physics', room: 'Field', reason: 'Field studies', teacher: 'Alireza Malehmir', isCrucial: true, comment: '야외 지질물리 실습 (전일 출석)' },
-  { id: 'ev-12', date: '2026-10-02', week: 'w40', time: '08:15 - 17:00', course: 'Applied Geophysics and Rock Physics', room: 'Field', reason: 'Field studies', teacher: 'Alireza Malehmir', isCrucial: true, comment: '야외 지질물리 실습 (전일 출석)' },
+  { id: 'ev-11', date: '2026-10-01', week: 'w40', time: '08:15 - 17:00', course: 'Applied Geophysics and Rock Physics', room: 'Field', reason: 'Field studies', teacher: 'Alireza Malehmir', isCrucial: true, comment: '야외 지질물리 실습 (전일 출석 필수)' },
+  { id: 'ev-12', date: '2026-10-02', week: 'w40', time: '08:15 - 17:00', course: 'Applied Geophysics and Rock Physics', room: 'Field', reason: 'Field studies', teacher: 'Alireza Malehmir', isCrucial: true, comment: '야외 지질물리 실습 (전일 출석 필수)' },
 
   // w41
   { id: 'ev-13', date: '2026-10-05', week: 'w41', time: '10:15 - 12:00', course: 'Project with Extended Reality', room: 'Online', reason: 'Lecture', teacher: 'Kaveh Amouzgar', comment: 'Guest Lecture (Online)' },
@@ -184,18 +186,18 @@ export const realScheduleEvents: ScheduledClass[] = [
 ]
 
 export const academicMilestones: AcademicMilestone[] = [
-  { id: 'm-field', title: '야외 지질물리 실습 주간 (Field Studies)', date: '2026-09-28', endDate: '2026-10-02', type: 'field', description: '매일 08:15-17:00 야외 필드 수업 (출석 필수 · 여행 불가)', week: 'w40' },
-  { id: 'm-xr-pres', title: 'XR 프로젝트 최종 발표 (Final Presentation)', date: '2026-10-26', type: 'presentation', description: '08:00-12:00, 13:15-17:00 종일 발표 세션', week: 'w44' },
-  { id: 'm-geo-exam', title: '지질물리학 중간 시험 (Geophysics Exam)', date: '2026-10-29', type: 'exam', description: '13:15 - 15:00 중간고사 필기시험', week: 'w44' },
-  { id: 'm-p2-start', title: 'Period 2 개강 (SciComp & HCI)', date: '2026-11-02', type: 'presentation', description: '2쿼터 개강 및 새 과목 시작', week: 'w45' },
-  { id: 'm-fails-sem', title: 'Fails in Physics 집중 세미나 주간', date: '2026-12-14', endDate: '2026-12-17', type: 'field', description: '4일 연속 08:15-17:00 세미나 (필참)', week: 'w51' },
-  { id: 'm-jul-eve', title: '크리스마스 이브 (Julafton)', date: '2026-12-24', type: 'holiday', description: '스웨덴 공식 휴일 / 겨울방학', week: 'w52' },
-  { id: 'm-jul-day', title: '크리스마스 (Juldagen)', date: '2026-12-25', type: 'holiday', description: '공휴일', week: 'w52' },
-  { id: 'm-annandag', title: '박싱데이 (Annandag jul)', date: '2026-12-26', type: 'holiday', description: '공휴일', week: 'w52' },
-  { id: 'm-nyar-eve', title: '연말 (Nyårsafton)', date: '2026-12-31', type: 'holiday', description: '휴일', week: 'w53' },
-  { id: 'm-nyar-day', title: '신정 (Nyårsdagen)', date: '2027-01-01', type: 'holiday', description: '새해 첫날 휴일', week: 'w53' },
-  { id: 'm-tretton', title: '주현절 (Trettondedag jul)', date: '2027-01-06', type: 'holiday', description: '스웨덴 공휴일', week: 'w1' },
-  { id: 'm-scicomp-exam', title: 'Scientific Computing 기말 시험 (Final Exam)', date: '2027-01-11', type: 'exam', description: '08:00 - 17:00 기말고사 및 학기 마감', week: 'w2' },
+  { id: 'm-field', title: '야외 지질물리 실습 (Field studies)', date: '2026-09-28', endDate: '2026-10-02', type: 'field', description: '매일 08:15-17:00 야외 실습 (출석 필수)', week: 'w40', courseKey: 'geophysics' },
+  { id: 'm-xr-pres', title: 'XR 프로젝트 최종 발표 (Final Presentation)', date: '2026-10-26', type: 'presentation', description: '08:00-12:00, 13:15-17:00 종일 발표 세션', week: 'w44', courseKey: 'xr' },
+  { id: 'm-geo-exam', title: '지질물리학 중간 시험 (Geophysics Exam)', date: '2026-10-29', type: 'exam', description: '13:15 - 15:00 중간고사 필기시험', week: 'w44', courseKey: 'geophysics' },
+  { id: 'm-p2-start', title: 'Period 2 개강', date: '2026-11-02', type: 'presentation', description: '2쿼터 개강 및 새 과목 시작', week: 'w45' },
+  { id: 'm-fails-sem', title: 'Fails in Physics 집중 세미나 주간', date: '2026-12-14', endDate: '2026-12-17', type: 'field', description: '4일 연속 08:15-17:00 세미나 (필참)', week: 'w51', courseKey: 'physics' },
+  { id: 'm-jul-eve', title: '크리스마스 이브 (Julafton)', date: '2026-12-24', type: 'holiday', description: '스웨덴 공식 휴일 / 겨울방학', week: 'w52', courseKey: 'holiday' },
+  { id: 'm-jul-day', title: '크리스마스 (Juldagen)', date: '2026-12-25', type: 'holiday', description: '공휴일', week: 'w52', courseKey: 'holiday' },
+  { id: 'm-annandag', title: '박싱데이 (Annandag jul)', date: '2026-12-26', type: 'holiday', description: '공휴일', week: 'w52', courseKey: 'holiday' },
+  { id: 'm-nyar-eve', title: '연말 (Nyårsafton)', date: '2026-12-31', type: 'holiday', description: '휴일', week: 'w53', courseKey: 'holiday' },
+  { id: 'm-nyar-day', title: '신정 (Nyårsdagen)', date: '2027-01-01', type: 'holiday', description: '새해 첫날 휴일', week: 'w53', courseKey: 'holiday' },
+  { id: 'm-tretton', title: '주현절 (Trettondedag jul)', date: '2027-01-06', type: 'holiday', description: '스웨덴 공휴일', week: 'w1', courseKey: 'holiday' },
+  { id: 'm-scicomp-exam', title: 'Scientific Computing 기말 시험 (Final Exam)', date: '2027-01-11', type: 'exam', description: '08:00 - 17:00 기말고사 및 학기 마감', week: 'w2', courseKey: 'scicomp' },
 ]
 
 // Updated 2026-2027 Realistic Trip Mock Data
@@ -232,7 +234,7 @@ const initialTrips2026: Trip[] = [
     endDate: '2026-11-23',
     status: 'idea',
     keyTheme: '북유럽 디자인 & 베이커리',
-    academicOverlapNote: '11/20(금) 오전 8:15 프로젝트 슈퍼비전 마친 후 11시 기차로 출발 가능! (월요일 수업 없음)',
+    academicOverlapNote: '11/20(금) SciComp 드랍 시 금요일 전면 공강 확보! (월요일 수업 없음)',
     academicRiskLevel: 'low',
     routeOptions: [
       { name: '루트 A (SJ 고속철도 X2000)', transport: 'SJ 고속열차 직행', description: '스톡홀름 ➔ 코펜하겐 중앙역 직통 5시간 (외레순 다리 횡단)', pros: '도심에서 도심으로 편안한 이동', meta: '왕복 티켓 조기 예매 권장' },
@@ -254,13 +256,13 @@ const initialTrips2026: Trip[] = [
     endDate: '2027-01-03',
     status: 'confirmed',
     keyTheme: '햇살 탈출 & 미식 휴양',
-    academicOverlapNote: '완벽한 겨울방학 기간! (수업/시험 결손 0건, 학기 중 가장 안전한 골든 타임)',
+    academicOverlapNote: '완벽한 겨울방학 기간! (SciComp 드랍 시 1월 기말시험 부담까지 완전 제로)',
     academicRiskLevel: 'low',
     routeOptions: [
       { name: '루트 A (스페인 바르셀로나 + 안달루시아)', transport: '유럽 저가항공 + 렌페 고속열차', description: '가우디 건축 탐방 + 세비야 플라멩코 + 따뜻한 지중해 햇살', pros: '완벽한 날씨와 미식', meta: '성수기 항공권 사전 확보' },
       { name: '루트 B (포르투갈 리스본 & 포르투)', transport: '직항 항공', description: '도루강 와이너리 + 리스본 알파마 언덕 노을 감상', pros: '가성비와 여유로운 분위기', meta: '신년 불꽃놀이' },
     ],
-    notes: '• 12/18일 종강 후 출발하여 1/4 복귀 예정\n• 1/11 기말고사(SciComp) 대비하여 아이패드/요약노트 지참',
+    notes: '• 12/18일 종강 후 출발하여 1/4 복귀 예정\n• SciComp 드랍 시 여행 후 1월 시험공부 압박 없이 편안한 휴식 가능',
     checklist: [
       { id: 'chk-w1', text: '스톡홀름 ➔ 바르셀로나 항공권 발권 완료', done: true },
       { id: 'chk-w2', text: '크리스마스 당일(12/25) 영업 레스토랑 예약', done: true },
@@ -272,11 +274,11 @@ const initialTrips2026: Trip[] = [
 
 // 2026 Fall ~ 2027 January Calendar Month Metadata (5 Months!)
 export const months2026_2027 = [
-  { year: 2026, month: 9, name: '2026년 9월', startDay: 2, days: 30, quarter: 'Period 1 (가을학기 개강)' }, // 9/1 화요일
-  { year: 2026, month: 10, name: '2026년 10월', startDay: 4, days: 31, quarter: 'Period 1 (야외실습 & 중간평가)' }, // 10/1 목요일
-  { year: 2026, month: 11, name: '2026년 11월', startDay: 0, days: 30, quarter: 'Period 2 (SciComp & HCI 시작)' }, // 11/1 일요일
-  { year: 2026, month: 12, name: '2026년 12월', startDay: 2, days: 31, quarter: 'Period 2 (세미나 & 겨울방학)' }, // 12/1 화요일
-  { year: 2027, month: 1, name: '2027년 1월', startDay: 5, days: 31, quarter: '학기 기말고사 & 종강' }, // 1/1 금요일
+  { year: 2026, month: 9, name: '2026년 9월', startDay: 2, days: 30, quarter: 'Period 1 (가을학기 개강)' },
+  { year: 2026, month: 10, name: '2026년 10월', startDay: 4, days: 31, quarter: 'Period 1 (야외실습 & 중간평가)' },
+  { year: 2026, month: 11, name: '2026년 11월', startDay: 0, days: 30, quarter: 'Period 2 (SciComp & HCI 시작)' },
+  { year: 2026, month: 12, name: '2026년 12월', startDay: 2, days: 31, quarter: 'Period 2 (세미나 & 겨울방학)' },
+  { year: 2027, month: 1, name: '2027년 1월', startDay: 5, days: 31, quarter: '학기 기말고사 & 종강' },
 ]
 
 // 17 Weeks in this semester (w39 to w2)
@@ -331,6 +333,9 @@ export function SemesterDashboard() {
   const [dark, setDark] = useState(true)
   const [newOpen, setNewOpen] = useState(false)
 
+  // ⭐️ Scientific Computing Drop Simulator Toggle
+  const [showSciComp, setShowSciComp] = useState<boolean>(true)
+
   // New Trip state
   const [newTitle, setNewTitle] = useState('')
   const [newEmoji, setNewEmoji] = useState('✈️')
@@ -368,6 +373,19 @@ export function SemesterDashboard() {
     }
   }
 
+  // SciComp toggle sync with LocalStorage
+  useEffect(() => {
+    const savedSciComp = window.localStorage.getItem('semester-show-scicomp')
+    if (savedSciComp !== null) {
+      setShowSciComp(savedSciComp === 'true')
+    }
+  }, [])
+
+  const toggleSciComp = (checked: boolean) => {
+    setShowSciComp(checked)
+    window.localStorage.setItem('semester-show-scicomp', String(checked))
+  }
+
   // LocalStorage trips
   useEffect(() => {
     const saved = window.localStorage.getItem('semester-trips-2026')
@@ -384,6 +402,17 @@ export function SemesterDashboard() {
     setTrips(updated)
     window.localStorage.setItem('semester-trips-2026', JSON.stringify(updated))
   }
+
+  // Filtered Events and Milestones based on SciComp toggle
+  const activeScheduleEvents = useMemo(() => {
+    if (showSciComp) return realScheduleEvents
+    return realScheduleEvents.filter((ev) => ev.course !== 'Introduction to Scientific Computing')
+  }, [showSciComp])
+
+  const activeMilestones = useMemo(() => {
+    if (showSciComp) return academicMilestones
+    return academicMilestones.filter((m) => m.courseKey !== 'scicomp')
+  }, [showSciComp])
 
   // Status update
   const handleUpdateStatus = (tripId: string, nextStatus: TripStatus) => {
@@ -491,8 +520,13 @@ export function SemesterDashboard() {
     const isFriday = dateObj.getDay() === 5
     const isWeekend = dateObj.getDay() === 0 || dateObj.getDay() === 6
 
-    const dayClasses = realScheduleEvents.filter((ev) => ev.date === selectedDate)
-    const dayMilestones = academicMilestones.filter((m) => {
+    const dayClasses = activeScheduleEvents.filter((ev) => ev.date === selectedDate)
+    const rawDayClasses = realScheduleEvents.filter((ev) => ev.date === selectedDate)
+    const droppedSciCompClasses = rawDayClasses.filter(
+      (ev) => ev.course === 'Introduction to Scientific Computing' && !showSciComp
+    )
+
+    const dayMilestones = activeMilestones.filter((m) => {
       if (m.endDate) {
         return selectedDate >= m.date && selectedDate <= m.endDate
       }
@@ -506,10 +540,11 @@ export function SemesterDashboard() {
       isFriday,
       isWeekend,
       classes: dayClasses,
+      droppedSciCompClasses,
       milestones: dayMilestones,
       trips: dayTrips,
     }
-  }, [selectedDate, trips])
+  }, [selectedDate, activeScheduleEvents, activeMilestones, showSciComp, trips])
 
   return (
     <div className={cn('min-h-screen transition-colors duration-200', dark ? 'dark bg-[#0d1017] text-zinc-100' : 'bg-[#fafafa] text-zinc-900')}>
@@ -647,7 +682,7 @@ export function SemesterDashboard() {
                     <Input
                       value={newAcademicNote}
                       onChange={(e) => setNewAcademicNote(e.target.value)}
-                      placeholder="예: 금요일 수업 1개 겹침 주의 / 과제 마감 후 출발"
+                      placeholder="예: 금요일 수업 유무 및 과제 마감 확인"
                       className="border-zinc-300 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800"
                     />
                   </div>
@@ -696,19 +731,39 @@ export function SemesterDashboard() {
         </div>
       </header>
 
-      {/* 2. Sub-Nav & View Switcher Bar */}
+      {/* 2. Sub-Nav & View Switcher Bar with SciComp Drop Simulation Switch */}
       <div className="border-b border-zinc-200/70 bg-white/60 dark:border-zinc-800/60 dark:bg-[#11141c]/60">
         <div className="mx-auto flex max-w-7xl flex-col justify-between gap-4 px-4 py-3 sm:flex-row sm:items-center sm:px-6 lg:px-8">
-          {/* Key Semester Highlights */}
+          {/* Key Semester Highlights & Drop Toggle */}
           <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs">
-            <div className="flex items-center gap-1.5 rounded-full border border-indigo-200 bg-indigo-50/80 px-2.5 py-1 text-indigo-700 dark:border-indigo-900/60 dark:bg-indigo-950/40 dark:text-indigo-300">
-              <Sparkles className="size-3.5" />
-              <span>등록된 여행 <strong>{trips.length}개</strong></span>
+            {/* ⭐️ SCIENTIFIC COMPUTING DROP SIMULATOR SWITCH */}
+            <div
+              className={cn(
+                'flex items-center gap-2.5 rounded-full border px-3 py-1 transition-all shadow-xs',
+                showSciComp
+                  ? 'border-indigo-200 bg-indigo-50/70 text-indigo-900 dark:border-indigo-900/60 dark:bg-indigo-950/40 dark:text-indigo-200'
+                  : 'border-amber-400 bg-amber-50 text-amber-900 dark:border-amber-700 dark:bg-amber-950/60 dark:text-amber-200 ring-1 ring-amber-400/40'
+              )}
+            >
+              <div className="flex items-center gap-1.5 font-bold">
+                <span>{showSciComp ? '🧪' : '🛑'}</span>
+                <span>Scientific Computing:</span>
+              </div>
+              <Switch
+                checked={showSciComp}
+                onCheckedChange={toggleSciComp}
+                aria-label="Toggle Introduction to Scientific Computing"
+              />
+              <span className="font-extrabold text-[11px]">
+                {showSciComp ? '수강 중 (ON)' : '드랍 시뮬레이션 (OFF)'}
+              </span>
             </div>
-            <div className="flex items-center gap-1.5 rounded-full border border-rose-200 bg-rose-50/80 px-2.5 py-1 text-rose-700 dark:border-rose-900/60 dark:bg-rose-950/40 dark:text-rose-300">
-              <AlertCircle className="size-3.5" />
-              <span>실습/발표 주의: <strong>9/28 야외실습, 10/26 XR발표, 10/29 시험</strong></span>
+
+            <div className="hidden md:flex items-center gap-1.5 rounded-full border border-zinc-200 bg-zinc-50 px-2.5 py-1 text-zinc-700 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
+              <Sparkles className="size-3.5 text-indigo-500" />
+              <span>등록 여행 <strong>{trips.length}개</strong></span>
             </div>
+
             <div className="hidden lg:flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50/80 px-2.5 py-1 text-emerald-700 dark:border-emerald-900/60 dark:bg-emerald-950/40 dark:text-emerald-300">
               <TentTree className="size-3.5" />
               <span>황금 연휴: <strong>12/21~1/3 크리스마스 방학 (14일)</strong></span>
@@ -746,9 +801,34 @@ export function SemesterDashboard() {
 
       {/* 3. Main Views */}
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-        {/* VIEW 1: MONTHLY CALENDAR & ROADMAP (2026-09 ~ 2027-01) */}
+        {/* VIEW 1: MONTHLY CALENDAR & ROADMAP */}
         {view === 'calendar' && (
           <div className="flex flex-col gap-6">
+            {/* Drop Simulation Active Banner (Visible when SciComp is OFF) */}
+            {!showSciComp && (
+              <div className="flex items-center justify-between rounded-xl border border-amber-300 bg-gradient-to-r from-amber-50 to-orange-50 p-4 text-xs dark:border-amber-800/80 dark:from-amber-950/40 dark:to-orange-950/20">
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">🎉</span>
+                  <div>
+                    <p className="font-bold text-amber-900 dark:text-amber-200">
+                      'Introduction to Scientific Computing' 드랍 시뮬레이션 적용 중
+                    </p>
+                    <p className="mt-0.5 text-amber-800/90 dark:text-amber-300">
+                      11~12월 수업(총 20개 세션)과 <strong>2027년 1월 11일 기말시험</strong>이 달력 및 로드맵에서 제외되었습니다. 11월과 12월의 여행 가능 요일이 대폭 늘어납니다!
+                    </p>
+                  </div>
+                </div>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => toggleSciComp(true)}
+                  className="border-amber-300 text-amber-900 hover:bg-amber-100 dark:border-amber-700 dark:text-amber-200 font-semibold"
+                >
+                  수업 복원 (ON)
+                </Button>
+              </div>
+            )}
+
             {/* Top Overview Roadmap Bar (Lane 1: Milestones, Lane 2: Trips) */}
             <Card className="border-zinc-200/80 bg-white shadow-sm dark:border-zinc-800/80 dark:bg-[#13161f]">
               <CardHeader className="flex flex-row items-center justify-between border-b border-zinc-100 pb-3 dark:border-zinc-800/60">
@@ -760,6 +840,11 @@ export function SemesterDashboard() {
                     <Badge variant="outline" className="border-zinc-200 text-zinc-600 dark:border-zinc-700 dark:text-zinc-400 text-[10px]">
                       TimeEdit 연동
                     </Badge>
+                    {!showSciComp && (
+                      <Badge className="bg-amber-500 text-white text-[10px]">
+                        SciComp 드랍 적용됨
+                      </Badge>
+                    )}
                   </div>
                   <p className="text-xs text-zinc-500 dark:text-zinc-400">
                     주차를 클릭하면 해당 주의 실제 수업 및 마일스톤, 추천 여행 기간이 강조됩니다.
@@ -769,7 +854,7 @@ export function SemesterDashboard() {
                 <div className="hidden items-center gap-3 text-[11px] text-zinc-600 dark:text-zinc-400 md:flex">
                   <div className="flex items-center gap-1.5">
                     <span className="size-2 rounded-full bg-rose-500" />
-                    <span>필드실습/발표/시험</span>
+                    <span>실습/발표/시험</span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <span className="size-2 rounded-full bg-indigo-500" />
@@ -816,9 +901,10 @@ export function SemesterDashboard() {
                       <span>학사 마일스톤</span>
                     </div>
                     {termWeeks.map((tw) => {
-                      const miles = academicMilestones.filter((m) => m.week === tw.id)
-                      const isFieldWeek = tw.id === 'w40'
+                      const miles = activeMilestones.filter((m) => m.week === tw.id)
                       const isHolidayWeek = tw.id === 'w52' || tw.id === 'w53'
+                      const isSciCompDroppedWeek2 = tw.id === 'w2' && !showSciComp
+
                       return (
                         <div
                           key={`academic-${tw.id}`}
@@ -828,22 +914,28 @@ export function SemesterDashboard() {
                             isHolidayWeek && 'bg-emerald-50/25 dark:bg-emerald-950/15'
                           )}
                         >
-                          {miles.map((mile) => (
-                            <div
-                              key={mile.id}
-                              title={`${mile.title} (${mile.date})`}
-                              className={cn(
-                                'mb-1 flex flex-col items-center justify-center rounded px-1 py-1 text-[9px] font-bold leading-tight shadow-xs',
-                                mile.type === 'exam' || mile.type === 'presentation'
-                                  ? 'bg-rose-100 text-rose-900 border border-rose-300 dark:bg-rose-950/90 dark:text-rose-200 dark:border-rose-800'
-                                  : mile.type === 'field'
-                                  ? 'bg-amber-100 text-amber-900 border border-amber-300 dark:bg-amber-950/90 dark:text-amber-200 dark:border-amber-800'
-                                  : 'bg-emerald-100 text-emerald-900 border border-emerald-300 dark:bg-emerald-950/90 dark:text-emerald-200 dark:border-emerald-800'
-                              )}
-                            >
-                              <span className="truncate max-w-[50px]">{mile.title.split(' ')[0]}</span>
+                          {isSciCompDroppedWeek2 ? (
+                            <div className="flex flex-col items-center justify-center rounded bg-emerald-100 p-1 text-[9px] font-bold text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300">
+                              <span>시험 면제✨</span>
                             </div>
-                          ))}
+                          ) : (
+                            miles.map((mile) => (
+                              <div
+                                key={mile.id}
+                                title={`${mile.title} (${mile.date})`}
+                                className={cn(
+                                  'mb-1 flex flex-col items-center justify-center rounded px-1 py-1 text-[9px] font-bold leading-tight shadow-xs',
+                                  mile.type === 'exam' || mile.type === 'presentation'
+                                    ? 'bg-rose-100 text-rose-900 border border-rose-300 dark:bg-rose-950/90 dark:text-rose-200 dark:border-rose-800'
+                                    : mile.type === 'field'
+                                    ? 'bg-amber-100 text-amber-900 border border-amber-300 dark:bg-amber-950/90 dark:text-amber-200 dark:border-amber-800'
+                                    : 'bg-emerald-100 text-emerald-900 border border-emerald-300 dark:bg-emerald-950/90 dark:text-emerald-200 dark:border-emerald-800'
+                                )}
+                              >
+                                <span className="truncate max-w-[50px]">{mile.title.split(' ')[0]}</span>
+                              </div>
+                            ))
+                          )}
                         </div>
                       )
                     })}
@@ -974,7 +1066,7 @@ export function SemesterDashboard() {
                       const isSelected = selectedDate === dateStr
 
                       // Check Milestones on this date
-                      const dayMilestone = academicMilestones.find((m) => {
+                      const dayMilestone = activeMilestones.find((m) => {
                         if (m.endDate) {
                           return dateStr >= m.date && dateStr <= m.endDate
                         }
@@ -984,9 +1076,16 @@ export function SemesterDashboard() {
                       // Check Trips covering this date
                       const dayTrips = trips.filter((t) => dateStr >= t.startDate && dateStr <= t.endDate)
 
-                      // Classes on this date
-                      const dayClasses = realScheduleEvents.filter((ev) => ev.date === dateStr)
+                      // Classes on this date (affected by SciComp toggle)
+                      const dayClasses = activeScheduleEvents.filter((ev) => ev.date === dateStr)
                       const hasExamOrImportant = dayClasses.some((c) => c.isCrucial)
+
+                      // Check if SciComp was dropped on this date
+                      const hadSciCompDropped =
+                        !showSciComp &&
+                        realScheduleEvents.some(
+                          (ev) => ev.date === dateStr && ev.course === 'Introduction to Scientific Computing'
+                        )
 
                       return (
                         <div
@@ -1014,7 +1113,7 @@ export function SemesterDashboard() {
                               </span>
 
                               {/* Classes count badge */}
-                              {dayClasses.length > 0 && (
+                              {dayClasses.length > 0 ? (
                                 <span
                                   className={cn(
                                     'rounded px-1 text-[9px] font-bold',
@@ -1025,7 +1124,11 @@ export function SemesterDashboard() {
                                 >
                                   {hasExamOrImportant ? '🚨 실습/시험' : `${dayClasses.length}수업`}
                                 </span>
-                              )}
+                              ) : hadSciCompDropped ? (
+                                <span className="rounded bg-amber-100 px-1 text-[8px] font-bold text-amber-800 dark:bg-amber-950 dark:text-amber-300">
+                                  드랍(공강)
+                                </span>
+                              ) : null}
                             </div>
 
                             {/* Academic Milestone Badge on Date */}
@@ -1092,6 +1195,18 @@ export function SemesterDashboard() {
                   </CardHeader>
 
                   <CardContent className="flex flex-col gap-4 p-4 text-xs">
+                    {/* Dropped SciComp Notice for this date */}
+                    {!showSciComp && inspectDateDetails && inspectDateDetails.droppedSciCompClasses.length > 0 && (
+                      <div className="rounded-lg border border-amber-300 bg-amber-50/90 p-2.5 text-amber-900 dark:border-amber-800/80 dark:bg-amber-950/40 dark:text-amber-200">
+                        <p className="font-bold flex items-center gap-1.5">
+                          <span>🛑 SciComp 드랍 효과 반영됨</span>
+                        </p>
+                        <p className="mt-1 text-[11px] leading-relaxed">
+                          오늘 배정되었던 <strong>Scientific Computing {inspectDateDetails.droppedSciCompClasses.length}개 세션</strong>이 드랍되어 자유 시간이 확보되었습니다.
+                        </p>
+                      </div>
+                    )}
+
                     {/* Milestones on this day */}
                     {inspectDateDetails && inspectDateDetails.milestones.length > 0 && (
                       <div>
@@ -1115,7 +1230,7 @@ export function SemesterDashboard() {
                       </div>
                     )}
 
-                    {/* Classes on this day (from TimeEdit PDF!) */}
+                    {/* Classes on this day (Active events) */}
                     <div>
                       <div className="mb-1.5 flex items-center justify-between">
                         <span className="font-bold text-zinc-800 dark:text-zinc-200">
@@ -1221,7 +1336,7 @@ export function SemesterDashboard() {
                   <p className="font-bold">🇸🇪 웁살라대 학기 여행 전략</p>
                   <p className="mt-1.5 text-[11px] leading-relaxed text-indigo-800 dark:text-indigo-300">
                     • <strong>9/28~10/2</strong>(야외실습) 및 <strong>10/26~10/29</strong>(발표/시험) 기간은 결석 불가.<br />
-                    • <strong>12/21~1/3</strong>(크리스마스/신년 방학 14일)은 유럽 전역 여행의 최적기입니다!
+                    • <strong>SciComp 드랍 시</strong> 11월과 12월 평일 및 1월 시험기간이 온전히 자유 여행 슬롯으로 전환됩니다!
                   </p>
                 </div>
               </div>
@@ -1371,8 +1486,17 @@ export function SemesterDashboard() {
                   2026-2027 TimeEdit 학업 일정 & 과목별 시간표
                 </h2>
                 <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                  Uppsala University 정규 수업(총 {realScheduleEvents.length}개 세션)과 주요 마일스톤을 과목별/주차별로 정밀 분석합니다.
+                  Uppsala University 정규 수업 및 마일스톤 상세 분석 (현재 {activeScheduleEvents.length}개 세션 표시 중)
                 </p>
+              </div>
+
+              {/* SciComp quick switch in timetable */}
+              <div className="flex items-center gap-2.5 rounded-xl border border-zinc-200 bg-white px-3 py-2 dark:border-zinc-800 dark:bg-zinc-900">
+                <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">SciComp 표시:</span>
+                <Switch checked={showSciComp} onCheckedChange={toggleSciComp} />
+                <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">
+                  {showSciComp ? 'ON' : '드랍 (OFF)'}
+                </span>
               </div>
             </div>
 
@@ -1394,17 +1518,40 @@ export function SemesterDashboard() {
                 <p className="text-xs text-zinc-500 dark:text-zinc-400">Ångström & Zoom · Kaveh Amouzgar</p>
                 <div className="mt-3 rounded bg-zinc-50 p-2 text-[11px] text-zinc-700 dark:bg-zinc-850 dark:text-zinc-300">
                   🎯 <strong>10/26 08:00~17:00</strong> 최종 발표<br />
-                  💻 격주 온라인 줌 슈퍼비전
+                  💻 온라인 줌 슈퍼비전
                 </div>
               </Card>
 
-              <Card className="border-zinc-200/80 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-[#13161f]">
-                <Badge className="bg-amber-600 text-white text-[10px]">Period 2 (11~1월)</Badge>
+              {/* SciComp Card with drop badge */}
+              <Card
+                className={cn(
+                  'p-4 shadow-sm transition-all',
+                  showSciComp
+                    ? 'border-zinc-200/80 bg-white dark:border-zinc-800 dark:bg-[#13161f]'
+                    : 'border-dashed border-amber-300 bg-amber-50/40 opacity-70 dark:border-amber-900 dark:bg-amber-950/20'
+                )}
+              >
+                <div className="flex items-center justify-between">
+                  <Badge className="bg-amber-600 text-white text-[10px]">Period 2 (11~1월)</Badge>
+                  {!showSciComp && (
+                    <Badge variant="outline" className="border-amber-500 text-amber-700 dark:text-amber-400 text-[10px] font-bold">
+                      드랍됨 (OFF)
+                    </Badge>
+                  )}
+                </div>
                 <h4 className="mt-2 text-sm font-bold text-zinc-900 dark:text-zinc-100">Scientific Computing</h4>
                 <p className="text-xs text-zinc-500 dark:text-zinc-400">Ångström · Murtazo Nazarov</p>
                 <div className="mt-3 rounded bg-zinc-50 p-2 text-[11px] text-zinc-700 dark:bg-zinc-850 dark:text-zinc-300">
-                  강의 L1~L12 + 프로젝트 슈퍼비전<br />
-                  🎓 <strong>2027-01-11</strong> 최종 기말시험
+                  {showSciComp ? (
+                    <>
+                      강의 L1~L12 + 프로젝트 슈퍼비전<br />
+                      🎓 <strong>2027-01-11</strong> 최종 기말시험
+                    </>
+                  ) : (
+                    <span className="text-amber-800 dark:text-amber-300 font-semibold">
+                      드랍 적용 상태입니다. 수업 및 시험이 시간표에서 제외되었습니다.
+                    </span>
+                  )}
                 </div>
               </Card>
 
@@ -1421,13 +1568,21 @@ export function SemesterDashboard() {
 
             {/* TimeEdit Event Log Table */}
             <Card className="border-zinc-200/80 bg-white shadow-sm dark:border-zinc-800 dark:bg-[#13161f]">
-              <CardHeader className="border-b border-zinc-100 pb-3 dark:border-zinc-800/60">
-                <CardTitle className="text-base font-bold text-zinc-900 dark:text-zinc-100">
-                  전체 수업 상세 타임라인 리스트 (TimeEdit Full Session Log)
-                </CardTitle>
-                <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                  날짜순으로 정렬된 시간표 데이터입니다.
-                </p>
+              <CardHeader className="flex flex-row items-center justify-between border-b border-zinc-100 pb-3 dark:border-zinc-800/60">
+                <div>
+                  <CardTitle className="text-base font-bold text-zinc-900 dark:text-zinc-100">
+                    전체 수업 상세 타임라인 리스트 (TimeEdit Full Session Log)
+                  </CardTitle>
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                    {showSciComp ? '전체 55개 세션 표시 중' : 'Scientific Computing 제외 후 35개 세션 표시 중'}
+                  </p>
+                </div>
+
+                {!showSciComp && (
+                  <Badge variant="outline" className="border-amber-400 text-amber-800 dark:text-amber-300 text-xs font-semibold">
+                    SciComp 20개 세션 숨김 중
+                  </Badge>
+                )}
               </CardHeader>
 
               <CardContent className="p-0">
@@ -1445,7 +1600,7 @@ export function SemesterDashboard() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
-                      {realScheduleEvents.map((ev) => (
+                      {activeScheduleEvents.map((ev) => (
                         <tr
                           key={ev.id}
                           className={cn(
@@ -1552,6 +1707,11 @@ export function SemesterDashboard() {
                 <p className="mt-1.5 text-xs leading-relaxed text-amber-800 dark:text-amber-300 font-medium">
                   {selectedTrip.academicOverlapNote}
                 </p>
+                {!showSciComp && (
+                  <p className="mt-1 text-[11px] text-emerald-700 dark:text-emerald-400 font-semibold">
+                    ✓ SciComp 드랍 시뮬레이션 적용 중: 해당 과목으로 인한 일정 부담이 완화됩니다.
+                  </p>
+                )}
               </div>
 
               {/* Route Options Comparison */}
