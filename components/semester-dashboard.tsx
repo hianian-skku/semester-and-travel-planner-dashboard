@@ -11,13 +11,14 @@ import {
   ChevronRight,
   Clock,
   Compass,
+  ExternalLink,
   Feather,
   Filter,
   GraduationCap,
+  Info,
   Layers,
   MapPin,
   Moon,
-  MoreHorizontal,
   MoveRight,
   Plane,
   Plus,
@@ -71,116 +72,232 @@ export interface Trip {
   routeOptions: RouteOption[]
   notes: string
   checklist: ChecklistItem[]
-  weeks: number[] // week indices 0~15
+  weeks: string[] // week ids e.g. ['w42', 'w43']
 }
 
-export interface Course {
+export interface ScheduledClass {
   id: string
-  name: string
-  day: 'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri'
-  time: string
+  date: string // YYYY-MM-DD
+  week: string // e.g. w39
+  time: string // e.g. 10:15 - 12:00
+  course: string
   room: string
-  color: string
-  dotClass: string
-  hasConflictRisk?: boolean
+  reason: 'Lecture' | 'Exercise' | 'Supervision' | 'Workshop' | 'Exam' | 'Presentation' | 'Field studies' | 'Seminar' | 'Problemlösning'
+  teacher: string
+  comment?: string
+  mapUrl?: string
+  isCrucial?: boolean // Exam or Presentation or Field studies
 }
 
-export interface Milestone {
+export interface AcademicMilestone {
   id: string
   title: string
   date: string // YYYY-MM-DD
-  type: 'exam' | 'assignment' | 'holiday'
+  endDate?: string
+  type: 'exam' | 'presentation' | 'field' | 'holiday'
   description: string
-  weekIndex: number
+  week: string
 }
 
-// Initial Mock Data
-const defaultCourses: Course[] = [
-  { id: 'c1', day: 'Mon', name: '디자인 시스템 (Design Systems)', time: '10:00–11:30', room: 'Studio 2B', color: 'bg-violet-500/20 text-violet-700 dark:text-violet-300 border-violet-300 dark:border-violet-700', dotClass: 'bg-violet-500' },
-  { id: 'c2', day: 'Mon', name: 'UX 연구방법론 (Research Methods)', time: '14:00–15:30', room: '공학관 301', color: 'bg-sky-500/20 text-sky-700 dark:text-sky-300 border-sky-300 dark:border-sky-700', dotClass: 'bg-sky-500' },
-  { id: 'c3', day: 'Tue', name: '데이터와 사회 (Data & Society)', time: '09:30–11:00', room: '경영관 104', color: 'bg-amber-500/20 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-700', dotClass: 'bg-amber-500' },
-  { id: 'c4', day: 'Wed', name: '디자인 시스템 (Design Systems)', time: '10:00–11:30', room: 'Studio 2B', color: 'bg-violet-500/20 text-violet-700 dark:text-violet-300 border-violet-300 dark:border-violet-700', dotClass: 'bg-violet-500' },
-  { id: 'c5', day: 'Thu', name: '시각 문화 세미나 (Visual Culture)', time: '13:00–15:00', room: '세미나실 1', color: 'bg-rose-500/20 text-rose-700 dark:text-rose-300 border-rose-300 dark:border-rose-700', dotClass: 'bg-rose-500', hasConflictRisk: true },
+// Actual Schedule Extracted from TimeEdit (2026-09-21 - 2027-01-17)
+export const realScheduleEvents: ScheduledClass[] = [
+  // w39
+  { id: 'ev-1', date: '2026-09-21', week: 'w39', time: '10:15 - 12:00', course: 'Applied Geophysics and Rock Physics', room: 'Skåne, Geocentrum', reason: 'Lecture', teacher: 'Thomas Kalscheuer', comment: 'Electromagnetic and geoelectric methods' },
+  { id: 'ev-2', date: '2026-09-22', week: 'w39', time: '13:15 - 15:00', course: 'Applied Geophysics and Rock Physics', room: 'Småland, Geocentrum', reason: 'Lecture', teacher: 'Thomas Kalscheuer', comment: 'Electromagnetic and geoelectric methods' },
+  { id: 'ev-3', date: '2026-09-23', week: 'w39', time: '08:30 - 10:00', course: 'Project with Extended Reality', room: 'See Comments', reason: 'Supervision', teacher: 'Kaveh Amouzgar', comment: 'Online-Zoom' },
+  { id: 'ev-4', date: '2026-09-23', week: 'w39', time: '15:15 - 17:00', course: 'Applied Geophysics and Rock Physics', room: 'Skåne, Geocentrum', reason: 'Lecture', teacher: 'Viktor Stender', comment: 'Exercise session EM/Electrical methods I' },
+  { id: 'ev-5', date: '2026-09-24', week: 'w39', time: '10:15 - 12:00', course: 'Applied Geophysics and Rock Physics', room: 'Båthsalen, Geocentrum', reason: 'Lecture', teacher: 'Viktor Stender', comment: 'Exercise session EM/electrical Methods II' },
+  { id: 'ev-6', date: '2026-09-25', week: 'w39', time: '10:15 - 12:00', course: 'Applied Geophysics and Rock Physics', room: 'Skåne, Geocentrum', reason: 'Lecture', teacher: 'Alireza Malehmir', comment: 'Fieldcourse prep' },
+
+  // w40 (Full week field studies!)
+  { id: 'ev-7', date: '2026-09-28', week: 'w40', time: '08:15 - 17:00', course: 'Applied Geophysics and Rock Physics', room: 'Field', reason: 'Field studies', teacher: 'Alireza Malehmir', isCrucial: true, comment: '야외 지질물리 실습 (전일 출석)' },
+  { id: 'ev-8', date: '2026-09-29', week: 'w40', time: '08:15 - 17:00', course: 'Applied Geophysics and Rock Physics', room: 'Field', reason: 'Field studies', teacher: 'Alireza Malehmir', isCrucial: true, comment: '야외 지질물리 실습 (전일 출석)' },
+  { id: 'ev-9', date: '2026-09-30', week: 'w40', time: '08:15 - 17:00', course: 'Applied Geophysics and Rock Physics', room: 'Field', reason: 'Field studies', teacher: 'Alireza Malehmir', isCrucial: true, comment: '야외 지질물리 실습 (전일 출석)' },
+  { id: 'ev-10', date: '2026-09-30', week: 'w40', time: '08:30 - 10:00', course: 'Project with Extended Reality', room: 'See Comments', reason: 'Supervision', teacher: 'Kaveh Amouzgar', comment: 'Online' },
+  { id: 'ev-11', date: '2026-10-01', week: 'w40', time: '08:15 - 17:00', course: 'Applied Geophysics and Rock Physics', room: 'Field', reason: 'Field studies', teacher: 'Alireza Malehmir', isCrucial: true, comment: '야외 지질물리 실습 (전일 출석)' },
+  { id: 'ev-12', date: '2026-10-02', week: 'w40', time: '08:15 - 17:00', course: 'Applied Geophysics and Rock Physics', room: 'Field', reason: 'Field studies', teacher: 'Alireza Malehmir', isCrucial: true, comment: '야외 지질물리 실습 (전일 출석)' },
+
+  // w41
+  { id: 'ev-13', date: '2026-10-05', week: 'w41', time: '10:15 - 12:00', course: 'Project with Extended Reality', room: 'Online', reason: 'Lecture', teacher: 'Kaveh Amouzgar', comment: 'Guest Lecture (Online)' },
+  { id: 'ev-14', date: '2026-10-06', week: 'w41', time: '10:15 - 12:00', course: 'Project with Extended Reality', room: '101136, Ångström', reason: 'Workshop', teacher: 'Kaveh Amouzgar', comment: 'Evelyn Sokolowski, Ångström' },
+
+  // w42
+  { id: 'ev-15', date: '2026-10-16', week: 'w42', time: '13:15 - 16:00', course: 'Project with Extended Reality', room: 'Via Zoom', reason: 'Lecture', teacher: 'Kaveh Amouzgar', comment: 'Guest Lecture' },
+
+  // w44 (Presentations & Exam)
+  { id: 'ev-16', date: '2026-10-26', week: 'w44', time: '08:00 - 12:00', course: 'Project with Extended Reality', room: '101162, Ångström', reason: 'Presentation', teacher: 'Kaveh Amouzgar', isCrucial: true, comment: 'XR 프로젝트 최종 발표 (오전)' },
+  { id: 'ev-17', date: '2026-10-26', week: 'w44', time: '13:15 - 17:00', course: 'Project with Extended Reality', room: '101162, Ångström', reason: 'Presentation', teacher: 'Kaveh Amouzgar', isCrucial: true, comment: 'XR 프로젝트 최종 발표 (오후)' },
+  { id: 'ev-18', date: '2026-10-29', week: 'w44', time: '13:15 - 15:00', course: 'Applied Geophysics and Rock Physics', room: 'Hall', reason: 'Exam', teacher: 'Alireza Malehmir', isCrucial: true, comment: '지질물리학 중간 시험 (Exam)' },
+
+  // w45 (Period 2 Starts!)
+  { id: 'ev-19', date: '2026-11-02', week: 'w45', time: '08:15 - 10:00', course: 'Introduction to Scientific Computing', room: '101121, Sonja Lyttkens, Ångström', reason: 'Lecture', teacher: 'Murtazo Nazarov', comment: 'L1' },
+  { id: 'ev-20', date: '2026-11-02', week: 'w45', time: '13:15 - 15:00', course: 'Introduction to Scientific Computing', room: '101142, Ångström', reason: 'Supervision', teacher: 'Murtazo Nazarov', comment: 'Project Supervision PHS1' },
+  { id: 'ev-21', date: '2026-11-03', week: 'w45', time: '10:15 - 12:00', course: 'Introduction to Scientific Computing', room: '101121, Ångström', reason: 'Lecture', teacher: 'Murtazo Nazarov', comment: 'L2' },
+  { id: 'ev-22', date: '2026-11-04', week: 'w45', time: '08:15 - 10:00', course: 'Human-Computer Interaction', room: '80127, Ångström', reason: 'Lecture', teacher: 'Edward White', comment: 'HCI F1' },
+  { id: 'ev-23', date: '2026-11-04', week: 'w45', time: '10:15 - 12:00', course: 'Introduction to Scientific Computing', room: '101195, Heinz-Otto Kreiss, Ångström', reason: 'Lecture', teacher: 'Murtazo Nazarov', comment: 'L3' },
+  { id: 'ev-24', date: '2026-11-06', week: 'w45', time: '10:15 - 12:00', course: 'Introduction to Scientific Computing', room: '2002, Ångström', reason: 'Problemlösning', teacher: 'Murtazo Nazarov', comment: 'ASP1' },
+
+  // w46
+  { id: 'ev-25', date: '2026-11-09', week: 'w46', time: '08:15 - 10:00', course: 'Human-Computer Interaction', room: '80101, Ångström', reason: 'Lecture', teacher: 'Edward White', comment: 'HCI F2' },
+  { id: 'ev-26', date: '2026-11-09', week: 'w46', time: '10:15 - 12:00', course: 'Fails in Physics', room: '80115, Ångström', reason: 'Lecture', teacher: 'Rebeca Gonzalez Suarez' },
+  { id: 'ev-27', date: '2026-11-10', week: 'w46', time: '15:15 - 17:00', course: 'Human-Computer Interaction', room: '80121, Ångström', reason: 'Lecture', teacher: 'Edward White', comment: 'HCI F3' },
+  { id: 'ev-28', date: '2026-11-10', week: 'w46', time: '15:15 - 17:00', course: 'Introduction to Scientific Computing', room: '101195, Ångström', reason: 'Lecture', teacher: 'Murtazo Nazarov', comment: 'L4' },
+  { id: 'ev-29', date: '2026-11-11', week: 'w46', time: '10:15 - 12:00', course: 'Introduction to Scientific Computing', room: '101142, Ångström', reason: 'Supervision', teacher: 'Murtazo Nazarov', comment: 'PHS2' },
+  { id: 'ev-30', date: '2026-11-11', week: 'w46', time: '15:15 - 17:00', course: 'Introduction to Scientific Computing', room: '101121, Ångström', reason: 'Lecture', teacher: 'Murtazo Nazarov', comment: 'L5' },
+  { id: 'ev-31', date: '2026-11-12', week: 'w46', time: '08:15 - 10:00', course: 'Introduction to Scientific Computing', room: '101195, Ångström', reason: 'Lecture', teacher: 'Murtazo Nazarov', comment: 'L6' },
+  { id: 'ev-32', date: '2026-11-13', week: 'w46', time: '15:15 - 17:00', course: 'Human-Computer Interaction', room: '80127, Ångström', reason: 'Lecture', teacher: 'Edward White', comment: 'HCI F4' },
+
+  // w47
+  { id: 'ev-33', date: '2026-11-16', week: 'w47', time: '10:15 - 12:00', course: 'Introduction to Scientific Computing', room: '2002, Ångström', reason: 'Problemlösning', teacher: 'Murtazo Nazarov', comment: 'ASP2' },
+  { id: 'ev-34', date: '2026-11-17', week: 'w47', time: '08:15 - 10:00', course: 'Human-Computer Interaction', room: '80127, Ångström', reason: 'Lecture', teacher: 'Edward White', comment: 'HCI F5' },
+  { id: 'ev-35', date: '2026-11-17', week: 'w47', time: '13:15 - 15:00', course: 'Introduction to Scientific Computing', room: '101195, Ångström', reason: 'Lecture', teacher: 'Murtazo Nazarov', comment: 'L7' },
+  { id: 'ev-36', date: '2026-11-18', week: 'w47', time: '15:15 - 17:00', course: 'Human-Computer Interaction', room: '80121, Ångström', reason: 'Lecture', teacher: 'Edward White', comment: 'HCI F6' },
+  { id: 'ev-37', date: '2026-11-19', week: 'w47', time: '13:15 - 15:00', course: 'Introduction to Scientific Computing', room: '101195, Ångström', reason: 'Lecture', teacher: 'Murtazo Nazarov', comment: 'L8' },
+  { id: 'ev-38', date: '2026-11-20', week: 'w47', time: '08:15 - 10:00', course: 'Introduction to Scientific Computing', room: '101142, Ångström', reason: 'Supervision', teacher: 'Murtazo Nazarov', comment: 'PHS3' },
+
+  // w48
+  { id: 'ev-39', date: '2026-11-24', week: 'w48', time: '08:15 - 10:00', course: 'Introduction to Scientific Computing', room: '101195, Ångström', reason: 'Lecture', teacher: 'Murtazo Nazarov', comment: 'L9' },
+  { id: 'ev-40', date: '2026-11-25', week: 'w48', time: '15:15 - 17:00', course: 'Human-Computer Interaction', room: '80121, Ångström', reason: 'Lecture', teacher: 'Edward White', comment: 'HCI F7' },
+  { id: 'ev-41', date: '2026-11-26', week: 'w48', time: '15:15 - 17:00', course: 'Introduction to Scientific Computing', room: '101195, Ångström', reason: 'Lecture', teacher: 'Murtazo Nazarov', comment: 'L10' },
+
+  // w49
+  { id: 'ev-42', date: '2026-11-30', week: 'w49', time: '15:15 - 17:00', course: 'Introduction to Scientific Computing', room: '2002, Ångström', reason: 'Problemlösning', teacher: 'Murtazo Nazarov', comment: 'ASP3' },
+  { id: 'ev-43', date: '2026-12-01', week: 'w49', time: '10:15 - 12:00', course: 'Introduction to Scientific Computing', room: '101195, Ångström', reason: 'Lecture', teacher: 'Murtazo Nazarov', comment: 'L11' },
+
+  // w50
+  { id: 'ev-44', date: '2026-12-08', week: 'w50', time: '10:15 - 12:00', course: 'Introduction to Scientific Computing', room: '101142, Ångström', reason: 'Supervision', teacher: 'Murtazo Nazarov', comment: 'PHS4' },
+  { id: 'ev-45', date: '2026-12-09', week: 'w50', time: '10:15 - 12:00', course: 'Human-Computer Interaction', room: '80121, Ångström', reason: 'Lecture', teacher: 'Edward White', comment: 'HCI F8' },
+  { id: 'ev-46', date: '2026-12-09', week: 'w50', time: '10:15 - 12:00', course: 'Introduction to Scientific Computing', room: '101121, Ångström', reason: 'Lecture', teacher: 'Murtazo Nazarov', comment: 'L12' },
+  { id: 'ev-47', date: '2026-12-11', week: 'w50', time: '15:15 - 17:00', course: 'Human-Computer Interaction', room: '80121, Ångström', reason: 'Lecture', teacher: 'Edward White', comment: 'HCI F9' },
+
+  // w51 (Fails in Physics Intensive Week!)
+  { id: 'ev-48', date: '2026-12-14', week: 'w51', time: '08:15 - 17:00', course: 'Fails in Physics', room: '4006, Ångström', reason: 'Seminar', teacher: 'Rebeca Gonzalez Suarez', isCrucial: true, comment: '전일 세미나' },
+  { id: 'ev-49', date: '2026-12-14', week: 'w51', time: '13:15 - 15:00', course: 'Human-Computer Interaction', room: '11137, Ångström', reason: 'Lecture', teacher: 'Edward White', comment: 'HCI F10' },
+  { id: 'ev-50', date: '2026-12-15', week: 'w51', time: '08:15 - 17:00', course: 'Fails in Physics', room: '4006, Ångström', reason: 'Seminar', teacher: 'Rebeca Gonzalez Suarez', isCrucial: true, comment: '전일 세미나' },
+  { id: 'ev-51', date: '2026-12-16', week: 'w51', time: '08:15 - 17:00', course: 'Fails in Physics', room: '80115, Ångström', reason: 'Seminar', teacher: 'Rebeca Gonzalez Suarez', isCrucial: true, comment: '전일 세미나' },
+  { id: 'ev-52', date: '2026-12-16', week: 'w51', time: '08:15 - 10:00', course: 'Introduction to Scientific Computing', room: '2002, Ångström', reason: 'Problemlösning', teacher: 'Murtazo Nazarov', comment: 'APS4' },
+  { id: 'ev-53', date: '2026-12-17', week: 'w51', time: '08:15 - 17:00', course: 'Fails in Physics', room: '80115, Ångström', reason: 'Seminar', teacher: 'Rebeca Gonzalez Suarez', isCrucial: true, comment: '전일 세미나' },
+  { id: 'ev-54', date: '2026-12-18', week: 'w51', time: '13:15 - 15:00', course: 'Human-Computer Interaction', room: 'Ångström', reason: 'Lecture', teacher: 'Edward White', comment: 'HCI F11 (종강 세션)' },
+
+  // w2 (Final Exam 2027)
+  { id: 'ev-55', date: '2027-01-11', week: 'w2', time: '08:00 - 17:00', course: 'Introduction to Scientific Computing', room: 'Visit Ladok', reason: 'Exam', teacher: 'Murtazo Nazarov', isCrucial: true, comment: '최종 기말고사 (Final Exam)' },
 ]
 
-const semesterMilestones: Milestone[] = [
-  { id: 'm1', title: '개강 (Semester Starts)', date: '2025-09-01', type: 'holiday', description: '2025 가을학기 시작', weekIndex: 0 },
-  { id: 'm2', title: '추석 연휴 (Chuseok Holiday)', date: '2025-10-06', type: 'holiday', description: '추석 황금연휴 기간', weekIndex: 5 },
-  { id: 'm3', title: '중간고사 (Midterm Exam)', date: '2025-10-20', type: 'exam', description: '중간고사 시험 기간 (여행 비추천)', weekIndex: 7 },
-  { id: 'm4', title: 'UX 리서치 1차 과제 제출', date: '2025-11-03', type: 'assignment', description: '방법론 보고서 제출 마감', weekIndex: 9 },
-  { id: 'm5', title: '디자인 프로젝트 크리틱', date: '2025-11-14', type: 'assignment', description: '중간 프로토타입 발표 세션', weekIndex: 10 },
-  { id: 'm6', title: '기말고사 및 종강 (Finals & Wrap-up)', date: '2025-12-15', type: 'exam', description: '기말고사 및 학기 마감', weekIndex: 15 },
+export const academicMilestones: AcademicMilestone[] = [
+  { id: 'm-field', title: '야외 지질물리 실습 주간 (Field Studies)', date: '2026-09-28', endDate: '2026-10-02', type: 'field', description: '매일 08:15-17:00 야외 필드 수업 (출석 필수 · 여행 불가)', week: 'w40' },
+  { id: 'm-xr-pres', title: 'XR 프로젝트 최종 발표 (Final Presentation)', date: '2026-10-26', type: 'presentation', description: '08:00-12:00, 13:15-17:00 종일 발표 세션', week: 'w44' },
+  { id: 'm-geo-exam', title: '지질물리학 중간 시험 (Geophysics Exam)', date: '2026-10-29', type: 'exam', description: '13:15 - 15:00 중간고사 필기시험', week: 'w44' },
+  { id: 'm-p2-start', title: 'Period 2 개강 (SciComp & HCI)', date: '2026-11-02', type: 'presentation', description: '2쿼터 개강 및 새 과목 시작', week: 'w45' },
+  { id: 'm-fails-sem', title: 'Fails in Physics 집중 세미나 주간', date: '2026-12-14', endDate: '2026-12-17', type: 'field', description: '4일 연속 08:15-17:00 세미나 (필참)', week: 'w51' },
+  { id: 'm-jul-eve', title: '크리스마스 이브 (Julafton)', date: '2026-12-24', type: 'holiday', description: '스웨덴 공식 휴일 / 겨울방학', week: 'w52' },
+  { id: 'm-jul-day', title: '크리스마스 (Juldagen)', date: '2026-12-25', type: 'holiday', description: '공휴일', week: 'w52' },
+  { id: 'm-annandag', title: '박싱데이 (Annandag jul)', date: '2026-12-26', type: 'holiday', description: '공휴일', week: 'w52' },
+  { id: 'm-nyar-eve', title: '연말 (Nyårsafton)', date: '2026-12-31', type: 'holiday', description: '휴일', week: 'w53' },
+  { id: 'm-nyar-day', title: '신정 (Nyårsdagen)', date: '2027-01-01', type: 'holiday', description: '새해 첫날 휴일', week: 'w53' },
+  { id: 'm-tretton', title: '주현절 (Trettondedag jul)', date: '2027-01-06', type: 'holiday', description: '스웨덴 공휴일', week: 'w1' },
+  { id: 'm-scicomp-exam', title: 'Scientific Computing 기말 시험 (Final Exam)', date: '2027-01-11', type: 'exam', description: '08:00 - 17:00 기말고사 및 학기 마감', week: 'w2' },
 ]
 
-const initialTrips: Trip[] = [
+// Updated 2026-2027 Realistic Trip Mock Data
+const initialTrips2026: Trip[] = [
   {
-    id: 'trip-1',
-    emoji: '🇮🇸',
-    title: '아이슬란드 레이캬비크 · 오로라 탐방',
-    period: '10월 16일–19일 · 목–일 (3박 4일)',
-    startDate: '2025-10-16',
-    endDate: '2025-10-19',
+    id: 'trip-kiruna',
+    emoji: '🌌',
+    title: '키루나 & 아비스코 · 북극권 오로라 헌팅',
+    period: '2026-10-15 ~ 10-18 · 목~일 (3박 4일)',
+    startDate: '2026-10-15',
+    endDate: '2026-10-18',
     status: 'planning',
-    keyTheme: '오로라 & 온천',
-    academicOverlapNote: '목요일 시각문화 세미나 1회 겹침 (사전 출결 사유서 제출 필요)',
+    keyTheme: '오로라 & 설산 하이킹',
+    academicOverlapNote: '10/16(금) 13:15 XR 줌 수업 1회 겹침 (온라인 참가 또는 리플레이 시청 가능)',
     academicRiskLevel: 'medium',
     routeOptions: [
-      { name: '루트 A (골든서클 & 남부)', transport: '렌터카 직행', description: '레이캬비크 거점 + 싱벨리르, 굴포스, 레이니스파라', pros: '풍경 감상 최적, 자유로운 오로라 헌팅', meta: '이동 시간 적정 · 렌트비 분담' },
-      { name: '루트 B (투어 버스 중심)', transport: '현지 패키지 투어', description: '블루라군 온천 휴식 + 1일 오로라 투어 버스', pros: '운전 피로 없음, 초행자 친화적', meta: '비용 소폭 상승 · 안정적' },
+      { name: '루트 A (스야열차 침대칸)', transport: 'SJ 나이트 트레인', description: '스톡홀름 중앙역 저녁 출발 ➔ 아침 아비스코 국립공원 도착', pros: '풍경 낭만 최고, 숙박비 절약', meta: '소요 16시간 · 학생 할인' },
+      { name: '루트 B (항공 직행)', transport: 'SAS 항공 (ARN ➔ KRN)', description: '아를란다 공항 ➔ 키루나 공항 1시간 40분 비행', pros: '체력 및 이동 시간 압도적 단축', meta: '비용 다소 발생' },
     ],
-    notes: '• 렌터카 예약 전 국제면허증 확인\n• 방한 장갑, 핫팩 필수 준비\n• 오로라 관측 앱 다운로드 (My Aurora Forecast)',
+    notes: '• 아비스코 하늘스테이션(Sky Station) 사전 티켓팅\n• 영하 15도 대비 히트텍, 방한 부츠 필수\n• XR 프로젝트 발표(10/26) 1주일 전이라 이동 중 슬라이드 준비',
     checklist: [
-      { id: 'chk-1', text: '목요일 세미나 교수님께 사전 공결서 문의', done: true },
-      { id: 'chk-2', text: '오로라 헌팅용 카메라 삼각대 대여', done: false },
-      { id: 'chk-3', text: '블루라군 온천 입장권 사전 예매', done: false },
+      { id: 'chk-k1', text: 'SJ 야간침대열차 예약하기', done: true },
+      { id: 'chk-k2', text: '10/16 줌 수업 이동 중 수강 가능 여부 확인', done: false },
+      { id: 'chk-k3', text: '아비스코 오로라 투어 가이드 예약', done: false },
     ],
-    weeks: [6],
+    weeks: ['w42'],
   },
   {
-    id: 'trip-2',
-    emoji: '🇯🇵',
-    title: '교토 · 늦가을 단풍 & 카페 산책',
-    period: '11월 07일–10일 · 금–월 (3박 4일)',
-    startDate: '2025-11-07',
-    endDate: '2025-11-10',
+    id: 'trip-cph',
+    emoji: '🇩🇰',
+    title: '코펜하겐 & 말뫼 · 디자인 & 건축 힐링',
+    period: '2026-11-20 ~ 11-23 · 금~월 (3박 4일)',
+    startDate: '2026-11-20',
+    endDate: '2026-11-23',
     status: 'idea',
-    keyTheme: '단풍 & 미식 산책',
-    academicOverlapNote: '금요 공강 완벽 활용! (월요일 오전 10시 수업 복귀 가능)',
+    keyTheme: '북유럽 디자인 & 베이커리',
+    academicOverlapNote: '11/20(금) 오전 8:15 프로젝트 슈퍼비전 마친 후 11시 기차로 출발 가능! (월요일 수업 없음)',
     academicRiskLevel: 'low',
     routeOptions: [
-      { name: '루트 A (교토 중심 정원 투어)', transport: '간사이 공항 하루카 + 버스/도보', description: '기요미즈데라 야간 라이트업 + 아라시야마 텐류지', pros: '가장 진한 가을 교토 정취', meta: '숙소 예약 조기 필요' },
-      { name: '루트 B (교토 2일 + 오사카 미식 1일)', transport: '한큐 전철 연계', description: '교토 감성 카페 + 우메다 야경 및 타코야키 투어', pros: '다양한 분위기 체험', meta: '이동이 다소 잦음' },
+      { name: '루트 A (SJ 고속철도 X2000)', transport: 'SJ 고속열차 직행', description: '스톡홀름 ➔ 코펜하겐 중앙역 직통 5시간 (외레순 다리 횡단)', pros: '도심에서 도심으로 편안한 이동', meta: '왕복 티켓 조기 예매 권장' },
+      { name: '루트 B (코펜하겐 2일 + 말뫼 1일)', transport: '외레순스토그(Öresundståg)', description: '디자인 뮤지엄 + 뉘하운 운하 + 말뫼 터닝토르소', pros: '2개국 동시 여행 감성', meta: '교통 패스 이용' },
     ],
-    notes: '• 11월 첫째 주는 교토 단풍 절정 직전으로 인파 적당함\n• 아침 일찍 산책하는 코스가 핵심',
+    notes: '• 루이지애나 현대미술관 방문 강추\n• 페이스트리 맛집 Hart Bageri 체크',
     checklist: [
-      { id: 'chk-4', text: '특가 항공권 알림 설정', done: true },
-      { id: 'chk-5', text: '간사이 조용한 료칸/호텔 후보 3곳 추리기', done: false },
+      { id: 'chk-c1', text: 'SJ X2000 얼리버드 예매', done: false },
+      { id: 'chk-c2', text: '코펜하겐 에어비앤비 위시리스트', done: false },
     ],
-    weeks: [9],
+    weeks: ['w47', 'w48'],
   },
   {
-    id: 'trip-3',
-    emoji: '🇵🇹',
-    title: '리스본 & 신트라 · 햇살과 에그타르트',
-    period: '11월 27일–30일 · 목–일 (3박 4일)',
-    startDate: '2025-11-27',
-    endDate: '2025-11-30',
+    id: 'trip-winter',
+    emoji: '🎄',
+    title: '크리스마스 & 신년 남유럽 휴양 (바르셀로나 & 리스본)',
+    period: '2026-12-21 ~ 2027-01-03 (13박 14일)',
+    startDate: '2026-12-21',
+    endDate: '2027-01-03',
     status: 'confirmed',
-    keyTheme: '가을 도시 건축 & 미식',
-    academicOverlapNote: '중간고사 완전 종료 후 여유 기간 — 학업 부담 제로',
+    keyTheme: '햇살 탈출 & 미식 휴양',
+    academicOverlapNote: '완벽한 겨울방학 기간! (수업/시험 결손 0건, 학기 중 가장 안전한 골든 타임)',
     academicRiskLevel: 'low',
     routeOptions: [
-      { name: '루트 A (리스본 시내 + 신트라 당일)', transport: '기차 및 트램', description: '알파마 언덕, 벨렝탑, 신트라 페나성 일일 기차 여행', pros: '클래식 명소 완벽 정복', meta: '도보 이동 많음' },
-      { name: '루트 B (카스카이스 해안 산책 연계)', transport: '해안 열차', description: '리스본 구시가지 + 유럽의 서쪽 끝 호카곶 방문', pros: '대서양 오션뷰 감상', meta: '일몰 타이밍 중요' },
+      { name: '루트 A (스페인 바르셀로나 + 안달루시아)', transport: '유럽 저가항공 + 렌페 고속열차', description: '가우디 건축 탐방 + 세비야 플라멩코 + 따뜻한 지중해 햇살', pros: '완벽한 날씨와 미식', meta: '성수기 항공권 사전 확보' },
+      { name: '루트 B (포르투갈 리스본 & 포르투)', transport: '직항 항공', description: '도루강 와이너리 + 리스본 알파마 언덕 노을 감상', pros: '가성비와 여유로운 분위기', meta: '신년 불꽃놀이' },
     ],
-    notes: '• 파스테이스 드 벨렝 본점 대기 시간 고려\n• 28번 트램은 아침 일찍 탑승 권장',
+    notes: '• 12/18일 종강 후 출발하여 1/4 복귀 예정\n• 1/11 기말고사(SciComp) 대비하여 아이패드/요약노트 지참',
     checklist: [
-      { id: 'chk-6', text: '항공권 및 리스본 시내 에어비앤비 예약 완료', done: true },
-      { id: 'chk-7', text: '오프라인 구글 지도 다운로드', done: true },
-      { id: 'chk-8', text: '벨렝 에그타르트 & 해산물 바 예약', done: false },
+      { id: 'chk-w1', text: '스톡홀름 ➔ 바르셀로나 항공권 발권 완료', done: true },
+      { id: 'chk-w2', text: '크리스마스 당일(12/25) 영업 레스토랑 예약', done: true },
+      { id: 'chk-w3', text: '사그라다 파밀리아 성당 입장권 사전 예약', done: false },
     ],
-    weeks: [12],
+    weeks: ['w52', 'w53'],
   },
+]
+
+// 2026 Fall ~ 2027 January Calendar Month Metadata (5 Months!)
+export const months2026_2027 = [
+  { year: 2026, month: 9, name: '2026년 9월', startDay: 2, days: 30, quarter: 'Period 1 (가을학기 개강)' }, // 9/1 화요일
+  { year: 2026, month: 10, name: '2026년 10월', startDay: 4, days: 31, quarter: 'Period 1 (야외실습 & 중간평가)' }, // 10/1 목요일
+  { year: 2026, month: 11, name: '2026년 11월', startDay: 0, days: 30, quarter: 'Period 2 (SciComp & HCI 시작)' }, // 11/1 일요일
+  { year: 2026, month: 12, name: '2026년 12월', startDay: 2, days: 31, quarter: 'Period 2 (세미나 & 겨울방학)' }, // 12/1 화요일
+  { year: 2027, month: 1, name: '2027년 1월', startDay: 5, days: 31, quarter: '학기 기말고사 & 종강' }, // 1/1 금요일
+]
+
+// 17 Weeks in this semester (w39 to w2)
+export const termWeeks = [
+  { id: 'w39', label: 'w39', dates: '09/21–09/27', topic: '개강 주간 (Geophysics 시작)' },
+  { id: 'w40', label: 'w40', dates: '09/28–10/04', topic: '야외 실습 (Field studies) ⚠️' },
+  { id: 'w41', label: 'w41', dates: '10/05–10/11', topic: 'XR 워크숍' },
+  { id: 'w42', label: 'w42', dates: '10/12–10/18', topic: '수업 주간 (오로라 여행 추천)' },
+  { id: 'w43', label: 'w43', dates: '10/19–10/25', topic: '시험 준비 주간' },
+  { id: 'w44', label: 'w44', dates: '10/26–11/01', topic: 'XR 발표(10/26) & 시험(10/29) 🚨' },
+  { id: 'w45', label: 'w45', dates: '11/02–11/08', topic: 'Period 2 시작 (SciComp/HCI)' },
+  { id: 'w46', label: 'w46', dates: '11/09–11/15', topic: 'SciComp & HCI 강의' },
+  { id: 'w47', label: 'w47', dates: '11/16–11/22', topic: '정규 수업 주간' },
+  { id: 'w48', label: 'w48', dates: '11/23–11/29', topic: '정규 수업 주간' },
+  { id: 'w49', label: 'w49', dates: '11/30–12/06', topic: 'SciComp 수업' },
+  { id: 'w50', label: 'w50', dates: '12/07–12/13', topic: '프로젝트 슈퍼비전' },
+  { id: 'w51', label: 'w51', dates: '12/14–12/20', topic: 'Fails in Physics 집중세미나 ⚠️' },
+  { id: 'w52', label: 'w52', dates: '12/21–12/27', topic: '크리스마스 방학 🎄' },
+  { id: 'w53', label: 'w53', dates: '12/28–01/03', topic: '연말연시 휴일 ✈️' },
+  { id: 'w1', label: 'w1', dates: '01/04–01/10', topic: '신년 주간 (1/6 휴일)' },
+  { id: 'w2', label: 'w2', dates: '01/11–01/17', topic: 'SciComp 기말고사(1/11) & 종강 🎓' },
 ]
 
 const statusMeta: Record<TripStatus, { label: string; className: string; dot: string; border: string }> = {
@@ -204,48 +321,21 @@ const statusMeta: Record<TripStatus, { label: string; className: string; dot: st
   },
 }
 
-// 2025 Fall Semester Calendar Month Data
-const monthData = [
-  { year: 2025, month: 9, name: '2025년 9월', startDay: 1, days: 30 }, // 9월 1일 월요일 (index 1)
-  { year: 2025, month: 10, name: '2025년 10월', startDay: 3, days: 31 }, // 10월 1일 수요일 (index 3)
-  { year: 2025, month: 11, name: '2025년 11월', startDay: 6, days: 30 }, // 11월 1일 토요일 (index 6)
-  { year: 2025, month: 12, name: '2025년 12월', startDay: 1, days: 31 }, // 12월 1일 월요일 (index 1)
-]
-
-const semesterWeeks = [
-  { label: 'W1', period: '9/01–9/07', note: '개강' },
-  { label: 'W2', period: '9/08–9/14', note: '수강신청 확정' },
-  { label: 'W3', period: '9/15–9/21', note: '발표조 구성' },
-  { label: 'W4', period: '9/22–9/28', note: '정상 수업' },
-  { label: 'W5', period: '9/29–10/05', note: '추석 연휴' },
-  { label: 'W6', period: '10/06–10/12', note: '수업 복귀' },
-  { label: 'W7', period: '10/13–10/19', note: '중간고사 전주' },
-  { label: 'W8', period: '10/20–10/26', note: '중간고사 기간' },
-  { label: 'W9', period: '10/27–11/02', note: '학기 후반 시작' },
-  { label: 'W10', period: '11/03–11/09', note: '과제 1차 마감' },
-  { label: 'W11', period: '11/10–11/16', note: '프로젝트 크리틱' },
-  { label: 'W12', period: '11/17–11/23', note: '정상 수업' },
-  { label: 'W13', period: '11/24–11/30', note: '여행 추천 주' },
-  { label: 'W14', period: '12/01–12/07', note: '기말 프로젝트 정리' },
-  { label: 'W15', period: '12/08–12/14', note: '기말고사 전주' },
-  { label: 'W16', period: '12/15–12/21', note: '기말고사 & 종강' },
-]
-
 export function SemesterDashboard() {
   const [view, setView] = useState<'calendar' | 'board' | 'timetable'>('calendar')
-  const [trips, setTrips] = useState<Trip[]>(initialTrips)
+  const [trips, setTrips] = useState<Trip[]>(initialTrips2026)
   const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null)
-  const [selectedMonthIndex, setSelectedMonthIndex] = useState(1) // 10월 기본
-  const [selectedDate, setSelectedDate] = useState<string>('2025-10-17')
-  const [selectedWeek, setSelectedWeek] = useState(6) // 10월 셋째 주
+  const [selectedMonthIndex, setSelectedMonthIndex] = useState(1) // 2026년 10월 기본 선택
+  const [selectedDate, setSelectedDate] = useState<string>('2026-10-15')
+  const [selectedWeekId, setSelectedWeekId] = useState<string>('w42')
   const [dark, setDark] = useState(true)
   const [newOpen, setNewOpen] = useState(false)
 
-  // New Trip Form state
+  // New Trip state
   const [newTitle, setNewTitle] = useState('')
   const [newEmoji, setNewEmoji] = useState('✈️')
-  const [newStartDate, setNewStartDate] = useState('2025-11-20')
-  const [newEndDate, setNewEndDate] = useState('2025-11-23')
+  const [newStartDate, setNewStartDate] = useState('2026-11-20')
+  const [newEndDate, setNewEndDate] = useState('2026-11-23')
   const [newPeriodText, setNewPeriodText] = useState('')
   const [newStatus, setNewStatus] = useState<TripStatus>('idea')
   const [newTheme, setNewTheme] = useState('')
@@ -254,9 +344,9 @@ export function SemesterDashboard() {
   const [newRouteBDesc, setNewRouteBDesc] = useState('')
   const [newNotes, setNewNotes] = useState('')
 
-  // Theme synchronization with document element
+  // Theme Sync
   useEffect(() => {
-    const savedTheme = window.localStorage.getItem('semester-theme')
+    const savedTheme = window.localStorage.getItem('semester-theme-2026')
     if (savedTheme === 'light') {
       setDark(false)
       document.documentElement.classList.remove('dark')
@@ -271,16 +361,16 @@ export function SemesterDashboard() {
     setDark(nextDark)
     if (nextDark) {
       document.documentElement.classList.add('dark')
-      window.localStorage.setItem('semester-theme', 'dark')
+      window.localStorage.setItem('semester-theme-2026', 'dark')
     } else {
       document.documentElement.classList.remove('dark')
-      window.localStorage.setItem('semester-theme', 'light')
+      window.localStorage.setItem('semester-theme-2026', 'light')
     }
   }
 
-  // LocalStorage trips persistence
+  // LocalStorage trips
   useEffect(() => {
-    const saved = window.localStorage.getItem('semester-trips-v2')
+    const saved = window.localStorage.getItem('semester-trips-2026')
     if (saved) {
       try {
         setTrips(JSON.parse(saved))
@@ -292,10 +382,10 @@ export function SemesterDashboard() {
 
   const saveTrips = (updated: Trip[]) => {
     setTrips(updated)
-    window.localStorage.setItem('semester-trips-v2', JSON.stringify(updated))
+    window.localStorage.setItem('semester-trips-2026', JSON.stringify(updated))
   }
 
-  // Update trip status
+  // Status update
   const handleUpdateStatus = (tripId: string, nextStatus: TripStatus) => {
     const updated = trips.map((t) => (t.id === tripId ? { ...t, status: nextStatus } : t))
     saveTrips(updated)
@@ -304,7 +394,7 @@ export function SemesterDashboard() {
     }
   }
 
-  // Toggle checklist item
+  // Toggle checklist
   const handleToggleChecklist = (tripId: string, checkId: string) => {
     const updated = trips.map((t) => {
       if (t.id !== tripId) return t
@@ -329,13 +419,13 @@ export function SemesterDashboard() {
     }
   }
 
-  // Add new trip
+  // Create Trip
   const handleCreateTrip = () => {
     if (!newTitle.trim()) return
 
     const periodStr =
       newPeriodText.trim() ||
-      `${newStartDate.split('-')[1]}월 ${newStartDate.split('-')[2]}일 ~ ${newEndDate.split('-')[1]}월 ${newEndDate.split('-')[2]}일`
+      `${newStartDate.replace('2026-', '').replace('2027-', '')} ~ ${newEndDate.replace('2026-', '').replace('2027-', '')}`
 
     const newTrip: Trip = {
       id: `trip-${Date.now()}`,
@@ -345,41 +435,41 @@ export function SemesterDashboard() {
       startDate: newStartDate,
       endDate: newEndDate,
       status: newStatus,
-      keyTheme: newTheme.trim() || '자유 힐링 여행',
-      academicOverlapNote: newAcademicNote.trim() || '금요 공강 활용 가능 여부 확인 필요',
+      keyTheme: newTheme.trim() || '북유럽 힐링 여행',
+      academicOverlapNote: newAcademicNote.trim() || '금요일 수업 유무 및 과제 마감 확인 권장',
       academicRiskLevel: 'low',
       routeOptions: [
         {
-          name: '루트 A (메인)',
+          name: '루트 A (기본 코스)',
           transport: '기차/대중교통',
-          description: newRouteADesc.trim() || '시내 중심 코스 및 주요 명소',
-          pros: '접근성 우수',
-          meta: '가장 무난한 코스',
+          description: newRouteADesc.trim() || '도심 명소 및 주요 문화 탐방',
+          pros: '이동 편의성 우수',
+          meta: '표준 코스',
         },
         ...(newRouteBDesc.trim()
           ? [
               {
-                name: '루트 B (대안)',
-                transport: '렌터카/항공',
+                name: '루트 B (대안 코스)',
+                transport: '항공/렌터카',
                 description: newRouteBDesc.trim(),
                 pros: '자유로운 이동',
-                meta: '체력 및 비용 고려',
+                meta: '체력 및 예산 고려',
               },
             ]
           : []),
       ],
       notes: newNotes.trim() || '• 세부 일정 구상 중',
       checklist: [
-        { id: `c-${Date.now()}-1`, text: '항공/교통편 시간표 확인', done: false },
-        { id: `c-${Date.now()}-2`, text: '겹치는 수업 과제 및 출결 체크', done: false },
+        { id: `c-${Date.now()}-1`, text: '기차/항공권 시간표 대조', done: false },
+        { id: `c-${Date.now()}-2`, text: '해당 주간 수업 과제 사전 완료', done: false },
       ],
-      weeks: [selectedWeek],
+      weeks: [selectedWeekId],
     }
 
     const updated = [newTrip, ...trips]
     saveTrips(updated)
 
-    // Reset form
+    // Reset Form
     setNewTitle('')
     setNewPeriodText('')
     setNewTheme('')
@@ -390,10 +480,10 @@ export function SemesterDashboard() {
     setNewOpen(false)
   }
 
-  // Current month config
-  const currentMonth = monthData[selectedMonthIndex]
+  // Month navigation
+  const currentMonth = months2026_2027[selectedMonthIndex]
 
-  // Day click inspector helper
+  // Inspector details for selected date
   const inspectDateDetails = useMemo(() => {
     if (!selectedDate) return null
     const dateObj = new Date(selectedDate)
@@ -401,59 +491,54 @@ export function SemesterDashboard() {
     const isFriday = dateObj.getDay() === 5
     const isWeekend = dateObj.getDay() === 0 || dateObj.getDay() === 6
 
-    const dayNameMap: Record<number, 'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri' | null> = {
-      1: 'Mon',
-      2: 'Tue',
-      3: 'Wed',
-      4: 'Thu',
-      5: 'Fri',
-    }
-    const dayCode = dayNameMap[dateObj.getDay()]
-    const matchingCourses = dayCode ? defaultCourses.filter((c) => c.day === dayCode) : []
-    const matchingMilestones = semesterMilestones.filter((m) => m.date === selectedDate)
-    const matchingTrips = trips.filter((t) => {
-      return selectedDate >= t.startDate && selectedDate <= t.endDate
+    const dayClasses = realScheduleEvents.filter((ev) => ev.date === selectedDate)
+    const dayMilestones = academicMilestones.filter((m) => {
+      if (m.endDate) {
+        return selectedDate >= m.date && selectedDate <= m.endDate
+      }
+      return m.date === selectedDate
     })
+    const dayTrips = trips.filter((t) => selectedDate >= t.startDate && selectedDate <= t.endDate)
 
     return {
       date: selectedDate,
       dayOfWeek,
       isFriday,
       isWeekend,
-      courses: matchingCourses,
-      milestones: matchingMilestones,
-      trips: matchingTrips,
+      classes: dayClasses,
+      milestones: dayMilestones,
+      trips: dayTrips,
     }
   }, [selectedDate, trips])
 
   return (
-    <div className={cn('min-h-screen transition-colors duration-200', dark ? 'dark bg-[#0e1117] text-zinc-100' : 'bg-[#fafafa] text-zinc-900')}>
-      {/* 1. Header */}
-      <header className="sticky top-0 z-30 border-b border-zinc-200/80 bg-white/80 backdrop-blur-md dark:border-zinc-800/80 dark:bg-[#0e1117]/85">
+    <div className={cn('min-h-screen transition-colors duration-200', dark ? 'dark bg-[#0d1017] text-zinc-100' : 'bg-[#fafafa] text-zinc-900')}>
+      {/* 1. Top Header */}
+      <header className="sticky top-0 z-30 border-b border-zinc-200/80 bg-white/85 backdrop-blur-md dark:border-zinc-800/80 dark:bg-[#0d1017]/90">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
-          {/* Logo & Title */}
+          {/* Logo & Semester Metadata */}
           <div className="flex items-center gap-3">
-            <div className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white shadow-md shadow-indigo-500/20">
+            <div className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-500 text-white shadow-md shadow-indigo-500/20">
               <Compass className="size-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-sm font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
-                  학기 & 여행 로드맵
+                <span className="text-sm font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+                  학기 & 여행 로드맵 (Semester & Travel Planner)
                 </span>
-                <span className="rounded bg-indigo-100 px-1.5 py-0.5 text-[10px] font-semibold text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300">
-                  2025 가을학기
+                <span className="rounded bg-indigo-100 px-2 py-0.5 text-[10px] font-bold text-indigo-700 dark:bg-indigo-950/80 dark:text-indigo-300">
+                  2026 가을 ~ 2027년 1월
                 </span>
               </div>
               <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
-                Semester & Travel Planner · 학업과 여행의 균형잡힌 로드맵
+                Uppsala University · Applied Geophysics, Scientific Computing, HCI & Fails in Physics
               </p>
             </div>
           </div>
 
-          {/* Action buttons & View switcher */}
+          {/* Actions */}
           <div className="flex items-center gap-2">
-            {/* Dark / Light Toggle */}
+            {/* Theme Toggle */}
             <Button
               variant="outline"
               size="icon"
@@ -467,17 +552,18 @@ export function SemesterDashboard() {
             {/* New Trip Dialog */}
             <Dialog open={newOpen} onOpenChange={setNewOpen}>
               <DialogTrigger asChild>
-                <Button size="sm" className="gap-1.5 bg-indigo-600 font-medium text-white shadow hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400">
+                <Button size="sm" className="gap-1.5 bg-indigo-600 font-semibold text-white shadow hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400">
                   <Plus className="size-4" />
-                  <span>새 여행 추가</span>
+                  <span>새 여행 등록</span>
                 </Button>
               </DialogTrigger>
-              <DialogContent className="max-h-[90vh] overflow-y-auto border-zinc-200 bg-white text-zinc-900 shadow-xl dark:border-zinc-800 dark:bg-[#161922] dark:text-zinc-100 sm:max-w-[540px]">
+              <DialogContent className="max-h-[90vh] overflow-y-auto border-zinc-200 bg-white text-zinc-900 shadow-2xl dark:border-zinc-800 dark:bg-[#161922] dark:text-zinc-100 sm:max-w-[540px]">
                 <DialogHeader>
                   <DialogTitle className="flex items-center gap-2 text-lg font-bold">
-                    <span>✨ 새 여행 아이디어 등록</span>
+                    <span>✨ 2026/2027 새 여행 아이디어 등록</span>
                   </DialogTitle>
                 </DialogHeader>
+
                 <div className="flex flex-col gap-4 py-2">
                   <div className="grid grid-cols-[64px_1fr] gap-3">
                     <div>
@@ -494,7 +580,7 @@ export function SemesterDashboard() {
                       <Input
                         value={newTitle}
                         onChange={(e) => setNewTitle(e.target.value)}
-                        placeholder="예: 삿포로 눈꽃 축제 · 온천 힐링"
+                        placeholder="예: 트롬소 고래 사파리 · 피오르드 탐방"
                         className="border-zinc-300 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800"
                       />
                     </div>
@@ -526,7 +612,7 @@ export function SemesterDashboard() {
                     <Input
                       value={newPeriodText}
                       onChange={(e) => setNewPeriodText(e.target.value)}
-                      placeholder="예: 11월 셋째 주 목~일 (3박 4일)"
+                      placeholder="예: 11월 넷째 주 금~월 (3박 4일)"
                       className="border-zinc-300 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800"
                     />
                   </div>
@@ -550,7 +636,7 @@ export function SemesterDashboard() {
                       <Input
                         value={newTheme}
                         onChange={(e) => setNewTheme(e.target.value)}
-                        placeholder="예: 오로라, 미식, 단풍 산책"
+                        placeholder="예: 오로라, 크리스마스 마켓, 미식"
                         className="border-zinc-300 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800"
                       />
                     </div>
@@ -561,7 +647,7 @@ export function SemesterDashboard() {
                     <Input
                       value={newAcademicNote}
                       onChange={(e) => setNewAcademicNote(e.target.value)}
-                      placeholder="예: 금요 공강 활용 가능 / 목요 세미나 1회 겹침 주의"
+                      placeholder="예: 금요일 수업 1개 겹침 주의 / 과제 마감 후 출발"
                       className="border-zinc-300 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800"
                     />
                   </div>
@@ -572,13 +658,13 @@ export function SemesterDashboard() {
                       <Input
                         value={newRouteADesc}
                         onChange={(e) => setNewRouteADesc(e.target.value)}
-                        placeholder="루트 A: 기차/대중교통 중심 코스 설명"
+                        placeholder="루트 A: 기차/대중교통 중심 코스"
                         className="text-xs border-zinc-300 bg-white dark:border-zinc-700 dark:bg-zinc-900"
                       />
                       <Input
                         value={newRouteBDesc}
                         onChange={(e) => setNewRouteBDesc(e.target.value)}
-                        placeholder="루트 B: 렌터카 또는 항공 대안 코스 설명"
+                        placeholder="루트 B: 항공/렌터카 대안 코스"
                         className="text-xs border-zinc-300 bg-white dark:border-zinc-700 dark:bg-zinc-900"
                       />
                     </div>
@@ -589,12 +675,13 @@ export function SemesterDashboard() {
                     <Textarea
                       value={newNotes}
                       onChange={(e) => setNewNotes(e.target.value)}
-                      placeholder="• 항공권 특가 확인하기&#10;• 방한복 챙기기"
+                      placeholder="• 기차 시간표 확인&#10;• 방한 장갑 준비"
                       rows={3}
                       className="border-zinc-300 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800"
                     />
                   </div>
                 </div>
+
                 <DialogFooter>
                   <Button variant="outline" onClick={() => setNewOpen(false)} className="border-zinc-300 dark:border-zinc-700">
                     취소
@@ -610,21 +697,21 @@ export function SemesterDashboard() {
       </header>
 
       {/* 2. Sub-Nav & View Switcher Bar */}
-      <div className="border-b border-zinc-200/70 bg-white/50 dark:border-zinc-800/60 dark:bg-[#12151c]/60">
+      <div className="border-b border-zinc-200/70 bg-white/60 dark:border-zinc-800/60 dark:bg-[#11141c]/60">
         <div className="mx-auto flex max-w-7xl flex-col justify-between gap-4 px-4 py-3 sm:flex-row sm:items-center sm:px-6 lg:px-8">
-          {/* Quick Metrics */}
-          <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs">
+          {/* Key Semester Highlights */}
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs">
             <div className="flex items-center gap-1.5 rounded-full border border-indigo-200 bg-indigo-50/80 px-2.5 py-1 text-indigo-700 dark:border-indigo-900/60 dark:bg-indigo-950/40 dark:text-indigo-300">
               <Sparkles className="size-3.5" />
               <span>등록된 여행 <strong>{trips.length}개</strong></span>
             </div>
-            <div className="flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50/80 px-2.5 py-1 text-emerald-700 dark:border-emerald-900/60 dark:bg-emerald-950/40 dark:text-emerald-300">
-              <TentTree className="size-3.5" />
-              <span>금요 공강 <strong>매주 확보 (Long Weekend)</strong></span>
+            <div className="flex items-center gap-1.5 rounded-full border border-rose-200 bg-rose-50/80 px-2.5 py-1 text-rose-700 dark:border-rose-900/60 dark:bg-rose-950/40 dark:text-rose-300">
+              <AlertCircle className="size-3.5" />
+              <span>실습/발표 주의: <strong>9/28 야외실습, 10/26 XR발표, 10/29 시험</strong></span>
             </div>
-            <div className="hidden md:flex items-center gap-1.5 rounded-full border border-rose-200 bg-rose-50/80 px-2.5 py-1 text-rose-700 dark:border-rose-900/60 dark:bg-rose-950/40 dark:text-rose-300">
-              <Clock className="size-3.5" />
-              <span>다음 마일스톤: <strong>10/20 중간고사</strong></span>
+            <div className="hidden lg:flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50/80 px-2.5 py-1 text-emerald-700 dark:border-emerald-900/60 dark:bg-emerald-950/40 dark:text-emerald-300">
+              <TentTree className="size-3.5" />
+              <span>황금 연휴: <strong>12/21~1/3 크리스마스 방학 (14일)</strong></span>
             </div>
           </div>
 
@@ -633,24 +720,24 @@ export function SemesterDashboard() {
             <TabsList className="grid h-10 w-full grid-cols-3 border border-zinc-200 bg-zinc-100 p-1 dark:border-zinc-800 dark:bg-zinc-900/80 sm:w-[420px]">
               <TabsTrigger
                 value="calendar"
-                className="gap-1.5 text-xs font-medium text-zinc-700 data-[state=active]:bg-white data-[state=active]:text-indigo-600 data-[state=active]:shadow-sm dark:text-zinc-300 dark:data-[state=active]:bg-zinc-800 dark:data-[state=active]:text-indigo-400"
+                className="gap-1.5 text-xs font-semibold text-zinc-700 data-[state=active]:bg-white data-[state=active]:text-indigo-600 data-[state=active]:shadow-sm dark:text-zinc-300 dark:data-[state=active]:bg-zinc-800 dark:data-[state=active]:text-indigo-400"
               >
                 <CalendarDays className="size-3.5" />
                 <span>월별 달력 & 로드맵</span>
               </TabsTrigger>
               <TabsTrigger
                 value="board"
-                className="gap-1.5 text-xs font-medium text-zinc-700 data-[state=active]:bg-white data-[state=active]:text-indigo-600 data-[state=active]:shadow-sm dark:text-zinc-300 dark:data-[state=active]:bg-zinc-800 dark:data-[state=active]:text-indigo-400"
+                className="gap-1.5 text-xs font-semibold text-zinc-700 data-[state=active]:bg-white data-[state=active]:text-indigo-600 data-[state=active]:shadow-sm dark:text-zinc-300 dark:data-[state=active]:bg-zinc-800 dark:data-[state=active]:text-indigo-400"
               >
                 <Layers className="size-3.5" />
                 <span>여행 보드</span>
               </TabsTrigger>
               <TabsTrigger
                 value="timetable"
-                className="gap-1.5 text-xs font-medium text-zinc-700 data-[state=active]:bg-white data-[state=active]:text-indigo-600 data-[state=active]:shadow-sm dark:text-zinc-300 dark:data-[state=active]:bg-zinc-800 dark:data-[state=active]:text-indigo-400"
+                className="gap-1.5 text-xs font-semibold text-zinc-700 data-[state=active]:bg-white data-[state=active]:text-indigo-600 data-[state=active]:shadow-sm dark:text-zinc-300 dark:data-[state=active]:bg-zinc-800 dark:data-[state=active]:text-indigo-400"
               >
                 <GraduationCap className="size-3.5" />
-                <span>주간 시간표</span>
+                <span>학업 시간표</span>
               </TabsTrigger>
             </TabsList>
           </Tabs>
@@ -659,30 +746,30 @@ export function SemesterDashboard() {
 
       {/* 3. Main Views */}
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-        {/* VIEW 1: MONTHLY CALENDAR & ROADMAP */}
+        {/* VIEW 1: MONTHLY CALENDAR & ROADMAP (2026-09 ~ 2027-01) */}
         {view === 'calendar' && (
           <div className="flex flex-col gap-6">
-            {/* Top Overview Roadmap Bar (Lane 1: Academic Milestones, Lane 2: Trips) */}
+            {/* Top Overview Roadmap Bar (Lane 1: Milestones, Lane 2: Trips) */}
             <Card className="border-zinc-200/80 bg-white shadow-sm dark:border-zinc-800/80 dark:bg-[#13161f]">
               <CardHeader className="flex flex-row items-center justify-between border-b border-zinc-100 pb-3 dark:border-zinc-800/60">
                 <div>
                   <div className="flex items-center gap-2">
-                    <CardTitle className="text-base font-semibold text-zinc-900 dark:text-zinc-100">
-                      학기 전체 타임라인 로드맵 (Semester Overview)
+                    <CardTitle className="text-base font-bold text-zinc-900 dark:text-zinc-100">
+                      2026-2027 학기 전체 타임라인 (w39 ~ w2 / 17주차)
                     </CardTitle>
                     <Badge variant="outline" className="border-zinc-200 text-zinc-600 dark:border-zinc-700 dark:text-zinc-400 text-[10px]">
-                      16 Weeks
+                      TimeEdit 연동
                     </Badge>
                   </div>
                   <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                    주차(Week)를 클릭하면 하단 달력 및 해당 주간의 학업-여행 충돌 코스가 연동됩니다.
+                    주차를 클릭하면 해당 주의 실제 수업 및 마일스톤, 추천 여행 기간이 강조됩니다.
                   </p>
                 </div>
                 {/* Legend */}
                 <div className="hidden items-center gap-3 text-[11px] text-zinc-600 dark:text-zinc-400 md:flex">
                   <div className="flex items-center gap-1.5">
                     <span className="size-2 rounded-full bg-rose-500" />
-                    <span>시험/과제 마감</span>
+                    <span>필드실습/발표/시험</span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <span className="size-2 rounded-full bg-indigo-500" />
@@ -694,65 +781,69 @@ export function SemesterDashboard() {
                   </div>
                   <div className="flex items-center gap-1.5">
                     <span className="size-2 rounded-full bg-emerald-500" />
-                    <span>확정된 여행</span>
+                    <span>확정 여행</span>
                   </div>
                 </div>
               </CardHeader>
 
               <CardContent className="overflow-x-auto p-4">
-                <div className="min-w-[900px]">
-                  {/* Grid of 16 weeks */}
-                  <div className="grid grid-cols-[90px_repeat(16,minmax(50px,1fr))] gap-1">
+                <div className="min-w-[980px]">
+                  {/* Grid of 17 weeks */}
+                  <div className="grid grid-cols-[90px_repeat(17,minmax(50px,1fr))] gap-1">
                     {/* Header: Weeks */}
                     <div className="py-2 text-[11px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
                       주차 / 일자
                     </div>
-                    {semesterWeeks.map((sw, idx) => (
+                    {termWeeks.map((tw) => (
                       <button
-                        key={sw.label}
-                        onClick={() => setSelectedWeek(idx)}
+                        key={tw.id}
+                        onClick={() => setSelectedWeekId(tw.id)}
                         className={cn(
                           'group flex flex-col items-center rounded-lg py-2 text-center transition-all',
-                          selectedWeek === idx
-                            ? 'bg-indigo-100/80 text-indigo-900 ring-2 ring-indigo-500 dark:bg-indigo-950/80 dark:text-indigo-200'
+                          selectedWeekId === tw.id
+                            ? 'bg-indigo-100/90 text-indigo-950 ring-2 ring-indigo-500 dark:bg-indigo-950/90 dark:text-indigo-200'
                             : 'hover:bg-zinc-100 text-zinc-600 dark:hover:bg-zinc-800/60 dark:text-zinc-400'
                         )}
                       >
-                        <span className="text-[11px] font-bold">{sw.label}</span>
-                        <span className="text-[9px] text-zinc-400 dark:text-zinc-500">{sw.period.split('–')[0]}</span>
+                        <span className="text-[11px] font-bold">{tw.label}</span>
+                        <span className="text-[9px] text-zinc-400 dark:text-zinc-500">{tw.dates.split('–')[0]}</span>
                       </button>
                     ))}
 
                     {/* Lane 1: Academic Milestones */}
                     <div className="flex items-center gap-1.5 border-t border-zinc-100 py-3 text-xs font-semibold text-zinc-700 dark:border-zinc-800/80 dark:text-zinc-300">
                       <GraduationCap className="size-3.5 text-rose-500" />
-                      <span>학사 일정</span>
+                      <span>학사 마일스톤</span>
                     </div>
-                    {semesterWeeks.map((_, idx) => {
-                      const mile = semesterMilestones.find((m) => m.weekIndex === idx)
+                    {termWeeks.map((tw) => {
+                      const miles = academicMilestones.filter((m) => m.week === tw.id)
+                      const isFieldWeek = tw.id === 'w40'
+                      const isHolidayWeek = tw.id === 'w52' || tw.id === 'w53'
                       return (
                         <div
-                          key={`academic-${idx}`}
+                          key={`academic-${tw.id}`}
                           className={cn(
-                            'relative min-h-[52px] border-l border-t border-zinc-100 p-1 transition-colors dark:border-zinc-800/60',
-                            selectedWeek === idx && 'bg-indigo-50/40 dark:bg-indigo-950/20'
+                            'relative min-h-[56px] border-l border-t border-zinc-100 p-1 transition-colors dark:border-zinc-800/60',
+                            selectedWeekId === tw.id && 'bg-indigo-50/40 dark:bg-indigo-950/20',
+                            isHolidayWeek && 'bg-emerald-50/25 dark:bg-emerald-950/15'
                           )}
                         >
-                          {mile && (
+                          {miles.map((mile) => (
                             <div
+                              key={mile.id}
                               title={`${mile.title} (${mile.date})`}
                               className={cn(
-                                'flex flex-col items-center justify-center rounded px-1 py-1 text-[9px] font-medium leading-tight shadow-xs',
-                                mile.type === 'exam'
-                                  ? 'bg-rose-100 text-rose-800 border border-rose-300 dark:bg-rose-950/80 dark:text-rose-200 dark:border-rose-800'
-                                  : mile.type === 'assignment'
-                                  ? 'bg-amber-100 text-amber-800 border border-amber-300 dark:bg-amber-950/80 dark:text-amber-200 dark:border-amber-800'
-                                  : 'bg-zinc-100 text-zinc-700 border border-zinc-300 dark:bg-zinc-800 dark:text-zinc-300 dark:border-zinc-700'
+                                'mb-1 flex flex-col items-center justify-center rounded px-1 py-1 text-[9px] font-bold leading-tight shadow-xs',
+                                mile.type === 'exam' || mile.type === 'presentation'
+                                  ? 'bg-rose-100 text-rose-900 border border-rose-300 dark:bg-rose-950/90 dark:text-rose-200 dark:border-rose-800'
+                                  : mile.type === 'field'
+                                  ? 'bg-amber-100 text-amber-900 border border-amber-300 dark:bg-amber-950/90 dark:text-amber-200 dark:border-amber-800'
+                                  : 'bg-emerald-100 text-emerald-900 border border-emerald-300 dark:bg-emerald-950/90 dark:text-emerald-200 dark:border-emerald-800'
                               )}
                             >
                               <span className="truncate max-w-[50px]">{mile.title.split(' ')[0]}</span>
                             </div>
-                          )}
+                          ))}
                         </div>
                       )
                     })}
@@ -760,16 +851,16 @@ export function SemesterDashboard() {
                     {/* Lane 2: Travel Bars */}
                     <div className="flex items-center gap-1.5 border-t border-zinc-100 py-3 text-xs font-semibold text-zinc-700 dark:border-zinc-800/80 dark:text-zinc-300">
                       <Plane className="size-3.5 text-indigo-500" />
-                      <span>여행 계획</span>
+                      <span>여행 시뮬레이션</span>
                     </div>
-                    {semesterWeeks.map((_, idx) => {
-                      const weekTrips = trips.filter((t) => t.weeks.includes(idx))
+                    {termWeeks.map((tw) => {
+                      const weekTrips = trips.filter((t) => t.weeks.includes(tw.id))
                       return (
                         <div
-                          key={`travel-${idx}`}
+                          key={`travel-${tw.id}`}
                           className={cn(
-                            'relative min-h-[58px] border-l border-t border-zinc-100 p-1 transition-colors dark:border-zinc-800/60',
-                            selectedWeek === idx && 'bg-indigo-50/40 dark:bg-indigo-950/20'
+                            'relative min-h-[62px] border-l border-t border-zinc-100 p-1 transition-colors dark:border-zinc-800/60',
+                            selectedWeekId === tw.id && 'bg-indigo-50/40 dark:bg-indigo-950/20'
                           )}
                         >
                           {weekTrips.map((trip) => (
@@ -777,13 +868,13 @@ export function SemesterDashboard() {
                               key={trip.id}
                               onClick={() => setSelectedTrip(trip)}
                               className={cn(
-                                'w-full rounded border px-1.5 py-1 text-left text-[10px] font-medium transition-all hover:scale-[1.03] shadow-xs',
+                                'w-full rounded border px-1.5 py-1 text-left text-[10px] font-semibold transition-all hover:scale-[1.03] shadow-xs truncate',
                                 statusMeta[trip.status].className,
                                 trip.status === 'idea' && 'border-dashed'
                               )}
                             >
-                              <span className="block truncate font-semibold">
-                                {trip.emoji} {trip.title.split(' · ')[0]}
+                              <span>
+                                {trip.emoji} {trip.title.split(' · ')[0].split(' ')[0]}
                               </span>
                             </button>
                           ))}
@@ -795,13 +886,13 @@ export function SemesterDashboard() {
               </CardContent>
             </Card>
 
-            {/* MONTHLY CALENDAR VIEW (핵심 요구사항) */}
-            <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
-              {/* Left: Monthly Calendar Grid */}
+            {/* MONTHLY CALENDAR GRID & INSPECTOR (2026-09 ~ 2027-01) */}
+            <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
+              {/* Left: Monthly Calendar */}
               <Card className="border-zinc-200/80 bg-white shadow-sm dark:border-zinc-800/80 dark:bg-[#13161f]">
                 {/* Month Navigator Header */}
                 <CardHeader className="flex flex-row items-center justify-between border-b border-zinc-100 pb-3 dark:border-zinc-800/60">
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 sm:gap-3">
                     <div className="flex items-center gap-1 rounded-lg border border-zinc-200 bg-zinc-50 p-1 dark:border-zinc-700 dark:bg-zinc-800/60">
                       <Button
                         variant="ghost"
@@ -812,54 +903,54 @@ export function SemesterDashboard() {
                       >
                         <ChevronLeft className="size-4" />
                       </Button>
-                      <span className="px-2 text-sm font-bold text-zinc-800 dark:text-zinc-200">
+                      <span className="px-2 text-sm font-bold text-zinc-900 dark:text-zinc-100">
                         {currentMonth.name}
                       </span>
                       <Button
                         variant="ghost"
                         size="icon"
                         className="size-7"
-                        disabled={selectedMonthIndex === monthData.length - 1}
-                        onClick={() => setSelectedMonthIndex((prev) => Math.min(monthData.length - 1, prev + 1))}
+                        disabled={selectedMonthIndex === months2026_2027.length - 1}
+                        onClick={() => setSelectedMonthIndex((prev) => Math.min(months2026_2027.length - 1, prev + 1))}
                       >
                         <ChevronRight className="size-4" />
                       </Button>
                     </div>
 
-                    {/* Quick Month Switch buttons */}
-                    <div className="hidden sm:flex items-center gap-1">
-                      {monthData.map((m, idx) => (
+                    {/* 5 Month Direct Switch Buttons */}
+                    <div className="flex items-center gap-1 overflow-x-auto">
+                      {months2026_2027.map((m, idx) => (
                         <Button
                           key={m.name}
                           variant={selectedMonthIndex === idx ? 'default' : 'ghost'}
                           size="sm"
                           onClick={() => setSelectedMonthIndex(idx)}
                           className={cn(
-                            'h-7 px-2.5 text-xs',
+                            'h-7 px-2 text-xs font-semibold',
                             selectedMonthIndex === idx
                               ? 'bg-indigo-600 text-white'
                               : 'text-zinc-600 dark:text-zinc-400'
                           )}
                         >
-                          {m.month}월
+                          {m.year === 2027 ? `'27 1월` : `${m.month}월`}
                         </Button>
                       ))}
                     </div>
                   </div>
 
-                  <div className="text-xs text-zinc-500 dark:text-zinc-400">
-                    날짜를 클릭하여 당일 수업 및 여행 세부사항을 확인하세요.
-                  </div>
+                  <span className="hidden text-xs text-indigo-600 dark:text-indigo-400 font-medium sm:inline">
+                    {currentMonth.quarter}
+                  </span>
                 </CardHeader>
 
-                <CardContent className="p-4 sm:p-5">
+                <CardContent className="p-3 sm:p-5">
                   {/* Days of week header (월 화 수 목 금 토 일) */}
-                  <div className="grid grid-cols-7 gap-1 pb-2 text-center text-xs font-semibold text-zinc-500 dark:text-zinc-400">
-                    <div className="text-zinc-600 dark:text-zinc-300">월 (Mon)</div>
-                    <div className="text-zinc-600 dark:text-zinc-300">화 (Tue)</div>
-                    <div className="text-zinc-600 dark:text-zinc-300">수 (Wed)</div>
-                    <div className="text-zinc-600 dark:text-zinc-300">목 (Thu)</div>
-                    <div className="font-bold text-emerald-600 dark:text-emerald-400">금 (공강 ✨)</div>
+                  <div className="grid grid-cols-7 gap-1 pb-2 text-center text-xs font-bold text-zinc-500 dark:text-zinc-400">
+                    <div className="text-zinc-700 dark:text-zinc-300">월 (Mon)</div>
+                    <div className="text-zinc-700 dark:text-zinc-300">화 (Tue)</div>
+                    <div className="text-zinc-700 dark:text-zinc-300">수 (Wed)</div>
+                    <div className="text-zinc-700 dark:text-zinc-300">목 (Thu)</div>
+                    <div className="text-zinc-700 dark:text-zinc-300">금 (Fri)</div>
                     <div className="text-zinc-400 dark:text-zinc-500">토 (Sat)</div>
                     <div className="text-rose-500 dark:text-rose-400">일 (Sun)</div>
                   </div>
@@ -870,7 +961,7 @@ export function SemesterDashboard() {
                     {Array.from({ length: (currentMonth.startDay + 6) % 7 }).map((_, idx) => (
                       <div
                         key={`pad-${idx}`}
-                        className="min-h-[92px] rounded-lg border border-dashed border-zinc-100 bg-zinc-50/40 p-1.5 opacity-40 dark:border-zinc-800/40 dark:bg-zinc-900/20"
+                        className="min-h-[96px] rounded-lg border border-dashed border-zinc-100 bg-zinc-50/30 p-1.5 opacity-40 dark:border-zinc-800/40 dark:bg-zinc-900/20"
                       />
                     ))}
 
@@ -878,85 +969,82 @@ export function SemesterDashboard() {
                     {Array.from({ length: currentMonth.days }).map((_, idx) => {
                       const dayNumber = idx + 1
                       const dateStr = `${currentMonth.year}-${String(currentMonth.month).padStart(2, '0')}-${String(dayNumber).padStart(2, '0')}`
-                      const dayOfWeekIndex = (currentMonth.startDay + idx) % 7 // 0=Sun, 1=Mon, ..., 5=Fri, 6=Sat
-                      const isFriday = dayOfWeekIndex === 5
+                      const dayOfWeekIndex = (currentMonth.startDay + idx) % 7 // 0=Sun, 1=Mon, ..., 6=Sat
                       const isSunday = dayOfWeekIndex === 0
-                      const isSaturday = dayOfWeekIndex === 6
                       const isSelected = selectedDate === dateStr
 
                       // Check Milestones on this date
-                      const dayMilestone = semesterMilestones.find((m) => m.date === dateStr)
+                      const dayMilestone = academicMilestones.find((m) => {
+                        if (m.endDate) {
+                          return dateStr >= m.date && dateStr <= m.endDate
+                        }
+                        return m.date === dateStr
+                      })
 
                       // Check Trips covering this date
                       const dayTrips = trips.filter((t) => dateStr >= t.startDate && dateStr <= t.endDate)
 
-                      // Day classes
-                      const weekdayNames: Record<number, 'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri' | null> = {
-                        1: 'Mon',
-                        2: 'Tue',
-                        3: 'Wed',
-                        4: 'Thu',
-                        5: 'Fri',
-                      }
-                      const classDay = weekdayNames[dayOfWeekIndex]
-                      const dayCourses = classDay ? defaultCourses.filter((c) => c.day === classDay) : []
+                      // Classes on this date
+                      const dayClasses = realScheduleEvents.filter((ev) => ev.date === dateStr)
+                      const hasExamOrImportant = dayClasses.some((c) => c.isCrucial)
 
                       return (
                         <div
                           key={dateStr}
                           onClick={() => setSelectedDate(dateStr)}
                           className={cn(
-                            'group relative min-h-[96px] cursor-pointer rounded-xl border p-1.5 transition-all sm:p-2',
+                            'group relative min-h-[98px] cursor-pointer rounded-xl border p-1.5 transition-all sm:p-2 flex flex-col justify-between',
                             isSelected
-                              ? 'border-indigo-500 bg-indigo-50/60 shadow-md ring-2 ring-indigo-500/20 dark:border-indigo-500 dark:bg-indigo-950/40'
+                              ? 'border-indigo-500 bg-indigo-50/70 shadow-md ring-2 ring-indigo-500/20 dark:border-indigo-500 dark:bg-indigo-950/50'
                               : 'border-zinc-200/70 bg-white hover:border-zinc-300 hover:bg-zinc-50/70 dark:border-zinc-800 dark:bg-zinc-900/60 dark:hover:border-zinc-700 dark:hover:bg-zinc-850',
-                            isFriday && !isSelected && 'bg-emerald-50/30 dark:bg-emerald-950/15 border-emerald-200/50 dark:border-emerald-900/40'
+                            dayMilestone?.type === 'holiday' && 'bg-emerald-50/30 dark:bg-emerald-950/20 border-emerald-200/50 dark:border-emerald-900/40'
                           )}
                         >
-                          {/* Date Number & Top badges */}
-                          <div className="flex items-center justify-between">
-                            <span
-                              className={cn(
-                                'text-xs font-semibold',
-                                isSunday && 'text-rose-500 dark:text-rose-400',
-                                isFriday && 'text-emerald-700 dark:text-emerald-400 font-bold',
-                                !isSunday && !isFriday && 'text-zinc-800 dark:text-zinc-200'
-                              )}
-                            >
-                              {dayNumber}
-                            </span>
-
-                            {/* Friday Free Day badge */}
-                            {isFriday && (
-                              <span className="rounded bg-emerald-100 px-1 py-0.2 text-[9px] font-bold text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
-                                공강
+                          {/* Date Number & Indicator Dots */}
+                          <div>
+                            <div className="flex items-center justify-between">
+                              <span
+                                className={cn(
+                                  'text-xs font-bold',
+                                  isSunday && 'text-rose-500 dark:text-rose-400',
+                                  !isSunday && 'text-zinc-800 dark:text-zinc-200'
+                                )}
+                              >
+                                {dayNumber}
                               </span>
-                            )}
 
-                            {/* Class dot indicators */}
-                            {dayCourses.length > 0 && !isFriday && (
-                              <div className="flex items-center gap-0.5" title={`${dayCourses.length}개 수업`}>
-                                {dayCourses.map((c) => (
-                                  <span key={c.id} className={cn('size-1.5 rounded-full', c.dotClass)} />
-                                ))}
+                              {/* Classes count badge */}
+                              {dayClasses.length > 0 && (
+                                <span
+                                  className={cn(
+                                    'rounded px-1 text-[9px] font-bold',
+                                    hasExamOrImportant
+                                      ? 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-200'
+                                      : 'bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300'
+                                  )}
+                                >
+                                  {hasExamOrImportant ? '🚨 실습/시험' : `${dayClasses.length}수업`}
+                                </span>
+                              )}
+                            </div>
+
+                            {/* Academic Milestone Badge on Date */}
+                            {dayMilestone && (
+                              <div
+                                className={cn(
+                                  'mt-1 truncate rounded px-1.5 py-0.5 text-[9px] font-bold leading-tight',
+                                  dayMilestone.type === 'exam' || dayMilestone.type === 'presentation'
+                                    ? 'bg-rose-100 text-rose-800 dark:bg-rose-950/80 dark:text-rose-300'
+                                    : dayMilestone.type === 'field'
+                                    ? 'bg-amber-100 text-amber-800 dark:bg-amber-950/80 dark:text-amber-300'
+                                    : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300'
+                                )}
+                                title={dayMilestone.title}
+                              >
+                                {dayMilestone.title.split(' ')[0]}
                               </div>
                             )}
                           </div>
-
-                          {/* Academic Milestone Badge on Date */}
-                          {dayMilestone && (
-                            <div
-                              className={cn(
-                                'mt-1 truncate rounded px-1.5 py-0.5 text-[10px] font-semibold leading-tight shadow-2xs',
-                                dayMilestone.type === 'exam'
-                                  ? 'bg-rose-100 text-rose-800 dark:bg-rose-950/80 dark:text-rose-300'
-                                  : 'bg-amber-100 text-amber-800 dark:bg-amber-950/80 dark:text-amber-300'
-                              )}
-                              title={dayMilestone.title}
-                            >
-                              ⭐ {dayMilestone.title.split(' ')[0]}
-                            </div>
-                          )}
 
                           {/* Trips scheduled on this Date */}
                           <div className="mt-1 flex flex-col gap-1">
@@ -968,7 +1056,7 @@ export function SemesterDashboard() {
                                   setSelectedTrip(trip)
                                 }}
                                 className={cn(
-                                  'truncate rounded border px-1.5 py-0.5 text-[10px] font-medium transition-transform hover:scale-105',
+                                  'truncate rounded border px-1.5 py-0.5 text-[10px] font-semibold transition-transform hover:scale-105',
                                   statusMeta[trip.status].className,
                                   trip.status === 'idea' && 'border-dashed'
                                 )}
@@ -991,10 +1079,10 @@ export function SemesterDashboard() {
                 <Card className="border-zinc-200/80 bg-white shadow-sm dark:border-zinc-800/80 dark:bg-[#13161f]">
                   <CardHeader className="border-b border-zinc-100 pb-3 dark:border-zinc-800/60">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
-                        선택된 날짜 상세
+                      <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                        선택 날짜 인스펙터
                       </span>
-                      <Badge variant="outline" className="border-zinc-200 dark:border-zinc-700">
+                      <Badge variant="outline" className="border-zinc-200 dark:border-zinc-700 font-semibold">
                         {inspectDateDetails?.dayOfWeek}요일
                       </Badge>
                     </div>
@@ -1004,70 +1092,93 @@ export function SemesterDashboard() {
                   </CardHeader>
 
                   <CardContent className="flex flex-col gap-4 p-4 text-xs">
-                    {/* Free day highlight */}
-                    {inspectDateDetails?.isFriday && (
-                      <div className="rounded-lg border border-emerald-200 bg-emerald-50/70 p-3 text-emerald-800 dark:border-emerald-800/70 dark:bg-emerald-950/40 dark:text-emerald-200">
-                        <div className="flex items-center gap-1.5 font-bold">
-                          <Sparkles className="size-4 text-emerald-500" />
-                          <span>금요일 공강일 (Free Day)!</span>
-                        </div>
-                        <p className="mt-1 text-[11px] leading-relaxed text-emerald-700 dark:text-emerald-300">
-                          정규 수업이 없는 요일입니다. 목요일 저녁부터 일요일까지 <strong>3박 4일 여행 시뮬레이션</strong>에 가장 이상적인 타이밍입니다.
-                        </p>
-                      </div>
-                    )}
-
                     {/* Milestones on this day */}
                     {inspectDateDetails && inspectDateDetails.milestones.length > 0 && (
                       <div>
-                        <span className="mb-1.5 block font-semibold text-zinc-700 dark:text-zinc-300">
-                          📌 학사 일정 / 마감
+                        <span className="mb-1.5 block font-bold text-zinc-800 dark:text-zinc-200">
+                          📌 학사 일정 / 마일스톤
                         </span>
                         {inspectDateDetails.milestones.map((m) => (
                           <div
                             key={m.id}
-                            className="rounded-lg border border-rose-200 bg-rose-50/80 p-2.5 text-rose-800 dark:border-rose-900 dark:bg-rose-950/40 dark:text-rose-200"
+                            className={cn(
+                              'rounded-lg border p-2.5 leading-relaxed',
+                              m.type === 'holiday'
+                                ? 'border-emerald-200 bg-emerald-50/80 text-emerald-900 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-200'
+                                : 'border-rose-200 bg-rose-50/80 text-rose-900 dark:border-rose-900 dark:bg-rose-950/40 dark:text-rose-200'
+                            )}
                           >
-                            <p className="font-semibold">{m.title}</p>
-                            <p className="mt-0.5 text-[11px] text-rose-700 dark:text-rose-300">{m.description}</p>
+                            <p className="font-bold">{m.title}</p>
+                            <p className="mt-0.5 text-[11px] opacity-80">{m.description}</p>
                           </div>
                         ))}
                       </div>
                     )}
 
-                    {/* Classes on this day */}
+                    {/* Classes on this day (from TimeEdit PDF!) */}
                     <div>
-                      <span className="mb-1.5 block font-semibold text-zinc-700 dark:text-zinc-300">
-                        📚 당일 수업 시간표
-                      </span>
-                      {inspectDateDetails && inspectDateDetails.courses.length > 0 ? (
+                      <div className="mb-1.5 flex items-center justify-between">
+                        <span className="font-bold text-zinc-800 dark:text-zinc-200">
+                          📚 TimeEdit 수업 스케줄
+                        </span>
+                        <span className="text-[10px] text-zinc-400">
+                          {inspectDateDetails?.classes.length || 0}건
+                        </span>
+                      </div>
+
+                      {inspectDateDetails && inspectDateDetails.classes.length > 0 ? (
                         <div className="flex flex-col gap-2">
-                          {inspectDateDetails.courses.map((course) => (
+                          {inspectDateDetails.classes.map((cls) => (
                             <div
-                              key={course.id}
+                              key={cls.id}
                               className={cn(
-                                'flex items-center justify-between rounded-lg border p-2.5',
-                                course.color
+                                'rounded-lg border p-2.5 transition-all',
+                                cls.isCrucial
+                                  ? 'border-rose-300 bg-rose-50/80 dark:border-rose-800 dark:bg-rose-950/40'
+                                  : 'border-zinc-200/80 bg-zinc-50/70 dark:border-zinc-800 dark:bg-zinc-850/60'
                               )}
                             >
-                              <div>
-                                <p className="font-semibold">{course.name}</p>
-                                <p className="text-[11px] opacity-80">{course.room}</p>
+                              <div className="flex items-center justify-between">
+                                <Badge
+                                  variant="outline"
+                                  className={cn(
+                                    'text-[9px] font-bold',
+                                    cls.isCrucial
+                                      ? 'border-rose-400 bg-rose-100 text-rose-800 dark:bg-rose-900 dark:text-rose-200'
+                                      : 'border-zinc-300 text-zinc-700 dark:border-zinc-700 dark:text-zinc-300'
+                                  )}
+                                >
+                                  {cls.reason}
+                                </Badge>
+                                <span className="font-mono text-[11px] font-bold text-indigo-600 dark:text-indigo-400">
+                                  {cls.time}
+                                </span>
                               </div>
-                              <span className="font-mono text-[11px] font-bold">{course.time}</span>
+
+                              <p className="mt-1 font-bold text-zinc-900 dark:text-zinc-100">
+                                {cls.course}
+                              </p>
+                              <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
+                                📍 {cls.room} {cls.teacher && `· ${cls.teacher}`}
+                              </p>
+                              {cls.comment && (
+                                <p className="mt-1 text-[11px] font-medium text-amber-800 dark:text-amber-300">
+                                  💬 {cls.comment}
+                                </p>
+                              )}
                             </div>
                           ))}
                         </div>
                       ) : (
-                        <div className="rounded-lg border border-zinc-200/80 bg-zinc-50 p-3 text-center text-zinc-500 dark:border-zinc-800 dark:bg-zinc-850 dark:text-zinc-400">
-                          {inspectDateDetails?.isWeekend ? '주말 (수업 없음)' : '수업이 없는 날입니다.'}
+                        <div className="rounded-lg border border-dashed border-zinc-200/80 bg-zinc-50 p-3 text-center text-zinc-500 dark:border-zinc-800 dark:bg-zinc-850 dark:text-zinc-400">
+                          {inspectDateDetails?.isWeekend ? '주말 (수업 없음)' : '수업이 배정되지 않은 날입니다.'}
                         </div>
                       )}
                     </div>
 
                     {/* Trips overlapping with this day */}
                     <div>
-                      <span className="mb-1.5 block font-semibold text-zinc-700 dark:text-zinc-300">
+                      <span className="mb-1.5 block font-bold text-zinc-800 dark:text-zinc-200">
                         ✈️ 겹치는 여행 계획
                       </span>
                       {inspectDateDetails && inspectDateDetails.trips.length > 0 ? (
@@ -1082,7 +1193,7 @@ export function SemesterDashboard() {
                               )}
                             >
                               <div className="flex items-center justify-between">
-                                <span className="font-semibold text-sm">
+                                <span className="font-bold text-sm">
                                   {trip.emoji} {trip.title}
                                 </span>
                                 <Badge variant="outline" className="text-[10px]">
@@ -1090,7 +1201,7 @@ export function SemesterDashboard() {
                                 </Badge>
                               </div>
                               <p className="mt-1 text-[11px] opacity-80">{trip.period}</p>
-                              <p className="mt-2 text-[11px] font-medium text-amber-700 dark:text-amber-300">
+                              <p className="mt-2 text-[11px] font-semibold text-amber-700 dark:text-amber-300">
                                 ⚠️ {trip.academicOverlapNote}
                               </p>
                             </div>
@@ -1105,11 +1216,12 @@ export function SemesterDashboard() {
                   </CardContent>
                 </Card>
 
-                {/* Quick Add helper prompt */}
-                <div className="rounded-xl border border-indigo-200/70 bg-indigo-50/50 p-4 text-xs text-indigo-900 dark:border-indigo-900/50 dark:bg-indigo-950/20 dark:text-indigo-200">
-                  <p className="font-semibold">💡 여행 계획 시뮬레이션 팁</p>
-                  <p className="mt-1 text-[11px] leading-relaxed text-indigo-700 dark:text-indigo-300">
-                    시험 1주 전(10월 13일~19일)은 학업 부담이 급증하므로, <strong>11월 13주차(11/24–11/30)</strong>나 <strong>11월 초(11/7–11/10)</strong> 공강 주말을 노리는 것이 가장 안전합니다.
+                {/* Uppsala University Guidance Tip */}
+                <div className="rounded-xl border border-indigo-200/80 bg-indigo-50/60 p-4 text-xs text-indigo-950 dark:border-indigo-900/60 dark:bg-indigo-950/30 dark:text-indigo-200">
+                  <p className="font-bold">🇸🇪 웁살라대 학기 여행 전략</p>
+                  <p className="mt-1.5 text-[11px] leading-relaxed text-indigo-800 dark:text-indigo-300">
+                    • <strong>9/28~10/2</strong>(야외실습) 및 <strong>10/26~10/29</strong>(발표/시험) 기간은 결석 불가.<br />
+                    • <strong>12/21~1/3</strong>(크리스마스/신년 방학 14일)은 유럽 전역 여행의 최적기입니다!
                   </p>
                 </div>
               </div>
@@ -1117,7 +1229,7 @@ export function SemesterDashboard() {
           </div>
         )}
 
-        {/* VIEW 2: TRAVEL KANBAN BOARD & ROUTE CANVAS */}
+        {/* VIEW 2: TRAVEL KANBAN BOARD */}
         {view === 'board' && (
           <div className="flex flex-col gap-6">
             <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
@@ -1126,14 +1238,14 @@ export function SemesterDashboard() {
                   여행 아이디어 칸반 보드 (Travel Kanban & Route Canvas)
                 </h2>
                 <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                  아이디어 발굴부터 구상, 확정까지 여행 단계를 관리하고 학업 충돌을 시뮬레이션합니다.
+                  아이디어 발굴부터 코스 구상, 확정까지 여행 계획을 단계별로 시뮬레이션합니다.
                 </p>
               </div>
 
               <Button
                 onClick={() => setNewOpen(true)}
                 size="sm"
-                className="gap-1.5 bg-indigo-600 font-medium text-white hover:bg-indigo-500 self-start sm:self-auto"
+                className="gap-1.5 bg-indigo-600 font-semibold text-white hover:bg-indigo-500 self-start sm:self-auto"
               >
                 <Plus className="size-4" />
                 <span>새 여행 등록</span>
@@ -1158,7 +1270,7 @@ export function SemesterDashboard() {
                         </h3>
                         <Badge
                           variant="secondary"
-                          className="h-5 px-1.5 text-[11px] bg-zinc-200/80 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
+                          className="h-5 px-1.5 text-[11px] bg-zinc-200/80 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 font-bold"
                         >
                           {columnTrips.length}
                         </Badge>
@@ -1181,7 +1293,7 @@ export function SemesterDashboard() {
                     <div className="flex flex-col gap-3">
                       {columnTrips.length === 0 ? (
                         <div className="flex h-36 flex-col items-center justify-center rounded-xl border border-dashed border-zinc-300 text-center text-xs text-zinc-400 dark:border-zinc-800 dark:text-zinc-600">
-                          <span>아직 등록된 여행이 없습니다.</span>
+                          <span>등록된 여행이 없습니다.</span>
                           <button
                             onClick={() => {
                               setNewStatus(status)
@@ -1202,18 +1314,16 @@ export function SemesterDashboard() {
                               'border-zinc-200 dark:border-zinc-800 hover:border-indigo-400 dark:hover:border-indigo-500'
                             )}
                           >
-                            {/* Card Top: Emoji & Quick status badge */}
                             <div className="mb-2 flex items-start justify-between">
                               <span className="text-2xl">{trip.emoji}</span>
                               <Badge
                                 variant="outline"
-                                className={cn('text-[10px] font-semibold', statusMeta[trip.status].className)}
+                                className={cn('text-[10px] font-bold', statusMeta[trip.status].className)}
                               >
                                 {statusMeta[trip.status].label.split(' ')[0]}
                               </Badge>
                             </div>
 
-                            {/* Title & Period */}
                             <h4 className="text-sm font-bold text-zinc-900 group-hover:text-indigo-600 dark:text-zinc-100 dark:group-hover:text-indigo-400">
                               {trip.title}
                             </h4>
@@ -1221,11 +1331,10 @@ export function SemesterDashboard() {
                               📅 {trip.period}
                             </p>
 
-                            {/* Theme badge */}
                             <div className="mt-3 flex flex-wrap items-center gap-1.5">
                               <Badge
                                 variant="secondary"
-                                className="bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400 text-[10px]"
+                                className="bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400 text-[10px] font-medium"
                               >
                                 #{trip.keyTheme}
                               </Badge>
@@ -1234,14 +1343,13 @@ export function SemesterDashboard() {
                                   variant="outline"
                                   className="border-zinc-200 text-zinc-500 dark:border-zinc-700 dark:text-zinc-400 text-[10px]"
                                 >
-                                  체크리스트 {trip.checklist.filter((c) => c.done).length}/{trip.checklist.length}
+                                  체크 {trip.checklist.filter((c) => c.done).length}/{trip.checklist.length}
                                 </Badge>
                               )}
                             </div>
 
-                            {/* Academic Overlap Warning Badge */}
                             <div className="mt-3 rounded-lg border border-amber-200/80 bg-amber-50/70 p-2 text-[11px] text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-200">
-                              <span className="font-semibold">학업 연계:</span> {trip.academicOverlapNote}
+                              <span className="font-bold">학업 영향:</span> {trip.academicOverlapNote}
                             </div>
                           </div>
                         ))
@@ -1254,25 +1362,140 @@ export function SemesterDashboard() {
           </div>
         )}
 
-        {/* VIEW 3: WEEKLY TIMETABLE & FREE DAY ANALYSIS */}
+        {/* VIEW 3: TIMEEDIT REAL SCHEDULE & TIMETABLE */}
         {view === 'timetable' && (
           <div className="flex flex-col gap-6">
-            <div>
-              <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
-                학업 주간 시간표 & 공강 시뮬레이션 (Weekly Timetable)
-              </h2>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                월~금 주간 수업 리듬을 조망하고, 롱 위켄드(Long Weekend) 및 여행 결석 가능성을 검토합니다.
-              </p>
+            <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
+              <div>
+                <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
+                  2026-2027 TimeEdit 학업 일정 & 과목별 시간표
+                </h2>
+                <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                  Uppsala University 정규 수업(총 {realScheduleEvents.length}개 세션)과 주요 마일스톤을 과목별/주차별로 정밀 분석합니다.
+                </p>
+              </div>
             </div>
 
-            {/* Timetable Component with conflict toggle */}
-            <TimetableDetailed courses={defaultCourses} trips={trips} />
+            {/* Courses Overview Cards */}
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <Card className="border-zinc-200/80 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-[#13161f]">
+                <Badge className="bg-violet-600 text-white text-[10px]">Period 1 (9~10월)</Badge>
+                <h4 className="mt-2 text-sm font-bold text-zinc-900 dark:text-zinc-100">Applied Geophysics</h4>
+                <p className="text-xs text-zinc-500 dark:text-zinc-400">Geocentrum · Alireza Malehmir</p>
+                <div className="mt-3 rounded bg-zinc-50 p-2 text-[11px] text-zinc-700 dark:bg-zinc-850 dark:text-zinc-300">
+                  ⚠️ <strong>9/28~10/2</strong> 종일 야외 실습<br />
+                  📝 <strong>10/29 13:15</strong> 중간고사 시험
+                </div>
+              </Card>
+
+              <Card className="border-zinc-200/80 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-[#13161f]">
+                <Badge className="bg-sky-600 text-white text-[10px]">Period 1 (9~10월)</Badge>
+                <h4 className="mt-2 text-sm font-bold text-zinc-900 dark:text-zinc-100">Project with XR</h4>
+                <p className="text-xs text-zinc-500 dark:text-zinc-400">Ångström & Zoom · Kaveh Amouzgar</p>
+                <div className="mt-3 rounded bg-zinc-50 p-2 text-[11px] text-zinc-700 dark:bg-zinc-850 dark:text-zinc-300">
+                  🎯 <strong>10/26 08:00~17:00</strong> 최종 발표<br />
+                  💻 격주 온라인 줌 슈퍼비전
+                </div>
+              </Card>
+
+              <Card className="border-zinc-200/80 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-[#13161f]">
+                <Badge className="bg-amber-600 text-white text-[10px]">Period 2 (11~1월)</Badge>
+                <h4 className="mt-2 text-sm font-bold text-zinc-900 dark:text-zinc-100">Scientific Computing</h4>
+                <p className="text-xs text-zinc-500 dark:text-zinc-400">Ångström · Murtazo Nazarov</p>
+                <div className="mt-3 rounded bg-zinc-50 p-2 text-[11px] text-zinc-700 dark:bg-zinc-850 dark:text-zinc-300">
+                  강의 L1~L12 + 프로젝트 슈퍼비전<br />
+                  🎓 <strong>2027-01-11</strong> 최종 기말시험
+                </div>
+              </Card>
+
+              <Card className="border-zinc-200/80 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-[#13161f]">
+                <Badge className="bg-emerald-600 text-white text-[10px]">Period 2 (11~12월)</Badge>
+                <h4 className="mt-2 text-sm font-bold text-zinc-900 dark:text-zinc-100">HCI & Fails in Physics</h4>
+                <p className="text-xs text-zinc-500 dark:text-zinc-400">Edward White & Rebeca Gonzalez</p>
+                <div className="mt-3 rounded bg-zinc-50 p-2 text-[11px] text-zinc-700 dark:bg-zinc-850 dark:text-zinc-300">
+                  HCI 세션 F1~F11<br />
+                  ⚠️ <strong>12/14~12/17</strong> 집중 세미나 주간
+                </div>
+              </Card>
+            </div>
+
+            {/* TimeEdit Event Log Table */}
+            <Card className="border-zinc-200/80 bg-white shadow-sm dark:border-zinc-800 dark:bg-[#13161f]">
+              <CardHeader className="border-b border-zinc-100 pb-3 dark:border-zinc-800/60">
+                <CardTitle className="text-base font-bold text-zinc-900 dark:text-zinc-100">
+                  전체 수업 상세 타임라인 리스트 (TimeEdit Full Session Log)
+                </CardTitle>
+                <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                  날짜순으로 정렬된 시간표 데이터입니다.
+                </p>
+              </CardHeader>
+
+              <CardContent className="p-0">
+                <div className="overflow-x-auto max-h-[500px]">
+                  <table className="w-full text-left text-xs">
+                    <thead className="sticky top-0 bg-zinc-50 text-zinc-500 dark:bg-zinc-850 dark:text-zinc-400 font-bold border-b border-zinc-200 dark:border-zinc-750">
+                      <tr>
+                        <th className="p-3">날짜 / 주차</th>
+                        <th className="p-3">시간</th>
+                        <th className="p-3">과목명</th>
+                        <th className="p-3">강의실</th>
+                        <th className="p-3">구분</th>
+                        <th className="p-3">교수</th>
+                        <th className="p-3">비고 / 내용</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+                      {realScheduleEvents.map((ev) => (
+                        <tr
+                          key={ev.id}
+                          className={cn(
+                            'hover:bg-zinc-50/80 dark:hover:bg-zinc-850/50 transition-colors',
+                            ev.isCrucial && 'bg-rose-50/40 dark:bg-rose-950/20 font-semibold'
+                          )}
+                        >
+                          <td className="p-3 font-mono">
+                            {ev.date} <span className="text-[10px] text-zinc-400">({ev.week})</span>
+                          </td>
+                          <td className="p-3 font-mono font-bold text-indigo-600 dark:text-indigo-400">
+                            {ev.time}
+                          </td>
+                          <td className="p-3 text-zinc-900 dark:text-zinc-100 font-medium">
+                            {ev.course}
+                          </td>
+                          <td className="p-3 text-zinc-500 dark:text-zinc-400">
+                            {ev.room}
+                          </td>
+                          <td className="p-3">
+                            <Badge
+                              variant="outline"
+                              className={cn(
+                                'text-[10px]',
+                                ev.isCrucial
+                                  ? 'border-rose-400 bg-rose-100 text-rose-800 dark:bg-rose-900 dark:text-rose-200'
+                                  : 'border-zinc-200 text-zinc-600 dark:border-zinc-700 dark:text-zinc-300'
+                              )}
+                            >
+                              {ev.reason}
+                            </Badge>
+                          </td>
+                          <td className="p-3 text-zinc-500 dark:text-zinc-400">
+                            {ev.teacher}
+                          </td>
+                          <td className="p-3 text-zinc-600 dark:text-zinc-300">
+                            {ev.comment || '-'}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         )}
       </main>
 
-      {/* 4. TRIP DETAIL DRAWER / SHEET (루트 옵션 비교, 체크리스트, 상태 변경) */}
+      {/* 4. TRIP DETAIL DRAWER / SHEET */}
       <Sheet open={!!selectedTrip} onOpenChange={(open) => !open && setSelectedTrip(null)}>
         <SheetContent className="w-full overflow-y-auto border-zinc-200 bg-white text-zinc-900 shadow-2xl dark:border-zinc-800 dark:bg-[#151821] dark:text-zinc-100 sm:max-w-[560px]">
           {selectedTrip && (
@@ -1309,7 +1532,7 @@ export function SemesterDashboard() {
                   value={selectedTrip.status}
                   onValueChange={(val) => handleUpdateStatus(selectedTrip.id, val as TripStatus)}
                 >
-                  <SelectTrigger className="border-zinc-300 bg-zinc-50 font-medium text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100">
+                  <SelectTrigger className="border-zinc-300 bg-zinc-50 font-semibold text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
@@ -1324,14 +1547,14 @@ export function SemesterDashboard() {
               <div className="rounded-xl border border-amber-300 bg-amber-50/80 p-4 dark:border-amber-900/70 dark:bg-amber-950/30">
                 <div className="flex items-center gap-1.5 font-bold text-amber-900 dark:text-amber-200 text-xs">
                   <AlertCircle className="size-4 text-amber-600 dark:text-amber-400" />
-                  <span>학업 영향도 및 수업 겹침 분석</span>
+                  <span>TimeEdit 학업 영향도 및 수업 충돌 분석</span>
                 </div>
-                <p className="mt-1.5 text-xs leading-relaxed text-amber-800 dark:text-amber-300">
+                <p className="mt-1.5 text-xs leading-relaxed text-amber-800 dark:text-amber-300 font-medium">
                   {selectedTrip.academicOverlapNote}
                 </p>
               </div>
 
-              {/* Route Options Comparison (핵심 요구사항: 루트 A vs 루트 B 비교) */}
+              {/* Route Options Comparison */}
               <div>
                 <div className="mb-2 flex items-center justify-between">
                   <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-400">
@@ -1341,7 +1564,7 @@ export function SemesterDashboard() {
                 </div>
 
                 <div className="grid gap-3 sm:grid-cols-2">
-                  {selectedTrip.routeOptions.map((route, idx) => (
+                  {selectedTrip.routeOptions.map((route) => (
                     <div
                       key={route.name}
                       className="flex flex-col justify-between rounded-xl border border-zinc-200 bg-zinc-50/70 p-3.5 dark:border-zinc-700/80 dark:bg-zinc-850/60"
@@ -1425,126 +1648,6 @@ export function SemesterDashboard() {
           )}
         </SheetContent>
       </Sheet>
-    </div>
-  )
-}
-
-// Subcomponent: Detailed Timetable with Conflict Toggle
-function TimetableDetailed({ courses, trips }: { courses: Course[]; trips: Trip[] }) {
-  const [highlightOverlap, setHighlightOverlap] = useState(false)
-
-  return (
-    <div className="flex flex-col gap-5">
-      {/* Long weekend banner */}
-      <div className="flex flex-col justify-between gap-3 rounded-2xl border border-emerald-300 bg-emerald-50/80 p-5 dark:border-emerald-800/80 dark:bg-emerald-950/30 sm:flex-row sm:items-center">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="text-xl">🎉</span>
-            <h3 className="text-base font-bold text-emerald-900 dark:text-emerald-200">
-              금요일 전면 공강 (Free Friday) 확정!
-            </h3>
-          </div>
-          <p className="mt-1 text-xs text-emerald-700 dark:text-emerald-300 leading-relaxed">
-            금요일에 배정된 수업이 없어, 목요일 오후 수업(15:00) 종료 직후부터 일요일까지 <strong>매주 3박 4일 여행 찬스</strong>를 활용할 수 있습니다.
-          </p>
-        </div>
-
-        {/* Filter Toggle: Highlight classes overlapping with travel */}
-        <div className="flex items-center gap-3 rounded-xl border border-emerald-200 bg-white/90 px-4 py-2.5 dark:border-emerald-900/80 dark:bg-zinc-900">
-          <div>
-            <p className="text-xs font-bold text-zinc-800 dark:text-zinc-200">여행 시 겹치는 수업 체크</p>
-            <p className="text-[10px] text-zinc-500">목요일 세미나 등 출결 주의 과목 강조</p>
-          </div>
-          <Switch checked={highlightOverlap} onCheckedChange={setHighlightOverlap} />
-        </div>
-      </div>
-
-      {/* Monday ~ Friday Columns */}
-      <div className="grid gap-3 sm:grid-cols-5">
-        {(['Mon', 'Tue', 'Wed', 'Thu', 'Fri'] as const).map((day) => {
-          const dayCourses = courses.filter((c) => c.day === day)
-          const dayNamesKorean: Record<string, string> = {
-            Mon: '월요일',
-            Tue: '화요일',
-            Wed: '수요일',
-            Thu: '목요일',
-            Fri: '금요일',
-          }
-
-          return (
-            <Card
-              key={day}
-              className={cn(
-                'border transition-all',
-                day === 'Fri'
-                  ? 'border-emerald-300 bg-emerald-50/30 dark:border-emerald-800/60 dark:bg-emerald-950/20'
-                  : 'border-zinc-200/80 bg-white dark:border-zinc-800/80 dark:bg-[#13161f]'
-              )}
-            >
-              <CardHeader className="border-b border-zinc-100 p-3.5 pb-2.5 dark:border-zinc-800/60">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-xs font-bold text-zinc-900 dark:text-zinc-100">{day}</span>
-                    <span className="text-[11px] text-zinc-400">({dayNamesKorean[day]})</span>
-                  </div>
-                  {day === 'Fri' ? (
-                    <Badge className="bg-emerald-500 text-white text-[9px] hover:bg-emerald-600">공강</Badge>
-                  ) : (
-                    <span className="text-[10px] text-zinc-400">{dayCourses.length}과목</span>
-                  )}
-                </div>
-              </CardHeader>
-
-              <CardContent className="p-3.5">
-                {dayCourses.length > 0 ? (
-                  <div className="flex flex-col gap-2.5">
-                    {dayCourses.map((c) => {
-                      const isRisk = highlightOverlap && c.hasConflictRisk
-                      return (
-                        <div
-                          key={c.id}
-                          className={cn(
-                            'rounded-xl border p-3 transition-all',
-                            isRisk
-                              ? 'border-rose-400 bg-rose-50 shadow-md ring-2 ring-rose-500/30 dark:border-rose-700 dark:bg-rose-950/50'
-                              : 'border-zinc-200/70 bg-zinc-50/70 dark:border-zinc-700/60 dark:bg-zinc-850/60'
-                          )}
-                        >
-                          <div className="flex items-center gap-1.5">
-                            <span className={cn('size-2 rounded-full', c.dotClass)} />
-                            <span className="text-xs font-bold text-zinc-900 dark:text-zinc-100 truncate">
-                              {c.name}
-                            </span>
-                          </div>
-
-                          <div className="mt-2 flex items-center justify-between text-[11px] text-zinc-500 dark:text-zinc-400">
-                            <span className="font-mono">{c.time}</span>
-                            <span>{c.room}</span>
-                          </div>
-
-                          {isRisk && (
-                            <div className="mt-2 rounded bg-rose-100 px-1.5 py-0.5 text-[10px] font-bold text-rose-800 dark:bg-rose-900 dark:text-rose-200">
-                              ⚠️ 여행 출발 시 세미나 출결 확인 필요
-                            </div>
-                          )}
-                        </div>
-                      )
-                    })}
-                  </div>
-                ) : (
-                  <div className="flex min-h-[180px] flex-col items-center justify-center gap-2 text-center text-zinc-500 dark:text-zinc-400">
-                    <span className="text-3xl">✨</span>
-                    <p className="text-xs font-bold text-emerald-700 dark:text-emerald-400">수업 없는 날</p>
-                    <p className="text-[11px] text-zinc-400 leading-tight">
-                      3박 4일 여행 코스 시뮬레이션 추천
-                    </p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          )
-        })}
-      </div>
     </div>
   )
 }
