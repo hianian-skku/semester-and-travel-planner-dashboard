@@ -778,10 +778,6 @@ export function SemesterPlannerMain() {
                     <span className="size-2.5 rounded border-2 border-purple-400 bg-purple-100" />
                     <span>고민 중 (보라)</span>
                   </span>
-                  <span className="flex items-center gap-1 font-bold text-blue-600 dark:text-blue-400">
-                    <span className="size-2.5 rounded border-2 border-blue-600 bg-blue-100 shadow-2xs" />
-                    <span>오늘 (파랑 박스)</span>
-                  </span>
                 </div>
               </CardHeader>
 
@@ -821,32 +817,24 @@ export function SemesterPlannerMain() {
                         className={cn(
                           'h-20 rounded border p-1.5 text-xs transition-all cursor-pointer flex flex-col justify-between relative',
                           status.bgClass,
-                          // ⭐️ 오늘 날짜에 선명한 파란색 박스 강조 표시!
+                          // ⭐️ 오늘 날짜 박스 강조 표시 (글자 없이 선명한 파란색 박스만 적용)
                           isToday && 'border-2 !border-blue-600 shadow-md ring-2 ring-blue-500/40 z-10',
                           isSelected && 'ring-2 ring-indigo-600 shadow-md'
                         )}
                       >
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-1">
-                            <span
-                              className={cn(
-                                'font-bold',
-                                dayOfWeek === 0 && 'text-rose-600 dark:text-rose-400',
-                                trip?.category === 'visited' && 'text-red-700 font-extrabold',
-                                trip?.category === 'confirmed' && 'text-sky-800 dark:text-sky-200 font-extrabold',
-                                trip?.category === 'planned' && 'text-purple-800 dark:text-purple-200 font-extrabold',
-                                isToday && 'text-blue-700 dark:text-blue-300 font-black'
-                              )}
-                            >
-                              {dayNum}
-                            </span>
-                            {/* 오늘 표시 뱃지 */}
-                            {isToday && (
-                              <span className="rounded bg-blue-600 px-1 py-0.2 text-[8px] font-black text-white shadow-2xs">
-                                오늘
-                              </span>
+                          <span
+                            className={cn(
+                              'font-bold',
+                              dayOfWeek === 0 && 'text-rose-600 dark:text-rose-400',
+                              trip?.category === 'visited' && 'text-red-700 font-extrabold',
+                              trip?.category === 'confirmed' && 'text-sky-800 dark:text-sky-200 font-extrabold',
+                              trip?.category === 'planned' && 'text-purple-800 dark:text-purple-200 font-extrabold',
+                              isToday && 'text-blue-700 dark:text-blue-300 font-black'
                             )}
-                          </div>
+                          >
+                            {dayNum}
+                          </span>
 
                           {/* Badge based on trip type or class status */}
                           {trip ? (
@@ -903,12 +891,6 @@ export function SemesterPlannerMain() {
                   <span className="font-bold text-zinc-900 dark:text-zinc-100">
                     {dateInfo.date} ({dateInfo.dayOfWeek})
                   </span>
-
-                  {dateInfo.date === todayStr && (
-                    <Badge className="bg-blue-600 text-white font-bold text-[10px]">
-                      📍 오늘 (TODAY)
-                    </Badge>
-                  )}
 
                   {dateInfo.trip && dateInfo.trip.category === 'visited' && (
                     <Badge className="bg-red-600 text-white font-bold text-[10px]">
