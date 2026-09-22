@@ -29,9 +29,11 @@ import { Switch } from '@/components/ui/switch'
 import { cn } from '@/lib/utils'
 
 // Types
+export type TripRegionKey = 'nordic' | 'uk' | 'central_west' | 'south_baltic' | 'med_nafrica' | 'americas'
+
 export interface TripDestination {
   id: string
-  region: 'nordic' | 'uk' | 'central' | 'west' | 'south' | 'longhaul'
+  region: TripRegionKey
   regionName: string
   regionNameEn: string
   name: string
@@ -111,9 +113,9 @@ export const scheduledTrips: ScheduledTrip[] = [
   },
 ]
 
-// 사용자가 제공한 6개 권역, 27개 여행지 목록 (국문 & 영문)
+// ⭐️ 업데이트된 권역별 여행지 목록 (국문 & 영문)
 export const travelDestinations: TripDestination[] = [
-  // 1. 북유럽 & 극지방 (오로라/겨울)
+  // 1. 북유럽 & 극지방 (오로라 / 겨울)
   {
     id: 'helsinki',
     region: 'nordic',
@@ -123,378 +125,449 @@ export const travelDestinations: TripDestination[] = [
     nameEn: 'Helsinki, Finland',
     duration: '2박 3일',
     durationEn: '2 nights 3 days',
-    description: '템펠리아우키오 암석교회, 수오멘린나 요새, 사우나 체험, 카페/디자인 투어. 도시가 아담해 2박이면 충분.',
-    descriptionEn: 'Rock Church (Temppeliaukio), Suomenlinna fortress, traditional sauna experience, design district & cafes. Compact city ideal for 2 nights.',
+    description: '수오멘린나 요새, 템펠리아우키오 암석교회, 헬싱키 대성당, 로컬 사우나 체험. 도시 규모가 작아 2박이면 시내를 충분히 둘러봅니다.',
+    descriptionEn: 'Suomenlinna fortress, Temppeliaukio Rock Church, Helsinki Cathedral, and authentic local sauna experience. Compact city ideal for 2 nights.',
   },
   {
     id: 'rovaniemi',
     region: 'nordic',
     regionName: '1. 북유럽 & 극지방',
     regionNameEn: '1. Nordic & Arctic',
-    name: '핀란드 로바니에미 (산타마을)',
-    nameEn: 'Rovaniemi, Finland (Santa Village)',
+    name: '핀란드 로바니에미',
+    nameEn: 'Rovaniemi, Finland',
     duration: '2박 ~ 3박',
     durationEn: '2 ~ 3 nights',
-    description: '산타클로스 빌리지, 순록/허스키 썰매, 북극권 경계선 통과. 12월 크리스마스 시즌 정취 만끽.',
-    descriptionEn: 'Santa Claus Village, reindeer and husky sled rides, crossing the Arctic Circle. Best during December Christmas season.',
+    description: '산타클로스 빌리지 방문, 북극권 통과 인증, 허스키·순록 썰매, 스노모빌 투어. 크리스마스 시즌(12월)에 분위기가 가장 좋습니다.',
+    descriptionEn: 'Santa Claus Village, Arctic Circle crossing certificate, husky & reindeer sledding, snowmobile tours. Best during the December Christmas season.',
   },
   {
     id: 'tromso',
     region: 'nordic',
     regionName: '1. 북유럽 & 극지방',
     regionNameEn: '1. Nordic & Arctic',
-    name: '노르웨이 트롬쇠 (오로라 헌팅)',
-    nameEn: 'Tromsø, Norway (Aurora Hunting)',
+    name: '노르웨이 트롬쇠',
+    nameEn: 'Tromsø, Norway',
     duration: '3박 4일',
     durationEn: '3 nights 4 days',
-    description: '날씨 변수를 고려해 오로라 투어 기회를 최소 2~3회 확보하기 위한 기본 체류 기간. 피오르 투어 병행.',
-    descriptionEn: 'Essential 3 nights to secure at least 2-3 aurora hunting chances despite weather fluctuations. Includes fjord excursions.',
+    description: '북극권 대도시 특유의 탄탄한 투어 인프라. 오로라 관측률을 높이기 위해 최소 2~3회의 야간 투어 기회를 확보하는 3박이 안전합니다.',
+    descriptionEn: 'Robust arctic tour infrastructure. 3 nights recommended to secure at least 2-3 night tour chances for higher aurora viewing probability.',
   },
   {
     id: 'abisko-kiruna',
     region: 'nordic',
     regionName: '1. 북유럽 & 극지방',
     regionNameEn: '1. Nordic & Arctic',
-    name: '스웨덴 아비스코/키루나',
+    name: '스웨덴 아비스코 / 키루나',
     nameEn: 'Abisko & Kiruna, Sweden',
     duration: '2박 ~ 3박',
     durationEn: '2 ~ 3 nights',
-    description: '웁살라발 야간열차 활용. 아비스코 국립공원 "블루 홀" 오로라 관측 및 키루나 아이스호텔.',
-    descriptionEn: 'Convenient overnight sleeper train from Uppsala. Legendary Abisko "Blue Hole" aurora viewing and Kiruna Icehotel.',
+    description: '웁살라에서 야간열차(SJ Night Train)로 접근 가능. 구름이 적은 아비스코 국립공원 "블루 홀" 오로라 관측과 키루나 아이스호텔 탐방.',
+    descriptionEn: 'Directly accessible from Uppsala via SJ Night Train. Aurora viewing at Abisko National Park "Blue Hole" and tour of the Kiruna Icehotel.',
   },
   {
     id: 'iceland',
     region: 'nordic',
     regionName: '1. 북유럽 & 극지방',
     regionNameEn: '1. Nordic & Arctic',
-    name: '아이슬란드 (링로드 남부)',
-    nameEn: 'Iceland (South Coast & Ring Road)',
+    name: '아이슬란드',
+    nameEn: 'Iceland',
     duration: '5박 ~ 6박',
     durationEn: '5 ~ 6 nights',
-    description: '레이캬비크, 골든서클, 남부 빙하 호수(요쿨살론), 검은 모래 해변, 겨울 블루아이스케이브(얼음동굴) 탐험.',
-    descriptionEn: 'Reykjavik, Golden Circle, Jökulsárlón glacier lagoon, black sand beaches, and winter blue ice cave exploration.',
+    description: '레이캬비크, 골든서클, 남부 해안(블랙샌드 비치, 요쿨살론 빙하 호수), 겨울 한정 블루아이스케이브(얼음동굴) 탐험 및 로드트립.',
+    descriptionEn: 'Reykjavik, Golden Circle, South Coast (Black Sand Beach, Jökulsárlón glacier lagoon), winter-exclusive blue ice cave exploration and road trip.',
   },
 
-  // 2. 영국 & 아일랜드
+  // 2. 영국 & 스코틀랜드
   {
-    id: 'london',
+    id: 'uk-scotland',
     region: 'uk',
-    regionName: '2. 영국 & 아일랜드',
-    regionNameEn: '2. UK & Ireland',
-    name: '영국 런던 & 근교',
-    nameEn: 'London & Surroundings, UK',
-    duration: '2박 ~ 3박',
-    durationEn: '2 ~ 3 nights',
-    description: '시내 산책, 펍 투어, 세븐시스터즈 또는 바스/옥스퍼드 근교 당일치기 중심.',
-    descriptionEn: 'City walks, British pub culture, day trips to Seven Sisters cliffs or Bath/Oxford universities.',
-  },
-  {
-    id: 'manchester-liverpool',
-    region: 'uk',
-    regionName: '2. 영국 & 아일랜드',
-    regionNameEn: '2. UK & Ireland',
-    name: '영국 맨체스터 / 리버풀',
-    nameEn: 'Manchester & Liverpool, UK',
-    duration: '2박 3일',
-    durationEn: '2 nights 3 days',
-    description: '국립 축구 박물관, 구단 스타디움 투어(올드 트래퍼드/안필드/에티하드), 락/비틀즈 역사 및 로컬 펍 문화 체험.',
-    descriptionEn: 'National Football Museum, stadium tours (Old Trafford/Anfield/Etihad), rock/Beatles heritage, and lively local pubs.',
-  },
-  {
-    id: 'york',
-    region: 'uk',
-    regionName: '2. 영국 & 아일랜드',
-    regionNameEn: '2. UK & Ireland',
-    name: '영국 요크 (잉글랜드 중부)',
-    nameEn: 'York, England',
-    duration: '1박 2일',
-    durationEn: '1 night 2 days',
-    description: '런던-에든버러 기차 이동 중간 기착지. 요크 민스터 대성당, 샴블즈 골목, 로마 성벽 야경.',
-    descriptionEn: 'Scenic stopover on the London-Edinburgh railway. York Minster, The Shambles medieval alleys, and Roman walls.',
-  },
-  {
-    id: 'edinburgh',
-    region: 'uk',
-    regionName: '2. 영국 & 아일랜드',
-    regionNameEn: '2. UK & Ireland',
-    name: '스코틀랜드 에든버러',
-    nameEn: 'Edinburgh, Scotland',
-    duration: '2박 3일',
-    durationEn: '2 nights 3 days',
-    description: '에든버러 성, 로열 마일, 칼튼 힐 일몰, 아서스 시트 트레킹, 스코치 위스키 체험.',
-    descriptionEn: 'Edinburgh Castle, the Royal Mile, Calton Hill sunset, Arthur\'s Seat panoramic hike, and Scotch whisky tasting.',
-  },
-  {
-    id: 'highland-skye',
-    region: 'uk',
-    regionName: '2. 영국 & 아일랜드',
-    regionNameEn: '2. UK & Ireland',
-    name: '스코틀랜드 스카이섬 & 하이랜드',
-    nameEn: 'Isle of Skye & Highlands, Scotland',
-    duration: '2박 3일',
-    durationEn: '2 nights 3 days',
-    description: '글렌코 협곡, 네스호, 스카이섬 핵심 트레킹(Old Man of Storr, Quiraing, Cuillin Hills, Neist Point 등).',
-    descriptionEn: 'Glencoe valley, Loch Ness, and dramatic Isle of Skye hikes (Old Man of Storr, Quiraing, Neist Point lighthouse).',
+    regionName: '2. 영국 & 스코틀랜드',
+    regionNameEn: '2. UK & Scotland',
+    name: '영국 / 스코틀랜드 종합 코스',
+    nameEn: 'UK & Scotland Complete Route',
+    duration: '7박 ~ 8박',
+    durationEn: '7 ~ 8 nights',
+    description: '• 런던 & 요크 (2박): 런던 입국 후 가벼운 시내 산책, 중세 성곽 도시 요크(대성당, 샴블즈 골목) 경유.\n• 에든버러 (2박): 에든버러 성, 로열 마일, 칼튼 힐, 아서스 시트 트레킹.\n• 스카이섬 & 하이랜드 (3박): 글렌코 협곡, 네스호, 스카이섬 핵심 트레킹(Old Man of Storr, Quiraing, Neist Point 등).',
+    descriptionEn: '• London & York (2 nights): City stroll in London, scenic stop in medieval walled city York (Minster, Shambles).\n• Edinburgh (2 nights): Edinburgh Castle, Royal Mile, Calton Hill, Arthur\'s Seat hike.\n• Isle of Skye & Highlands (3 nights): Glencoe Valley, Loch Ness, and dramatic Skye hikes (Old Man of Storr, Quiraing, Neist Point).',
   },
 
-  // 3. 중유럽 & 독일
+  // 3. 중유럽 & 서유럽
   {
-    id: 'prague',
-    region: 'central',
-    regionName: '3. 중유럽 & 독일',
-    regionNameEn: '3. Central Europe & Germany',
-    name: '체코 프라하',
-    nameEn: 'Prague, Czechia',
-    duration: '2박 3일',
-    durationEn: '2 nights 3 days',
-    description: '프라하 성, 카를교, 구시가 광장 천문시계, 체코 맥주 양조장 투어.',
-    descriptionEn: 'Prague Castle, Charles Bridge, Old Town astronomical clock, and authentic Czech beer breweries.',
+    id: 'central-europe',
+    region: 'central_west',
+    regionName: '3. 중유럽 & 서유럽',
+    regionNameEn: '3. Central & Western Europe',
+    name: '체코, 오스트리아, 헝가리, 슬로바키아',
+    nameEn: 'Czechia, Austria, Hungary, Slovakia',
+    duration: '6박 ~ 8박',
+    durationEn: '6 ~ 8 nights',
+    description: '기차(ÖBB/RegioJet)로 직결되는 황금 동선. 프라하(2박) ➔ 빈(2~3박, 궁전 및 미술관) ➔ 브라티슬라바(당일치기 또는 1박) ➔ 부다페스트(2박, 야경 및 온천).',
+    descriptionEn: 'Classic rail corridor via ÖBB/RegioJet. Prague (2 nights) ➔ Vienna (2-3 nights, palaces & museums) ➔ Bratislava (day trip or 1 night) ➔ Budapest (2 nights, thermal baths & night views).',
   },
   {
-    id: 'vienna',
-    region: 'central',
-    regionName: '3. 중유럽 & 독일',
-    regionNameEn: '3. Central Europe & Germany',
-    name: '오스트리아 빈 (비엔나)',
-    nameEn: 'Vienna, Austria',
-    duration: '2박 ~ 3박',
-    durationEn: '2 ~ 3 nights',
-    description: '쇤브룬 궁전, 벨베데레 궁전(클림트 키스), 카페 자허/센트럴, 빈 미술사 박물관, 슈테판 대성당.',
-    descriptionEn: 'Schönbrunn Palace, Belvedere (Klimt\'s The Kiss), historic cafes (Sacher/Central), and St. Stephen\'s Cathedral.',
-  },
-  {
-    id: 'budapest',
-    region: 'central',
-    regionName: '3. 중유럽 & 독일',
-    regionNameEn: '3. Central Europe & Germany',
-    name: '헝가리 부다페스트',
-    nameEn: 'Budapest, Hungary',
-    duration: '2박 3일',
-    durationEn: '2 nights 3 days',
-    description: '국회의사당 야경(크루즈), 세체니 온천, 어부의 요새, 루인 펍(Ruin Bar) 문화.',
-    descriptionEn: 'Danube Parliament night cruise, Széchenyi Thermal Baths, Fisherman\'s Bastion, and vibrant Ruin Bar scene.',
-  },
-  {
-    id: 'bratislava',
-    region: 'central',
-    regionName: '3. 중유럽 & 독일',
-    regionNameEn: '3. Central Europe & Germany',
-    name: '슬로바키아 브라티슬라바',
-    nameEn: 'Bratislava, Slovakia',
-    duration: '당일치기 ~ 1박',
-    durationEn: 'Day trip ~ 1 night',
-    description: '빈에서 버스/기차로 1시간 거리. 브라티슬라바 성과 구시가지를 반나절에서 1박으로 가볍게 관람.',
-    descriptionEn: 'Just 1 hour by train/bus from Vienna. Walkable Old Town and hilltop castle overlooking the Danube.',
-  },
-  {
-    id: 'berlin-dresden',
-    region: 'central',
-    regionName: '3. 중유럽 & 독일',
-    regionNameEn: '3. Central Europe & Germany',
-    name: '독일 (베를린 / 드레스덴)',
-    nameEn: 'Berlin & Dresden, Germany',
-    duration: '3박 4일',
-    durationEn: '3 nights 4 days',
-    description: '베를린 장벽/박물관 섬(2박) + "독일의 피렌체" 드레스덴 구시가지 및 크리스마스 마켓(1박).',
-    descriptionEn: 'Berlin Wall & Museum Island (2 nights) + Dresden baroque old town and classic Christmas market (1 night).',
-  },
-  {
-    id: 'munich-bavaria',
-    region: 'central',
-    regionName: '3. 중유럽 & 독일',
-    regionNameEn: '3. Central Europe & Germany',
-    name: '독일 (뮌헨 & 바이에른)',
-    nameEn: 'Munich & Bavaria, Germany',
-    duration: '2박 ~ 3박',
-    durationEn: '2 ~ 3 nights',
-    description: '마리엔 광장, 영국정원, BMW 박물관, 님펜부르크 궁전. (근교 퓌센 노이슈반슈타인 성 포함 시 3박).',
-    descriptionEn: 'Marienplatz, English Garden, BMW Welt, and day trip to fairytale Neuschwanstein Castle in Füssen.',
-  },
-
-  // 4. 서유럽 (육로 코스 & 프랑스/스위스)
-  {
-    id: 'cph-city',
-    region: 'west',
-    regionName: '4. 서유럽',
-    regionNameEn: '4. Western Europe',
-    name: '덴마크 코펜하겐',
-    nameEn: 'Copenhagen, Denmark',
-    duration: '2박 3일',
-    durationEn: '2 nights 3 days',
-    description: '뉘하운 운하, 티볼리 공원, 디자인 뮤지엄. (육로 종단 시 함부르크행 기차 환승 거점).',
-    descriptionEn: 'Nyhavn waterfront, Tivoli Gardens, Danish design museums, and railway hub toward Hamburg.',
-  },
-  {
-    id: 'hamburg',
-    region: 'west',
-    regionName: '4. 서유럽',
-    regionNameEn: '4. Western Europe',
-    name: '독일 함부르크',
-    nameEn: 'Hamburg, Germany',
-    duration: '1박 2일',
-    durationEn: '1 night 2 days',
-    description: '슈파이허슈타트(붉은 벽돌 창고군), 엘프필하모니 전망대, 항구 야경.',
-    descriptionEn: 'UNESCO Speicherstadt red-brick warehouse district, Elbphilharmonie plaza, and lively port nights.',
-  },
-  {
-    id: 'amsterdam',
-    region: 'west',
-    regionName: '4. 서유럽',
-    regionNameEn: '4. Western Europe',
-    name: '네덜란드 암스테르담',
-    nameEn: 'Amsterdam, Netherlands',
-    duration: '2박 3일',
-    durationEn: '2 nights 3 days',
-    description: '운하 크루즈, 반 고흐 미술관, 라익스뮈제움, 요르단 지구 자전거 산책.',
-    descriptionEn: 'Canal cruises, Van Gogh Museum, Rijksmuseum, and scenic bike rides through the Jordaan neighborhood.',
-  },
-  {
-    id: 'belgium',
-    region: 'west',
-    regionName: '4. 서유럽',
-    regionNameEn: '4. Western Europe',
-    name: '벨기에 (브뤼셀 & 브뤼허)',
-    nameEn: 'Brussels & Bruges, Belgium',
-    duration: '2박 3일',
-    durationEn: '2 nights 3 days',
-    description: '브뤼셀 그랑플라스 야경, 와플/초콜릿, 그리고 동화 같은 중세 운하 도시 브뤼허(Brugge) 당일치기.',
-    descriptionEn: 'Grand Place illuminated at night, gourmet waffles & chocolates, plus a day trip to medieval Bruges canals.',
-  },
-  {
-    id: 'mont-saint-michel',
-    region: 'west',
-    regionName: '4. 서유럽',
-    regionNameEn: '4. Western Europe',
-    name: '프랑스 몽생미셸 (+파리 근교)',
-    nameEn: 'Mont Saint-Michel & Paris Region, France',
-    duration: '2박 3일',
-    durationEn: '2 nights 3 days',
-    description: '파리 경유 노르망디 이동. 해질녘 물 차오르는 몽생미셸 수도원 갯벌 걷기 및 야경 감상.',
-    descriptionEn: 'Normandy coast via Paris. Sunset tidal abbey walk across the bay and magical nocturnal illuminations.',
-  },
-  {
-    id: 'nice-monaco',
-    region: 'west',
-    regionName: '4. 서유럽',
-    regionNameEn: '4. Western Europe',
-    name: '프랑스 니스 & 모나코',
-    nameEn: 'Nice & Monaco, French Riviera',
-    duration: '3박 4일',
-    durationEn: '3 nights 4 days',
-    description: '니스 해변 프로메나드, 에즈(Èze) 요새 마을, 기차 20분 거리의 카지노와 요트 항구 모나코 당일치기.',
-    descriptionEn: 'Promenade des Anglais along the Mediterranean, Èze cliff village, and quick train to glamorous Monaco.',
-  },
-  {
-    id: 'swiss-alps',
-    region: 'west',
-    regionName: '4. 서유럽',
-    regionNameEn: '4. Western Europe',
-    name: '스위스 (바젤·루체른·베른·인터라켄)',
-    nameEn: 'Switzerland (Basel, Lucerne, Bern, Interlaken)',
+    id: 'germany',
+    region: 'central_west',
+    regionName: '3. 중유럽 & 서유럽',
+    regionNameEn: '3. Central & Western Europe',
+    name: '독일 (베를린, 드레스덴, 함부르크 등)',
+    nameEn: 'Germany (Berlin, Dresden, Hamburg, etc.)',
     duration: '4박 ~ 5박',
     durationEn: '4 ~ 5 nights',
-    description: '바젤 미술관(1박), 루체른 리기 산(1박), 베른 구시가지 및 알프스 멘리헨 하이킹/설경(2박).',
-    descriptionEn: 'Basel art scene, Lucerne Mt. Rigi excursion, UNESCO Bern old town, and Jungfrau snowy alpine wonderland.',
+    description: '베를린(2박, 현대사/문화) + 드레스덴(1박, 고전 건축 및 크리스마스 마켓) + 함부르크(1~2박, 유네스코 창고군 및 항구 야경).',
+    descriptionEn: 'Berlin (2 nights, modern history & culture) + Dresden (1 night, baroque architecture & Christmas markets) + Hamburg (1-2 nights, Speicherstadt warehouse district & harbor night view).',
+  },
+  {
+    id: 'netherlands-belgium',
+    region: 'central_west',
+    regionName: '3. 중유럽 & 서유럽',
+    regionNameEn: '3. Central & Western Europe',
+    name: '네덜란드, 벨기에',
+    nameEn: 'Netherlands & Belgium',
+    duration: '4박 ~ 5박',
+    durationEn: '4 ~ 5 nights',
+    description: '암스테르담(2박, 운하 및 미술관) ➔ 기차 이동 ➔ 브뤼셀 & 브뤼허(2~3박, 그랑플라스 야경, 중세 운하 마을 브뤼허).',
+    descriptionEn: 'Amsterdam (2 nights, canal belt & art museums) ➔ train journey ➔ Brussels & Bruges (2-3 nights, Grand Place illuminations & medieval canals of Bruges).',
+  },
+  {
+    id: 'france',
+    region: 'central_west',
+    regionName: '3. 중유럽 & 서유럽',
+    regionNameEn: '3. Central & Western Europe',
+    name: '프랑스 (몽생미셸, 니스, 모나코 등)',
+    nameEn: 'France (Mont Saint-Michel, Nice, Monaco, etc.)',
+    duration: '권역별 2~3박',
+    durationEn: '2 ~ 3 nights per region',
+    description: '• 북부/노르망디: 몽생미셸 + 파리 근교 (2박 3일).\n• 남부/지중해: 니스 & 모나코 당일치기 (3박 4일, 온화한 해안 휴양).',
+    descriptionEn: '• Northern/Normandy: Mont Saint-Michel + Paris surroundings (2 nights 3 days).\n• Southern/Riviera: Nice & Monaco day trip (3 nights 4 days, mild Mediterranean coastal retreat).',
   },
 
-  // 5. 남유럽 & 발트해 / 폴란드
+  // 4. 남유럽 & 발트해 / 폴란드
   {
-    id: 'poland',
-    region: 'south',
-    regionName: '5. 남유럽 & 발트/폴란드',
-    regionNameEn: '5. Southern Europe & Baltic',
-    name: '폴란드 그단스크 & 바르샤바',
-    nameEn: 'Gdańsk & Warsaw, Poland',
-    duration: '3박 4일',
-    durationEn: '3 nights 4 days',
-    description: '1/22 귀국길 활용. 그단스크 모틀라바 강변/구시가지(2박) + 고속기차 이동 후 바르샤바 왕궁/쇼팽 거리(1박).',
-    descriptionEn: 'Gdańsk Motława riverside old town (2 nights) + high-speed train to Warsaw Royal Castle and Chopin walk (1 night).',
-  },
-  {
-    id: 'baltic',
-    region: 'south',
-    regionName: '5. 남유럽 & 발트/폴란드',
-    regionNameEn: '5. Southern Europe & Baltic',
-    name: '발트 3국 (탈린/에스토니아 or 리가)',
-    nameEn: 'Baltics (Tallinn, Estonia or Riga)',
+    id: 'poland-gdansk',
+    region: 'south_baltic',
+    regionName: '4. 남유럽 & 발트해/폴란드',
+    regionNameEn: '4. Southern Europe, Baltics & Poland',
+    name: '폴란드 그단스크',
+    nameEn: 'Gdańsk, Poland',
     duration: '2박 3일',
     durationEn: '2 nights 3 days',
-    description: '스톡홀름 밤 페리(탈링크)로 선내 숙박하며 중세 성벽이 그대로 남은 탈린 올드타운 집중 투어.',
-    descriptionEn: 'Overnight ferry cruise (Tallink) from Stockholm, exploring the fairy-tale UNESCO medieval walled town of Tallinn.',
+    description: '모틀라바 강변 크레인, 롱 마켓, 2차 세계대전 박물관. (1/22 기숙사 체크아웃 후 바르샤바 경유 귀국길 루트에 연결하기 최적).',
+    descriptionEn: 'Motława river crane, Long Market, Museum of the Second World War. (Ideal connection on the way home via Warsaw after dorm checkout on Jan 22).',
   },
   {
-    id: 'san-sebastian-bilbao',
-    region: 'south',
-    regionName: '5. 남유럽 & 발트/폴란드',
-    regionNameEn: '5. Southern Europe & Baltic',
-    name: '스페인 북부 (산세바스티안 & 빌바오)',
-    nameEn: 'Northern Spain (San Sebastián & Bilbao)',
+    id: 'baltic-states',
+    region: 'south_baltic',
+    regionName: '4. 남유럽 & 발트해/폴란드',
+    regionNameEn: '4. Southern Europe, Baltics & Poland',
+    name: '발트 3국 (에스토니아, 라트비아, 리투아니아)',
+    nameEn: 'Baltic States (Estonia, Latvia, Lithuania)',
+    duration: '2박 ~ 4박',
+    durationEn: '2 ~ 4 nights',
+    description: '• 탈린 단독: 스톡홀름 밤 페리(탈링크)로 주말 2박 3일 컷.\n• 탈린 + 리가: 비행기/버스 연계 3박 4일 코스.',
+    descriptionEn: '• Tallinn standalone: Weekend 2 nights 3 days via Stockholm overnight ferry (Tallink).\n• Tallinn + Riga: 3 nights 4 days combining flights and buses.',
+  },
+  {
+    id: 'spain-basque',
+    region: 'south_baltic',
+    regionName: '4. 남유럽 & 발트해/폴란드',
+    regionNameEn: '4. Southern Europe, Baltics & Poland',
+    name: '스페인 북부',
+    nameEn: 'Northern Spain (Basque Country)',
     duration: '3박 4일',
     durationEn: '3 nights 4 days',
-    description: '미식의 수도 산세바스티안 핀초스 바 호핑, 콘차 해변, 빌바오 구겐하임 미술관.',
-    descriptionEn: 'World-renowned gastronomic pintxos bar hopping in San Sebastián, La Concha bay, and Bilbao Guggenheim Museum.',
+    description: '바스크 지방의 산세바스티안(미식/핀초스 투어, 콘차 해변)과 빌바오(구겐하임 미술관).',
+    descriptionEn: 'Basque Country highlights: gastronomic pintxos bar tour & La Concha beach in San Sebastián, plus Bilbao Guggenheim Museum.',
   },
   {
-    id: 'tenerife',
-    region: 'south',
-    regionName: '5. 남유럽 & 발트/폴란드',
-    regionNameEn: '5. Southern Europe & Baltic',
+    id: 'spain-tenerife',
+    region: 'south_baltic',
+    regionName: '4. 남유럽 & 발트해/폴란드',
+    regionNameEn: '4. Southern Europe, Baltics & Poland',
     name: '스페인 테네리페',
-    nameEn: 'Tenerife, Canary Islands',
+    nameEn: 'Tenerife, Spain',
     duration: '4박 ~ 5박',
     durationEn: '4 ~ 5 nights',
-    description: '카나리아 제도의 온화한 섬. 테이데 화산 국립공원, 자연 천연 수영장, 돌고래 투어 및 휴양.',
-    descriptionEn: 'Warm subtropical winter getaway. Mt. Teide volcano national park, natural rock ocean pools, and dolphin watching.',
+    description: '카나리아 제도의 화산섬. 테이데 국립공원 하이킹, 천연 해수 수영장, 돌고래 투어 등 온화한 겨울 휴양.',
+    descriptionEn: 'Canary Islands volcanic jewel: Mt. Teide national park hike, natural sea rock pools, dolphin boat tours, and warm winter getaway.',
   },
+
+  // 5. 지중해 동부 & 북아프리카
   {
     id: 'greece',
-    region: 'south',
-    regionName: '5. 남유럽 & 발트/폴란드',
-    regionNameEn: '5. Southern Europe & Baltic',
-    name: '그리스 (아테네 & 메테오라)',
-    nameEn: 'Greece (Athens & Meteora)',
+    region: 'med_nafrica',
+    regionName: '5. 지중해 동부 & 북아프리카',
+    regionNameEn: '5. Eastern Med & North Africa',
+    name: '그리스',
+    nameEn: 'Greece',
     duration: '4박 ~ 5박',
     durationEn: '4 ~ 5 nights',
-    description: '아테네 아크로폴리스, 수니온 곶 일몰, 기암괴석 위 공중 수도원 메테오라.',
-    descriptionEn: 'Acropolis of Athens, Cape Sounion sunset, and the surreal cliff-top monasteries of Meteora.',
+    description: '아테네(아크로폴리스) + 기암괴석 위 공중 수도원 메테오라 + 델피/수니온 곶.',
+    descriptionEn: 'Athens (Acropolis) + surreal cliff-top monasteries of Meteora + Delphi & Cape Sounion.',
   },
   {
     id: 'turkey',
-    region: 'south',
-    regionName: '5. 남유럽 & 발트/폴란드',
-    regionNameEn: '5. Southern Europe & Baltic',
-    name: '튀르키예 (이스탄불 & 카파도키아)',
-    nameEn: 'Türkiye (Istanbul & Cappadocia)',
+    region: 'med_nafrica',
+    regionName: '5. 지중해 동부 & 북아프리카',
+    regionNameEn: '5. Eastern Med & North Africa',
+    name: '터키 (튀르키예)',
+    nameEn: 'Türkiye (Turkey)',
     duration: '5박 ~ 6박',
     durationEn: '5 ~ 6 nights',
-    description: '이스탄불 보스포루스 해협/모스크(3박) + 카파도키아 기암괴석 및 열기구 투어(2박).',
-    descriptionEn: 'Historic mosques and Bosphorus Strait in Istanbul (3 nights) + Cappadocia hot air balloon flight over valleys (2 nights).',
-  },
-
-  // 6. 대형 장거리 (연말연시 단독 후보)
-  {
-    id: 'nyc',
-    region: 'longhaul',
-    regionName: '6. 연말연시 대형장거리',
-    regionNameEn: '6. Long-haul (Holiday Season)',
-    name: '미국 뉴욕 (동부)',
-    nameEn: 'New York City, USA',
-    duration: '7박 ~ 9박',
-    durationEn: '7 ~ 9 nights',
-    description: '록펠러센터 크리스마스트리, 센트럴 파크, 메트로폴리탄 미술관, 브로드웨이 뮤지컬, 타임스스퀘어 새해 카운트다운.',
-    descriptionEn: 'Rockefeller Christmas tree, snowy Central Park, The Met, Broadway musicals, and Times Square New Year countdown.',
+    description: '이스탄불(3박, 성 소피아 대성당, 보스포루스 해협) + 카파도키아(2~3박, 괴레메 계곡 및 열기구 투어).',
+    descriptionEn: 'Istanbul (3 nights, Hagia Sophia, Bosphorus Strait) + Cappadocia (2-3 nights, Göreme valley & sunrise hot air balloon flight).',
   },
   {
     id: 'egypt',
-    region: 'longhaul',
-    regionName: '6. 연말연시 대형장거리',
-    regionNameEn: '6. Long-haul (Holiday Season)',
-    name: '이집트 (카이로 & 룩소르/아스완)',
-    nameEn: 'Egypt (Cairo, Luxor & Aswan)',
+    region: 'med_nafrica',
+    regionName: '5. 지중해 동부 & 북아프리카',
+    regionNameEn: '5. Eastern Med & North Africa',
+    name: '이집트',
+    nameEn: 'Egypt',
     duration: '7박 ~ 9박',
     durationEn: '7 ~ 9 nights',
-    description: '카이로 기자 피라미드, 이집트 문명 박물관, 룩소르 왕가의 계곡/카르나크 신전, 나일강 크루즈. 연말연시 쾌적한 겨울 건기 배낭여행.',
-    descriptionEn: 'Great Pyramids of Giza, Grand Egyptian Museum, Valley of the Kings, Karnak Temple, and scenic Nile River cruise.',
+    description: '카이로(기자 피라미드, 박물관) + 룩소르(왕가의 계곡, 카르나크 신전) + 아스완. (12~1월이 1년 중 가장 쾌적한 여행 적기).',
+    descriptionEn: 'Cairo (Pyramids of Giza, Egyptian Museum) + Luxor (Valley of the Kings, Karnak Temple) + Aswan. (Dec~Jan is the most pleasant winter season).',
+  },
+  {
+    id: 'morocco',
+    region: 'med_nafrica',
+    regionName: '5. 지중해 동부 & 북아프리카',
+    regionNameEn: '5. Eastern Med & North Africa',
+    name: '모로코',
+    nameEn: 'Morocco',
+    duration: '6박 ~ 8박',
+    durationEn: '6 ~ 8 nights',
+    description: '마라케시(야시장, 메디나) + 사하라 사막 2박 3일 투어(메르주가) + 페스 or 셰프샤우엔(파란 마을).',
+    descriptionEn: 'Marrakech (night market, Medina) + 2 nights 3 days Sahara Desert tour (Merzouga) + Fes or Chefchaouen (the blue pearl).',
+  },
+
+  // 6. 아메리카 대륙
+  {
+    id: 'usa-east',
+    region: 'americas',
+    regionName: '6. 아메리카 대륙',
+    regionNameEn: '6. Americas',
+    name: '미국 (뉴욕 중심 동부)',
+    nameEn: 'USA (East Coast / New York)',
+    duration: '7박 ~ 9박',
+    durationEn: '7 ~ 9 nights',
+    description: '맨해튼(타임스스퀘어, 센트럴 파크, 메트로폴리탄 미술관, 브로드웨이), 브루클린, 자유의 여신상.\n비행시간(8~9시간)과 시차 적응을 고려해 최소 7박 이상 권장. (12/18 종강 후 연말 시즌에 적합).',
+    descriptionEn: 'Manhattan (Times Square, Central Park, The Met, Broadway), Brooklyn, Statue of Liberty.\n7+ nights recommended considering flight time (8-9h) and jet lag. (Ideal for year-end holidays after finals on Dec 18).',
+  },
+]
+
+// ⭐️ 친구들에게 제안하는 9가지 테마/코스 아이디어
+export interface TravelIdeaRoute {
+  id: string
+  num: number
+  emoji: string
+  titleKo: string
+  titleEn: string
+  tagKo: string
+  tagEn: string
+  summaryKo: string
+  summaryEn: string
+  detailsKo: string[]
+  detailsEn: string[]
+  targetMonthIdx?: number // 연계 추천 월 (0=9월, 1=10월, ...)
+  targetDate?: string // 포커스 날짜
+}
+
+export const travelIdeaRoutes: TravelIdeaRoute[] = [
+  {
+    id: 'route-uk',
+    num: 1,
+    emoji: '🇬🇧',
+    titleKo: '영국 & 스코틀랜드 (런던 IN, OUT)',
+    titleEn: 'UK & Scotland (London IN/OUT)',
+    tagKo: '축구 직관 + 대자연',
+    tagEn: 'EPL & Highlands',
+    summaryKo: '런던 들어가고 축구 보고 스코틀랜드 구경, 이후 돌아오기',
+    summaryEn: 'Fly into London, watch a match, explore Scotland, and return via London',
+    detailsKo: [
+      '런던 입국 ➔ EPL 축구 경기 직관 & 시내 투어',
+      '중세 성곽 도시 요크 경유 ➔ 스코틀랜드 에든버러 성 & 아서스 시트',
+      '스카이섬 & 하이랜드(글렌코, 네스호) 대자연 탐방 후 런던 OUT 복귀',
+    ],
+    detailsEn: [
+      'Fly into London ➔ Premier League match & city stroll',
+      'Medieval walled city York ➔ Edinburgh Castle & Arthur\'s Seat hike',
+      'Isle of Skye & Scottish Highlands epic road trip, then return via London',
+    ],
+    targetMonthIdx: 1,
+    targetDate: '2026-10-13',
+  },
+  {
+    id: 'route-train',
+    num: 2,
+    emoji: '🚆',
+    titleKo: '기차 낭만 여행 (레일로드 횡단)',
+    titleEn: 'Continental Scenic Train Journey',
+    tagKo: '유레일 / 북유럽➔서유럽',
+    tagEn: 'Eurail Corridor',
+    summaryKo: '웁살라에서 기차 타고 코펜하겐 -> 함부르크 -> 네덜란드 -> 벨기에',
+    summaryEn: 'Train from Uppsala to Copenhagen ➔ Hamburg ➔ Netherlands ➔ Belgium',
+    detailsKo: [
+      '비행기 대신 유럽 기차(SJ, DSB, DB)로 유럽 대륙을 횡단하는 낭만 코스!',
+      '스웨덴 웁살라 출발 ➔ 덴마크 코펜하겐 ➔ 독일 함부르크 항구 야경',
+      '암스테르담 운하 및 미술관 ➔ 벨기에 브뤼셀 & 중세 운하 마을 브뤼허',
+    ],
+    detailsEn: [
+      'Scenic overland continental train odyssey without flight hassles!',
+      'Uppsala ➔ Copenhagen ➔ Hamburg historic harbor & Speicherstadt',
+      'Amsterdam canal belt ➔ Brussels Grand Place & fairy-tale Bruges',
+    ],
+  },
+  {
+    id: 'route-east-europe',
+    num: 3,
+    emoji: '🏰',
+    titleKo: '동유럽 여행 (오스트리아·헝가리·체코·슬로바키아)',
+    titleEn: 'Central & Eastern Europe Classic',
+    tagKo: '★헝가리 친구 접선 예정!',
+    tagEn: '★Meet Friend in Hungary!',
+    summaryKo: '오스트리아, 헝가리, 체코, 슬로바키아. 이때 헝가리에서는 만나야 하는 친구 있음.',
+    summaryEn: 'Austria, Hungary, Czechia, Slovakia. Meeting a good friend in Hungary!',
+    detailsKo: [
+      '기차(ÖBB/RegioJet)로 직결되는 중동유럽 골든 동선',
+      '프라하 카를교 야경 ➔ 빈 합스부르크 궁전 & 미술관 ➔ 브라티슬라바',
+      '부다페스트 국회의사당 야경 & 온천 (★헝가리에서 현지 친구와 만날 예정!)',
+    ],
+    detailsEn: [
+      'Direct rail links across four imperial central European capitals',
+      'Prague Charles Bridge ➔ Vienna palaces ➔ Bratislava Old Town',
+      'Budapest Parliament illuminations & baths (★Meeting a friend in Hungary!)',
+    ],
+  },
+  {
+    id: 'route-germany',
+    num: 4,
+    emoji: '🇩🇪',
+    titleKo: '독일 여행 (다양한 도시 & 유연한 연계)',
+    titleEn: 'Germany Multi-City Exploration',
+    tagKo: '벨기에/체코 이동 시 연계',
+    tagEn: 'Flexible Route Links',
+    summaryKo: '베를린, 드레스덴, 뮌헨 등 여러 도시를 갈 건데, 벨기에를 갈 때 독일 서부를, 체코를 갈 때 독일 동부를 갈 생각도 있음.',
+    summaryEn: 'Berlin, Dresden, Munich, etc. Flexible linking: West Germany with Belgium, East Germany with Czechia.',
+    detailsKo: [
+      '베를린 현대사/문화, 드레스덴 고전 건축 & 겨울 크리스마스 마켓, 뮌헨 전통',
+      '벨기에 갈 때: 쾰른/뒤셀도르프 등 독일 서부를 묶어서 이동',
+      '체코 갈 때: 드레스덴/라이프치히 등 독일 동부를 묶어서 이동',
+    ],
+    detailsEn: [
+      'Berlin modern history & culture, Dresden Christmas market, Munich beer halls',
+      'When heading to Belgium: link with Western Germany (Cologne/Düsseldorf)',
+      'When heading to Czechia: link with Eastern Germany (Dresden/Leipzig)',
+    ],
+  },
+  {
+    id: 'route-ancient',
+    num: 5,
+    emoji: '🏺',
+    titleKo: '터키, 그리스, 이집트 (신화와 고대 문명)',
+    titleEn: 'Türkiye, Greece & Egypt (Ancient Civilizations)',
+    tagKo: '누구든 대환영! (한국/유럽 친구)',
+    tagEn: 'All Friends Welcome!',
+    summaryKo: '웁살라에서 친해진 친구여도 좋고 한국에서 오는 친구여도 좋음.',
+    summaryEn: 'Great with international friends made in Uppsala or friends flying from Korea!',
+    detailsKo: [
+      '이스탄불 성 소피아/보스포루스 해협 + 카파도키아 일출 열기구 투어',
+      '아테네 아크로폴리스 + 기암괴석 위 공중 수도원 메테오라',
+      '카이로 기자 피라미드 + 룩소르 왕가의 계곡 (12~1월이 1년 중 가장 쾌적한 여행 적기!)',
+      '웁살라에서 사귄 교환학생 친구든, 한국에서 날아올 친구든 누구든 환영!',
+    ],
+    detailsEn: [
+      'Hagia Sophia & Bosphorus in Istanbul + Cappadocia hot air balloon flight',
+      'Athens Acropolis + surreal cliff-top monasteries of Meteora',
+      'Cairo Great Pyramids + Luxor Valley of the Kings (pleasant winter season)',
+      'Open to any friends from Uppsala or friends flying in from Korea!',
+    ],
+  },
+  {
+    id: 'route-musical',
+    num: 6,
+    emoji: '🎭',
+    titleKo: '뮤지컬 & 콘서트 문화 투어',
+    titleEn: 'World-Class Musicals & Shows',
+    tagKo: '런던 / 뉴욕 필수 관람',
+    tagEn: 'West End & Broadway',
+    summaryKo: '영국이나 미국을 간다면 뮤지컬을 볼 생각이 있음.',
+    summaryEn: 'Definitely planning to watch world-class musicals if visiting the UK or US.',
+    detailsKo: [
+      '영국 런던 웨스트엔드: 오페라의 유령, 레미제라블, 위키드 등 오리지널 시어터 관람',
+      '미국 뉴욕 방문 시: 타임스스퀘어 브로드웨이 뮤지컬 및 콘서트 직관',
+      '공연/음악을 좋아하는 친구들과 함께 현지 예매 후 문화 예술 투어 즐기기',
+    ],
+    detailsEn: [
+      'London West End: legendary productions of Phantom, Les Misérables, Wicked',
+      'New York Broadway: world-famous theater district in Times Square',
+      'A memorable experience to share with fellow arts & music lovers',
+    ],
+  },
+  {
+    id: 'route-pgw',
+    num: 7,
+    emoji: '🎮',
+    titleKo: '파리게임위크 (Paris Games Week 2026)',
+    titleEn: 'Paris Games Week 2026',
+    tagKo: '★10/22 ~ 10/25 (수업 없음!)',
+    tagEn: '★Oct 22-25 (Zero Classes!)',
+    summaryKo: '10/22~10/25까지 진행되는 파리게임위크 구경 갈 생각이 있음.',
+    summaryEn: 'Planning to visit Paris Games Week happening between Oct 22 and Oct 25.',
+    detailsKo: [
+      '유럽 최대 규모의 비디오 게임 박람회 Paris Games Week 참관!',
+      '★황금 타이밍: 10/22(목)부터 10/25(일)까지 4일 연속 수업이 전혀 없는 일정!',
+      '신작 게임 체험 + 가을 파리 시내(에펠탑, 루브르, 센강) 산책 병행 코스',
+    ],
+    detailsEn: [
+      'One of Europe’s premier video game expos held in Paris!',
+      '★Perfect timing: Oct 22 (Thu) to Oct 25 (Sun) has ZERO classes scheduled!',
+      'Combine gaming expo excitement with romantic autumn Paris strolls',
+    ],
+    targetMonthIdx: 1,
+    targetDate: '2026-10-22',
+  },
+  {
+    id: 'route-football',
+    num: 8,
+    emoji: '⚽',
+    titleKo: '각종 유럽 축구 경기 직관',
+    titleEn: 'Live European Football Matches',
+    tagKo: 'EPL / 분데스리가 / UCL',
+    tagEn: 'Stadium Passion',
+    summaryKo: '유럽에 온 이상 축구 경기 직관을 하고 가고 싶음.',
+    summaryEn: 'Since I am in Europe, experiencing live European football in a packed stadium is a must.',
+    detailsKo: [
+      '영국 프리미어리그(EPL): 런던, 맨체스터, 리버풀 구단 홈경기 직관',
+      '독일 분데스리가(바이에른 뮌헨, 도르트문트) 또는 UEFA 챔피언스리그 경기',
+      '현지 서포터들의 압도적인 응원 열기와 스타디움 투어 체감하기',
+    ],
+    detailsEn: [
+      'English Premier League (EPL): electric atmospheres in London or Manchester',
+      'German Bundesliga or UEFA Champions League evening fixtures',
+      'Chanting with local fans and taking historic club stadium tours',
+    ],
+  },
+  {
+    id: 'route-easygoing',
+    num: 9,
+    emoji: '🙋‍♂️',
+    titleKo: '기타 등등 (★가면감맨 모드★)',
+    titleEn: 'Anything Goes (★"If You Go, I Go!" Mode★)',
+    tagKo: '무조건 콜! / 시간만 되면 감',
+    tagEn: '100% Down to Travel!',
+    summaryKo: '사실 친구랑 가기만 하면 뭘 하든지 좋아하는 가면감맨이라서 시간만 된다면 무조건 감.',
+    summaryEn: 'Honestly, I love doing whatever as long as I go with friends! If time aligns, I am 100% in.',
+    detailsKo: [
+      '어디든 좋은 친구들과 함께라면 200% 즐길 준비 완료!',
+      '위 리스트 외에도 "나 이때 여기 갈 건데 같이 갈래?" 제안 대환영!',
+      '달력에서 초록색(수업 없음)이나 주황색(온라인 줌) 날짜 보이면 편하게 찔러봐줘!',
+    ],
+    detailsEn: [
+      'Always ready to have a blast anywhere as long as the company is great!',
+      'Have another destination in mind? Just invite me: "Want to join me for this?"',
+      'Spot green (no class) or orange (Zoom only) days on my calendar? Reach out anytime!',
+    ],
   },
 ]
 
@@ -652,6 +725,12 @@ export const translations = {
     agendaTrips: '이번 달 여행 일정',
     agendaClasses: '날짜별 상세 일정',
     noTripsThisMonth: '이번 달 등록된 여행 일정이 없습니다.',
+    routesSectionBadge: '💡 함께 떠날 친구 구함 🙌',
+    routesSectionTitle: '이런 코스를 생각 중이야! (여행 코스 & 테마 아이디어보드)',
+    routesSectionSubtitle: '친구들에게 나 이때 이런 여행을 갈 생각이 있다고 안내하기 위한 코스들입니다. 일정이 맞거나 관심 있는 코스가 있다면 언제든 편하게 말해줘!',
+    routesActionJoin: '이 코스 같이 갈래?',
+    routesActionCopied: '공유 링크 복사 완료!',
+    routesActionViewCalendar: '달력에서 일정 확인',
   },
   en: {
     siteTitle: 'Travel Idea Board',
@@ -702,6 +781,12 @@ export const translations = {
     agendaTrips: 'Trips This Month',
     agendaClasses: 'Daily Schedule',
     noTripsThisMonth: 'No trips scheduled for this month.',
+    routesSectionBadge: '💡 Looking for Travel Buddies 🙌',
+    routesSectionTitle: 'Travel Routes & Themes I\'m Considering',
+    routesSectionSubtitle: 'Here are the potential trip routes I have in mind to coordinate with friends. If your timing aligns or you\'re interested, let me know anytime!',
+    routesActionJoin: 'Want to join this trip?',
+    routesActionCopied: 'Share link copied!',
+    routesActionViewCalendar: 'View on Calendar',
   },
 }
 
@@ -716,12 +801,12 @@ const calendarMonths = [
 
 const regionFilterTabs = [
   { key: 'all', labelKo: '전체 보기', labelEn: 'All' },
-  { key: 'nordic', labelKo: '1. 북유럽/극지방', labelEn: '1. Nordic/Arctic' },
-  { key: 'uk', labelKo: '2. 영국/아일랜드', labelEn: '2. UK & Ireland' },
-  { key: 'central', labelKo: '3. 중유럽/독일', labelEn: '3. Central Europe' },
-  { key: 'west', labelKo: '4. 서유럽', labelEn: '4. Western Europe' },
-  { key: 'south', labelKo: '5. 남유럽/발트', labelEn: '5. Southern/Baltic' },
-  { key: 'longhaul', labelKo: '6. 대형 장거리', labelEn: '6. Long-haul' },
+  { key: 'nordic', labelKo: '1. 북유럽/극지방', labelEn: '1. Nordic & Arctic' },
+  { key: 'uk', labelKo: '2. 영국/스코틀랜드', labelEn: '2. UK & Scotland' },
+  { key: 'central_west', labelKo: '3. 중유럽/서유럽', labelEn: '3. Central & West' },
+  { key: 'south_baltic', labelKo: '4. 남유럽/발트/폴란드', labelEn: '4. South & Baltic' },
+  { key: 'med_nafrica', labelKo: '5. 지중해동부/북아프리카', labelEn: '5. E.Med & N.Africa' },
+  { key: 'americas', labelKo: '6. 아메리카 대륙', labelEn: '6. Americas' },
 ]
 
 export function SemesterPlannerMain() {
@@ -733,6 +818,7 @@ export function SemesterPlannerMain() {
   const [selectedDestination, setSelectedDestination] = useState<TripDestination | null>(null)
   const [copySuccess, setCopySuccess] = useState(false)
   const [viewMode, setViewMode] = useState<'calendar' | 'agenda'>('calendar')
+  const [routeCopiedId, setRouteCopiedId] = useState<string | null>(null)
 
   // ⭐️ Introduction to Scientific Computing: 기본적으로 드랍(OFF)하는 것으로 전제!
   const [showSciComp, setShowSciComp] = useState<boolean>(false)
@@ -814,6 +900,33 @@ export function SemesterPlannerMain() {
       navigator.clipboard.writeText(url.toString())
       setCopySuccess(true)
       setTimeout(() => setCopySuccess(false), 2000)
+    }
+  }
+
+  const handleCopyRoute = (route: TravelIdeaRoute) => {
+    if (typeof window === 'undefined') return
+    const title = lang === 'en' ? route.titleEn : route.titleKo
+    const summary = lang === 'en' ? route.summaryEn : route.summaryKo
+    const textToCopy = `[${title}]\n${summary}\n\n👉 여행 일정 보드 확인하기: ${window.location.href}`
+    navigator.clipboard.writeText(textToCopy)
+    setRouteCopiedId(route.id)
+    setTimeout(() => setRouteCopiedId(null), 2500)
+  }
+
+  const handleViewOnCalendar = (monthIdx?: number, dateStr?: string) => {
+    if (monthIdx !== undefined) {
+      setSelectedMonthIdx(monthIdx)
+    }
+    if (dateStr) {
+      setSelectedDate(dateStr)
+    }
+    if (typeof window !== 'undefined') {
+      const el = document.getElementById('calendar-card')
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' })
+      } else {
+        window.scrollTo({ top: 100, behavior: 'smooth' })
+      }
     }
   }
 
@@ -996,7 +1109,7 @@ export function SemesterPlannerMain() {
         <div className="grid gap-6 lg:grid-cols-[1.12fr_0.88fr]">
           {/* LEFT: CALENDAR (달력) */}
           <div className="flex flex-col gap-4">
-            <Card className="border-zinc-200 bg-white shadow-xs dark:border-zinc-800 dark:bg-[#13161f]">
+            <Card id="calendar-card" className="border-zinc-200 bg-white shadow-xs dark:border-zinc-800 dark:bg-[#13161f]">
               {/* Calendar Header with Month Selector & View Toggle */}
               <CardHeader className="p-3 sm:p-4 pb-3 border-b border-zinc-100 dark:border-zinc-800 flex flex-col gap-3">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
@@ -1504,6 +1617,128 @@ export function SemesterPlannerMain() {
             </div>
           </div>
         </div>
+
+        {/* 4. PROPOSED TRAVEL ROUTES & THEMES (이런 코스를 생각 중이야! 박스) */}
+        <section className="mt-8 rounded-2xl border border-zinc-200 bg-white p-5 sm:p-7 shadow-xs dark:border-zinc-800 dark:bg-[#13161f]">
+          {/* Section Header */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-100 pb-4 dark:border-zinc-800">
+            <div>
+              <div className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 px-3 py-1 text-xs font-bold text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300 mb-2">
+                <Sparkles className="size-3.5" />
+                <span>{curT.routesSectionBadge}</span>
+              </div>
+              <h2 className="text-lg sm:text-xl font-extrabold text-zinc-900 dark:text-zinc-100">
+                {curT.routesSectionTitle}
+              </h2>
+              <p className="mt-1 text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-3xl">
+                {curT.routesSectionSubtitle}
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0 self-start sm:self-auto">
+              <span className="rounded-md bg-zinc-100 dark:bg-zinc-800 px-2.5 py-1 text-xs font-bold text-zinc-600 dark:text-zinc-300">
+                {travelIdeaRoutes.length} {lang === 'en' ? 'Themes' : '개 테마 코스'}
+              </span>
+            </div>
+          </div>
+
+          {/* 9 Idea Cards Grid */}
+          <div className="mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {travelIdeaRoutes.map((route) => {
+              const isCopied = routeCopiedId === route.id
+              const title = lang === 'en' ? route.titleEn : route.titleKo
+              const tag = lang === 'en' ? route.tagEn : route.tagKo
+              const summary = lang === 'en' ? route.summaryEn : route.summaryKo
+              const details = lang === 'en' ? route.detailsEn : route.detailsKo
+
+              return (
+                <div
+                  key={route.id}
+                  className={cn(
+                    'group relative rounded-xl border p-4 transition-all flex flex-col justify-between',
+                    'border-zinc-200 bg-zinc-50/50 hover:border-indigo-400 hover:bg-white hover:shadow-md',
+                    'dark:border-zinc-800 dark:bg-zinc-900/40 dark:hover:border-indigo-500/60 dark:hover:bg-zinc-850/80',
+                    route.num === 9 && 'border-amber-300/80 bg-amber-50/40 dark:border-amber-800/60 dark:bg-amber-950/20'
+                  )}
+                >
+                  <div>
+                    {/* Top Row: Emoji, Tag Badge */}
+                    <div className="flex items-center justify-between gap-2 mb-2">
+                      <span className="text-2xl leading-none select-none">{route.emoji}</span>
+                      <Badge
+                        variant="secondary"
+                        className={cn(
+                          'text-[10px] font-bold px-2 py-0.5 rounded-full',
+                          route.num === 9
+                            ? 'bg-amber-200 text-amber-950 dark:bg-amber-900 dark:text-amber-100 font-black'
+                            : 'bg-indigo-50 text-indigo-700 dark:bg-indigo-950/80 dark:text-indigo-300'
+                        )}
+                      >
+                        {tag}
+                      </Badge>
+                    </div>
+
+                    {/* Title */}
+                    <h3 className="font-extrabold text-sm text-zinc-900 dark:text-zinc-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                      {title}
+                    </h3>
+
+                    {/* Summary Quote */}
+                    <div className="mt-2 rounded-md bg-white/90 dark:bg-zinc-800/90 p-2.5 border border-zinc-200/80 dark:border-zinc-700/60 text-xs font-bold text-zinc-800 dark:text-zinc-200 leading-snug">
+                      "{summary}"
+                    </div>
+
+                    {/* Detail Bullets */}
+                    <ul className="mt-3 space-y-1.5 text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                      {details.map((detail, dIdx) => (
+                        <li key={dIdx} className="flex items-start gap-1.5">
+                          <span className="text-indigo-500 dark:text-indigo-400 font-bold shrink-0 mt-0.5">•</span>
+                          <span>{detail}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Bottom Actions */}
+                  <div className="mt-4 pt-3 border-t border-zinc-200/70 dark:border-zinc-800 flex items-center justify-between gap-2">
+                    {/* 달력 연계 버튼 (있는 경우) */}
+                    {route.targetDate ? (
+                      <button
+                        type="button"
+                        onClick={() => handleViewOnCalendar(route.targetMonthIdx, route.targetDate)}
+                        className="flex items-center gap-1 text-[11px] font-bold text-indigo-600 dark:text-indigo-400 hover:underline"
+                        title={curT.routesActionViewCalendar}
+                      >
+                        <Calendar className="size-3.5" />
+                        <span>{curT.routesActionViewCalendar}</span>
+                      </button>
+                    ) : (
+                      <span className="text-[11px] text-zinc-400 font-medium">
+                        {lang === 'en' ? 'Flexible Dates' : '일정 상시 조율 가능'}
+                      </span>
+                    )}
+
+                    {/* 같이 갈래? 복사 버튼 */}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleCopyRoute(route)}
+                      className={cn(
+                        'h-7 px-2 text-[11px] font-bold gap-1 rounded transition-colors',
+                        isCopied
+                          ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
+                          : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-750'
+                      )}
+                    >
+                      {isCopied ? <Check className="size-3 text-emerald-600" /> : <Copy className="size-3" />}
+                      <span>{isCopied ? curT.routesActionCopied : curT.routesActionJoin}</span>
+                    </Button>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </section>
       </main>
 
       {/* 4. DETAIL MODAL (목적지 클릭 시 나타나는 메모 및 박수 안내) */}
