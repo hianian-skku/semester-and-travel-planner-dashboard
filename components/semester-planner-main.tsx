@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import {
   Calendar,
+  CalendarDays,
   Check,
   ChevronLeft,
   ChevronRight,
@@ -11,6 +12,7 @@ import {
   Copy,
   Globe,
   Info,
+  ListOrdered,
   MapPin,
   Moon,
   Navigation,
@@ -644,6 +646,12 @@ export const translations = {
     modalCoreSchedule: '핵심 일정 및 체류 이유:',
     modalClose: '닫기',
     dayOfWeekNames: ['일', '월', '화', '수', '목', '금', '토'],
+    viewCalendar: '달력',
+    viewAgenda: '목록',
+    mobileTip: '날짜 터치 시 세부 수업/여행 정보 확인',
+    agendaTrips: '이번 달 여행 일정',
+    agendaClasses: '날짜별 상세 일정',
+    noTripsThisMonth: '이번 달 등록된 여행 일정이 없습니다.',
   },
   en: {
     siteTitle: 'Travel Idea Board',
@@ -688,6 +696,12 @@ export const translations = {
     modalCoreSchedule: 'Key itinerary & reasons to visit:',
     modalClose: 'Close',
     dayOfWeekNames: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+    viewCalendar: 'Calendar',
+    viewAgenda: 'Agenda',
+    mobileTip: 'Tap a date to view classes & details',
+    agendaTrips: 'Trips This Month',
+    agendaClasses: 'Daily Schedule',
+    noTripsThisMonth: 'No trips scheduled for this month.',
   },
 }
 
@@ -718,6 +732,7 @@ export function SemesterPlannerMain() {
   const [todayStr, setTodayStr] = useState<string>('2026-09-23')
   const [selectedDestination, setSelectedDestination] = useState<TripDestination | null>(null)
   const [copySuccess, setCopySuccess] = useState(false)
+  const [viewMode, setViewMode] = useState<'calendar' | 'agenda'>('calendar')
 
   // ⭐️ Introduction to Scientific Computing: 기본적으로 드랍(OFF)하는 것으로 전제!
   const [showSciComp, setShowSciComp] = useState<boolean>(false)
@@ -982,36 +997,70 @@ export function SemesterPlannerMain() {
           {/* LEFT: CALENDAR (달력) */}
           <div className="flex flex-col gap-4">
             <Card className="border-zinc-200 bg-white shadow-xs dark:border-zinc-800 dark:bg-[#13161f]">
-              {/* Calendar Header with Month Selector */}
-              <CardHeader className="p-4 pb-3 border-b border-zinc-100 dark:border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div className="flex items-center gap-2">
-                  {/* 월 선택 박스: 가로 폭을 넉넉히 하고 whitespace-nowrap 적용 */}
-                  <div className="flex items-center gap-1 rounded-md border border-zinc-200 bg-zinc-50 p-1 dark:border-zinc-700 dark:bg-zinc-850">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="size-6 shrink-0"
-                      disabled={selectedMonthIdx === 0}
-                      onClick={() => setSelectedMonthIdx((p) => Math.max(0, p - 1))}
-                    >
-                      <ChevronLeft className="size-3.5" />
-                    </Button>
-                    <span className="px-3 text-xs font-bold text-zinc-900 dark:text-zinc-100 whitespace-nowrap min-w-[110px] text-center shrink-0">
-                      {lang === 'en' ? curMonth.nameEn : curMonth.nameKo}
-                    </span>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="size-6 shrink-0"
-                      disabled={selectedMonthIdx === calendarMonths.length - 1}
-                      onClick={() => setSelectedMonthIdx((p) => Math.min(calendarMonths.length - 1, p + 1))}
-                    >
-                      <ChevronRight className="size-3.5" />
-                    </Button>
+              {/* Calendar Header with Month Selector & View Toggle */}
+              <CardHeader className="p-3 sm:p-4 pb-3 border-b border-zinc-100 dark:border-zinc-800 flex flex-col gap-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                  <div className="flex items-center justify-between sm:justify-start gap-2 w-full sm:w-auto">
+                    {/* 월 선택 박스 */}
+                    <div className="flex items-center gap-1 rounded-md border border-zinc-200 bg-zinc-50 p-0.5 sm:p-1 dark:border-zinc-700 dark:bg-zinc-850">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="size-6 sm:size-7 shrink-0"
+                        disabled={selectedMonthIdx === 0}
+                        onClick={() => setSelectedMonthIdx((p) => Math.max(0, p - 1))}
+                      >
+                        <ChevronLeft className="size-3.5 sm:size-4" />
+                      </Button>
+                      <span className="px-2 sm:px-3 text-xs sm:text-sm font-bold text-zinc-900 dark:text-zinc-100 whitespace-nowrap min-w-[105px] sm:min-w-[110px] text-center shrink-0">
+                        {lang === 'en' ? curMonth.nameEn : curMonth.nameKo}
+                      </span>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="size-6 sm:size-7 shrink-0"
+                        disabled={selectedMonthIdx === calendarMonths.length - 1}
+                        onClick={() => setSelectedMonthIdx((p) => Math.min(calendarMonths.length - 1, p + 1))}
+                      >
+                        <ChevronRight className="size-3.5 sm:size-4" />
+                      </Button>
+                    </div>
+
+                    {/* 모바일/데스크톱 뷰 모드 토글 (달력 ↔ 목록) */}
+                    <div className="flex items-center rounded-lg border border-zinc-200 bg-zinc-100 p-0.5 dark:border-zinc-700 dark:bg-zinc-850 shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => setViewMode('calendar')}
+                        className={cn(
+                          'flex items-center gap-1 rounded-md px-2 py-1 text-xs font-bold transition-all',
+                          viewMode === 'calendar'
+                            ? 'bg-white text-zinc-900 shadow-2xs dark:bg-zinc-800 dark:text-zinc-100'
+                            : 'text-zinc-500 hover:text-zinc-900 dark:text-zinc-400'
+                        )}
+                        title={curT.viewCalendar}
+                      >
+                        <CalendarDays className="size-3.5" />
+                        <span className="text-[11px] font-semibold">{curT.viewCalendar}</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setViewMode('agenda')}
+                        className={cn(
+                          'flex items-center gap-1 rounded-md px-2 py-1 text-xs font-bold transition-all',
+                          viewMode === 'agenda'
+                            ? 'bg-white text-zinc-900 shadow-2xs dark:bg-zinc-800 dark:text-zinc-100'
+                            : 'text-zinc-500 hover:text-zinc-900 dark:text-zinc-400'
+                        )}
+                        title={curT.viewAgenda}
+                      >
+                        <ListOrdered className="size-3.5" />
+                        <span className="text-[11px] font-semibold">{curT.viewAgenda}</span>
+                      </button>
+                    </div>
                   </div>
 
-                  {/* 5 Month buttons */}
-                  <div className="flex items-center gap-1">
+                  {/* 5 Month buttons: 모바일에서는 5등분 균등 배치로 1월까지 완벽 노출 */}
+                  <div className="grid grid-cols-5 gap-1 w-full sm:flex sm:w-auto">
                     {calendarMonths.map((m, idx) => (
                       <Button
                         key={m.year + '-' + m.month}
@@ -1019,10 +1068,10 @@ export function SemesterPlannerMain() {
                         size="sm"
                         onClick={() => setSelectedMonthIdx(idx)}
                         className={cn(
-                          'h-6 px-1.5 text-xs font-semibold',
+                          'h-7 px-1 text-xs font-semibold rounded',
                           selectedMonthIdx === idx
-                            ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900'
-                            : 'text-zinc-600 dark:text-zinc-400'
+                            ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 shadow-2xs'
+                            : 'bg-zinc-50 sm:bg-transparent text-zinc-600 dark:bg-zinc-850/60 dark:text-zinc-400'
                         )}
                       >
                         {lang === 'en' ? m.shortEn : m.shortKo}
@@ -1031,149 +1080,316 @@ export function SemesterPlannerMain() {
                   </div>
                 </div>
 
-                {/* Color Legend (수업 상태 + 다녀온/확정/고민중 여행) */}
-                <div className="flex flex-wrap items-center gap-2 text-[11px]">
+                {/* Color Legend: 모바일에서는 3열 그리드로 깔끔하게 2줄 배치 */}
+                <div className="grid grid-cols-3 gap-x-2 gap-y-1.5 sm:flex sm:flex-wrap items-center sm:gap-2.5 text-[10px] sm:text-[11px] pt-1 border-t border-zinc-100 dark:border-zinc-800/80">
                   <span className="flex items-center gap-1">
-                    <span className="size-2.5 rounded bg-emerald-100 border border-emerald-300" />
-                    <span className="text-zinc-600 dark:text-zinc-400 font-medium">{curT.legendFree}</span>
+                    <span className="size-2 sm:size-2.5 rounded bg-emerald-100 border border-emerald-300 shrink-0" />
+                    <span className="text-zinc-600 dark:text-zinc-400 font-medium truncate">{curT.legendFree}</span>
                   </span>
                   <span className="flex items-center gap-1">
-                    <span className="size-2.5 rounded bg-amber-100 border border-amber-300" />
-                    <span className="text-zinc-600 dark:text-zinc-400 font-medium">{curT.legendZoom}</span>
+                    <span className="size-2 sm:size-2.5 rounded bg-amber-100 border border-amber-300 shrink-0" />
+                    <span className="text-zinc-600 dark:text-zinc-400 font-medium truncate">{curT.legendZoom}</span>
                   </span>
                   <span className="flex items-center gap-1">
-                    <span className="size-2.5 rounded bg-zinc-200 border border-zinc-300" />
-                    <span className="text-zinc-600 dark:text-zinc-400 font-medium">{curT.legendClass}</span>
+                    <span className="size-2 sm:size-2.5 rounded bg-zinc-200 border border-zinc-300 shrink-0" />
+                    <span className="text-zinc-600 dark:text-zinc-400 font-medium truncate">{curT.legendClass}</span>
                   </span>
                   <span className="flex items-center gap-1 font-bold text-red-600 dark:text-red-400">
-                    <span className="size-2.5 rounded border-2 border-red-500 bg-red-100" />
-                    <span>{curT.legendVisited}</span>
+                    <span className="size-2 sm:size-2.5 rounded border-2 border-red-500 bg-red-100 shrink-0" />
+                    <span className="truncate">{curT.legendVisited}</span>
                   </span>
                   <span className="flex items-center gap-1 font-bold text-sky-600 dark:text-sky-400">
-                    <span className="size-2.5 rounded border-2 border-sky-400 bg-sky-100" />
-                    <span>{curT.legendConfirmed}</span>
+                    <span className="size-2 sm:size-2.5 rounded border-2 border-sky-400 bg-sky-100 shrink-0" />
+                    <span className="truncate">{curT.legendConfirmed}</span>
                   </span>
                   <span className="flex items-center gap-1 font-bold text-purple-600 dark:text-purple-400">
-                    <span className="size-2.5 rounded border-2 border-purple-400 bg-purple-100" />
-                    <span>{curT.legendPlanned}</span>
+                    <span className="size-2 sm:size-2.5 rounded border-2 border-purple-400 bg-purple-100 shrink-0" />
+                    <span className="truncate">{curT.legendPlanned}</span>
                   </span>
                 </div>
               </CardHeader>
 
-              <CardContent className="p-3">
-                {/* Weekday headers */}
-                <div className="grid grid-cols-7 gap-1 pb-1.5 text-center text-xs font-bold text-zinc-500">
-                  {curT.weekdays.map((w, idx) => (
-                    <div
-                      key={w}
-                      className={cn(
-                        idx === 6 && 'text-rose-500',
-                        idx === 5 && 'text-zinc-400'
-                      )}
-                    >
-                      {w}
+              <CardContent className="p-2 sm:p-3">
+                {viewMode === 'calendar' ? (
+                  <>
+                    {/* Weekday headers */}
+                    <div className="grid grid-cols-7 gap-1 pb-1 text-center text-xs font-bold text-zinc-500">
+                      {curT.weekdays.map((w, idx) => (
+                        <div
+                          key={w}
+                          className={cn(
+                            idx === 6 && 'text-rose-500',
+                            idx === 5 && 'text-zinc-400'
+                          )}
+                        >
+                          {w}
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
 
-                {/* Grid days */}
-                <div className="grid grid-cols-7 gap-1">
-                  {/* Padding previous month */}
-                  {Array.from({ length: (curMonth.startDay + 6) % 7 }).map((_, idx) => (
-                    <div key={`empty-${idx}`} className="h-20 rounded border border-transparent bg-zinc-50/20 opacity-30" />
-                  ))}
+                    {/* Grid days */}
+                    <div className="grid grid-cols-7 gap-1">
+                      {/* Padding previous month */}
+                      {Array.from({ length: (curMonth.startDay + 6) % 7 }).map((_, idx) => (
+                        <div key={`empty-${idx}`} className="h-14 sm:h-20 rounded border border-transparent bg-zinc-50/20 opacity-30" />
+                      ))}
 
-                  {/* Month days */}
-                  {Array.from({ length: curMonth.days }).map((_, idx) => {
-                    const dayNum = idx + 1
-                    const dateStr = `${curMonth.year}-${String(curMonth.month).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`
-                    const dayOfWeek = (curMonth.startDay + idx) % 7 // 0=Sun, 1=Mon, ..., 6=Sat
-                    const status = getDateStatus(dateStr)
-                    const isSelected = selectedDate === dateStr
-                    const isToday = dateStr === todayStr
-                    const trip = status.trip
+                      {/* Month days */}
+                      {Array.from({ length: curMonth.days }).map((_, idx) => {
+                        const dayNum = idx + 1
+                        const dateStr = `${curMonth.year}-${String(curMonth.month).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`
+                        const dayOfWeek = (curMonth.startDay + idx) % 7 // 0=Sun, 1=Mon, ..., 6=Sat
+                        const status = getDateStatus(dateStr)
+                        const isSelected = selectedDate === dateStr
+                        const isToday = dateStr === todayStr
+                        const trip = status.trip
 
-                    const destName = trip ? (lang === 'en' ? trip.destinationEn : trip.destination) : ''
+                        const destName = trip ? (lang === 'en' ? trip.destinationEn : trip.destination) : ''
 
-                    return (
-                      <div
-                        key={dateStr}
-                        onClick={() => setSelectedDate(dateStr)}
-                        className={cn(
-                          'h-20 rounded border p-1.5 text-xs transition-all cursor-pointer flex flex-col justify-between relative',
-                          status.bgClass,
-                          // ⭐️ 오늘 날짜 박스 강조 표시 (선명한 파란색 박스만 적용)
-                          isToday && 'border-2 !border-blue-600 shadow-md ring-2 ring-blue-500/40 z-10',
-                          isSelected && 'ring-2 ring-indigo-600 shadow-md'
-                        )}
-                      >
-                        <div className="flex items-center justify-between">
-                          <span
+                        return (
+                          <div
+                            key={dateStr}
+                            onClick={() => setSelectedDate(dateStr)}
                             className={cn(
-                              'font-bold',
-                              dayOfWeek === 0 && 'text-rose-600 dark:text-rose-400',
-                              trip?.category === 'visited' && 'text-red-700 font-extrabold',
-                              trip?.category === 'confirmed' && 'text-sky-800 dark:text-sky-200 font-extrabold',
-                              trip?.category === 'planned' && 'text-purple-800 dark:text-purple-200 font-extrabold',
-                              isToday && 'text-blue-700 dark:text-blue-300 font-black'
+                              'h-14 sm:h-20 rounded border p-1 sm:p-1.5 text-xs transition-all cursor-pointer flex flex-col justify-between relative overflow-hidden select-none',
+                              status.bgClass,
+                              // ⭐️ 오늘 날짜 박스 강조 표시 (선명한 파란색 박스만 적용)
+                              isToday && 'border-2 !border-blue-600 shadow-md ring-2 ring-blue-500/40 z-10',
+                              isSelected && 'ring-2 ring-indigo-600 shadow-md'
                             )}
                           >
-                            {dayNum}
-                          </span>
+                            {/* 상단 행: 날짜 숫자 + (데스크톱: 뱃지 / 모바일: 수업 인디케이터 점) */}
+                            <div className="flex items-start justify-between gap-0.5">
+                              <span
+                                className={cn(
+                                  'text-xs sm:text-sm font-bold leading-none',
+                                  dayOfWeek === 0 && 'text-rose-600 dark:text-rose-400',
+                                  trip?.category === 'visited' && 'text-red-700 font-extrabold',
+                                  trip?.category === 'confirmed' && 'text-sky-800 dark:text-sky-200 font-extrabold',
+                                  trip?.category === 'planned' && 'text-purple-800 dark:text-purple-200 font-extrabold',
+                                  isToday && 'text-blue-700 dark:text-blue-300 font-black'
+                                )}
+                              >
+                                {dayNum}
+                              </span>
 
-                          {/* Badge based on trip type or class status */}
-                          {trip ? (
-                            <span className={cn('text-[9px] font-bold px-1 py-0.2 rounded shadow-2xs truncate max-w-[85px]', status.badgeClass)}>
-                              {destName}
-                            </span>
-                          ) : (
-                            <span className={cn('text-[9px] font-bold px-1 rounded', status.badgeClass)}>
-                              {status.label}
-                            </span>
+                              {/* 데스크톱 전용 뱃지 (sm 이상에서만 노출) */}
+                              <div className="hidden sm:block">
+                                {trip ? (
+                                  <span className={cn('text-[9px] font-bold px-1 py-0.2 rounded shadow-2xs truncate max-w-[85px] block', status.badgeClass)}>
+                                    {destName}
+                                  </span>
+                                ) : (
+                                  <span className={cn('text-[9px] font-bold px-1 rounded block', status.badgeClass)}>
+                                    {status.label}
+                                  </span>
+                                )}
+                              </div>
+
+                              {/* 모바일 전용 인디케이터 (수업 닷) */}
+                              <div className="sm:hidden flex items-center gap-0.5">
+                                {!trip && status.type === 'zoom' && (
+                                  <span className="size-1.5 rounded-full bg-amber-500 shrink-0" title="Zoom" />
+                                )}
+                                {!trip && status.type === 'class' && (
+                                  <span className="size-1.5 rounded-full bg-zinc-500 shrink-0" title="Class" />
+                                )}
+                              </div>
+                            </div>
+
+                            {/* 모바일 여행 뱃지 (모바일에서 세로로 깨지지 않게 깔끔한 1줄 뱃지) */}
+                            {trip && (
+                              <div className="sm:hidden my-auto w-full">
+                                <div
+                                  className={cn(
+                                    'text-[8px] font-black px-0.5 py-0.5 rounded text-center truncate tracking-tighter leading-none shadow-2xs block w-full whitespace-nowrap overflow-hidden',
+                                    status.badgeClass
+                                  )}
+                                >
+                                  {trip.category === 'visited' && '✓ ' + destName}
+                                  {trip.category === 'confirmed' && '✈ ' + destName}
+                                  {trip.category === 'planned' && '💡 ' + destName}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* 데스크톱 본문: 상세 텍스트 (모바일에서는 숨겨서 세로 쪼개짐 원천 차단) */}
+                            <div className="hidden sm:block overflow-hidden">
+                              {trip ? (
+                                <div className="text-[10px] font-bold leading-tight truncate">
+                                  {trip.category === 'visited' && (
+                                    <span className="text-red-700 dark:text-red-300">{curT.tagVisited} ({destName})</span>
+                                  )}
+                                  {trip.category === 'confirmed' && (
+                                    <span className="text-sky-700 dark:text-sky-300">{curT.tagConfirmed} ({destName})</span>
+                                  )}
+                                  {trip.category === 'planned' && (
+                                    <span className="text-purple-700 dark:text-purple-300">{curT.tagPlanned} ({destName})</span>
+                                  )}
+                                  {status.classes.length > 0 && (
+                                    <span className="block text-[9px] font-normal opacity-85 truncate">
+                                      {curT.classPrefix}{status.classes[0].course.split(' ')[0]}
+                                    </span>
+                                  )}
+                                </div>
+                              ) : status.classes.length > 0 ? (
+                                <div className="text-[10px] leading-tight opacity-90 truncate font-medium">
+                                  {status.classes[0].course.split(' ')[0]} {status.classes.length > 1 && `+${status.classes.length - 1}`}
+                                </div>
+                              ) : (
+                                <div className="text-[10px] text-emerald-700/70 dark:text-emerald-300/70 truncate">
+                                  {dayOfWeek === 0 || dayOfWeek === 6 ? curT.weekend : curT.freeDay}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+
+                    {/* 모바일 힌트 문구 */}
+                    <div className="sm:hidden text-center pt-2 text-[10px] text-zinc-400">
+                      {curT.mobileTip}
+                    </div>
+                  </>
+                ) : (
+                  /* ⭐️ Agenda View: 모바일에서 스크롤하며 보기 편한 월간 일정표 */
+                  <div className="flex flex-col gap-2 max-h-[480px] overflow-y-auto pr-1">
+                    {/* 이번 달 주요 여행 목록 */}
+                    <div className="rounded-lg bg-zinc-50 dark:bg-zinc-850 p-2.5 border border-zinc-200 dark:border-zinc-700">
+                      <div className="text-xs font-bold text-zinc-900 dark:text-zinc-100 mb-1.5 flex items-center gap-1.5">
+                        <Compass className="size-3.5 text-indigo-600" />
+                        <span>{curT.agendaTrips}</span>
+                      </div>
+                      {(() => {
+                        const monthPrefix = `${curMonth.year}-${String(curMonth.month).padStart(2, '0')}`
+                        const monthTrips = scheduledTrips.filter(
+                          (t) => (t.startDate <= `${monthPrefix}-31` && t.endDate >= `${monthPrefix}-01`)
+                        )
+                        if (monthTrips.length === 0) {
+                          return <div className="text-xs text-zinc-400 py-1">{curT.noTripsThisMonth}</div>
+                        }
+                        return (
+                          <div className="flex flex-col gap-1.5">
+                            {monthTrips.map((t) => {
+                              const dest = lang === 'en' ? t.destinationEn : t.destination
+                              const note = lang === 'en' ? t.noteEn : t.note
+                              const isVisited = t.category === 'visited'
+                              const isConfirmed = t.category === 'confirmed'
+                              return (
+                                <div
+                                  key={t.id}
+                                  onClick={() => setSelectedDate(t.startDate)}
+                                  className={cn(
+                                    'p-2 rounded-md border text-xs cursor-pointer flex items-center justify-between',
+                                    isVisited && 'bg-red-50/80 border-red-300 text-red-950 dark:bg-red-950/40 dark:border-red-800 dark:text-red-200',
+                                    isConfirmed && 'bg-sky-50/80 border-sky-300 text-sky-950 dark:bg-sky-950/40 dark:border-sky-800 dark:text-sky-200',
+                                    !isVisited && !isConfirmed && 'bg-purple-50/80 border-purple-300 text-purple-950 dark:bg-purple-950/40 dark:border-purple-800 dark:text-purple-200'
+                                  )}
+                                >
+                                  <div>
+                                    <div className="font-bold flex items-center gap-1">
+                                      {isVisited && '🚩'}
+                                      {isConfirmed && '✈️'}
+                                      {!isVisited && !isConfirmed && '💡'}
+                                      <span>{dest}</span>
+                                      <span className="text-[10px] font-normal opacity-80">({note})</span>
+                                    </div>
+                                    <div className="text-[10px] opacity-75">
+                                      {t.startDate.slice(5)} ~ {t.endDate.slice(5)}
+                                    </div>
+                                  </div>
+                                  <Badge
+                                    className={cn(
+                                      'text-[10px] font-bold text-white',
+                                      isVisited && 'bg-red-600',
+                                      isConfirmed && 'bg-sky-500',
+                                      !isVisited && !isConfirmed && 'bg-purple-600'
+                                    )}
+                                  >
+                                    {isVisited ? curT.tagVisited : isConfirmed ? curT.tagConfirmed : curT.tagPlanned}
+                                  </Badge>
+                                </div>
+                              )
+                            })}
+                          </div>
+                        )
+                      })()}
+                    </div>
+
+                    {/* 일자별 전체 타임라인 */}
+                    <div className="text-xs font-bold text-zinc-900 dark:text-zinc-100 mt-1 mb-0.5">
+                      {curT.agendaClasses} ({curMonth.year}.{curMonth.month})
+                    </div>
+                    {Array.from({ length: curMonth.days }).map((_, idx) => {
+                      const dayNum = idx + 1
+                      const dateStr = `${curMonth.year}-${String(curMonth.month).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`
+                      const dayOfWeek = (curMonth.startDay + idx) % 7
+                      const status = getDateStatus(dateStr)
+                      const isSelected = selectedDate === dateStr
+                      const isToday = dateStr === todayStr
+                      const trip = status.trip
+
+                      return (
+                        <div
+                          key={dateStr}
+                          onClick={() => setSelectedDate(dateStr)}
+                          className={cn(
+                            'p-2 rounded-md border text-xs cursor-pointer flex items-center justify-between transition-all',
+                            status.bgClass,
+                            isToday && 'border-2 !border-blue-600 ring-2 ring-blue-500/30',
+                            isSelected && 'ring-2 ring-indigo-600 shadow-xs'
                           )}
-                        </div>
-
-                        {/* Trip label or Class preview */}
-                        <div className="overflow-hidden">
-                          {trip ? (
-                            <div className="text-[10px] font-bold leading-tight truncate">
-                              {trip.category === 'visited' && (
-                                <span className="text-red-700 dark:text-red-300">{curT.tagVisited} ({destName})</span>
+                        >
+                          <div className="flex items-center gap-2">
+                            <span
+                              className={cn(
+                                'font-bold w-12 text-center text-xs shrink-0',
+                                dayOfWeek === 0 && 'text-rose-600',
+                                dayOfWeek === 6 && 'text-zinc-500'
                               )}
-                              {trip.category === 'confirmed' && (
-                                <span className="text-sky-700 dark:text-sky-300">{curT.tagConfirmed} ({destName})</span>
-                              )}
-                              {trip.category === 'planned' && (
-                                <span className="text-purple-700 dark:text-purple-300">{curT.tagPlanned} ({destName})</span>
-                              )}
-                              {status.classes.length > 0 && (
-                                <span className="block text-[9px] font-normal opacity-85">
-                                  {curT.classPrefix}{status.classes[0].course.split(' ')[0]}
+                            >
+                              {curMonth.month}/{dayNum} ({curT.dayOfWeekNames[dayOfWeek]})
+                            </span>
+                            <div className="flex flex-col">
+                              {trip ? (
+                                <span className="font-bold text-xs">
+                                  {trip.category === 'visited' && '🚩 '}
+                                  {trip.category === 'confirmed' && '✈️ '}
+                                  {trip.category === 'planned' && '💡 '}
+                                  {lang === 'en' ? trip.destinationEn : trip.destination}
+                                  <span className="text-[10px] font-normal ml-1 opacity-80">
+                                    ({lang === 'en' ? trip.noteEn : trip.note})
+                                  </span>
+                                </span>
+                              ) : status.classes.length > 0 ? (
+                                <span className="font-semibold text-xs text-zinc-800 dark:text-zinc-200">
+                                  {status.classes.map((c) => `${c.course.split(' ')[0]} (${c.time})`).join(', ')}
+                                </span>
+                              ) : (
+                                <span className="text-emerald-700 dark:text-emerald-400 font-medium text-xs">
+                                  {dayOfWeek === 0 || dayOfWeek === 6 ? curT.weekend : curT.freeDay}
                                 </span>
                               )}
                             </div>
-                          ) : status.classes.length > 0 ? (
-                            <div className="text-[10px] leading-tight opacity-90 truncate font-medium">
-                              {status.classes[0].course.split(' ')[0]} {status.classes.length > 1 && `+${status.classes.length - 1}`}
-                            </div>
-                          ) : (
-                            <div className="text-[10px] text-emerald-700/70 dark:text-emerald-300/70">
-                              {dayOfWeek === 0 || dayOfWeek === 6 ? curT.weekend : curT.freeDay}
-                            </div>
-                          )}
+                          </div>
+
+                          <Badge variant="outline" className={cn('text-[9px] font-bold shrink-0', status.badgeClass)}>
+                            {status.label}
+                          </Badge>
                         </div>
-                      </div>
-                    )
-                  })}
-                </div>
+                      )
+                    })}
+                  </div>
+                )}
               </CardContent>
             </Card>
 
             {/* Selected Date Inspector (간단한 날짜 상태 정보) */}
             {dateInfo && (
-              <div className="rounded-lg border border-zinc-200 bg-white p-3.5 text-xs text-zinc-700 dark:border-zinc-800 dark:bg-[#13161f] dark:text-zinc-300 flex items-center justify-between">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="font-bold text-zinc-900 dark:text-zinc-100">
+              <div className="rounded-lg border border-zinc-200 bg-white p-3 sm:p-3.5 text-xs text-zinc-700 dark:border-zinc-800 dark:bg-[#13161f] dark:text-zinc-300 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                  <span className="font-bold text-zinc-900 dark:text-zinc-100 text-xs sm:text-sm">
                     {dateInfo.date} ({dateInfo.dayOfWeek})
                   </span>
 
@@ -1200,7 +1416,7 @@ export function SemesterPlannerMain() {
                   </Badge>
 
                   {dateInfo.classes.length > 0 && (
-                    <span className="text-zinc-600 dark:text-zinc-400">
+                    <span className="text-zinc-600 dark:text-zinc-400 block sm:inline">
                       {curT.classPrefix}{dateInfo.classes.map((c) => `${c.course} (${c.time})`).join(', ')}
                     </span>
                   )}
@@ -1211,7 +1427,7 @@ export function SemesterPlannerMain() {
                     </span>
                   )}
                 </div>
-                <span className="text-[11px] text-zinc-400 hidden sm:inline">{curT.inspectorClickHelp}</span>
+                <span className="text-[11px] text-zinc-400 hidden sm:inline shrink-0">{curT.inspectorClickHelp}</span>
               </div>
             )}
           </div>
