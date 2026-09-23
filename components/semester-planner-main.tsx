@@ -465,21 +465,21 @@ export const travelIdeaRoutes: TravelIdeaRoute[] = [
     id: 'route-uk',
     num: 1,
     emoji: '🇬🇧',
-    titleKo: '영국 & 스코틀랜드 (런던 IN, OUT)',
-    titleEn: 'UK & Scotland (London IN/OUT)',
-    tagKo: '축구 직관 + 대자연',
-    tagEn: 'EPL & Highlands',
-    summaryKo: '런던 들어가고 축구 보고 스코틀랜드 구경, 이후 돌아오기',
-    summaryEn: 'Fly into London, watch a match, explore Scotland, and return via London',
+    titleKo: '영국 & 스코틀랜드',
+    titleEn: 'UK & Scotland',
+    tagKo: '런던 IN/OUT',
+    tagEn: 'London IN/OUT',
+    summaryKo: '런던 들어가서 축구 경기 보고 스코틀랜드 둘러본 뒤 런던에서 복귀하는 루트.',
+    summaryEn: 'Fly into London, watch a match, explore Scotland, and return via London.',
     detailsKo: [
-      '런던 입국 ➔ EPL 축구 경기 직관 & 시내 투어',
-      '중세 성곽 도시 요크 경유 ➔ 스코틀랜드 에든버러 성 & 아서스 시트',
-      '스카이섬 & 하이랜드(글렌코, 네스호) 대자연 탐방 후 런던 OUT 복귀',
+      '런던 입국 후 축구 경기 관람 및 시내 이동',
+      '요크 경유 후 에든버러 이동',
+      '스카이섬 / 하이랜드 이동 후 런던 복귀',
     ],
     detailsEn: [
-      'Fly into London ➔ Premier League match & city stroll',
-      'Medieval walled city York ➔ Edinburgh Castle & Arthur\'s Seat hike',
-      'Isle of Skye & Scottish Highlands epic road trip, then return via London',
+      'Arrive in London, watch football match & city transit',
+      'Transit through York to Edinburgh',
+      'Visit Isle of Skye / Highlands and return to London',
     ],
     targetMonthIdx: 1,
     targetDate: '2026-10-13',
@@ -488,128 +488,126 @@ export const travelIdeaRoutes: TravelIdeaRoute[] = [
     id: 'route-train',
     num: 2,
     emoji: '🚆',
-    titleKo: '기차 낭만 여행 (레일로드 횡단)',
-    titleEn: 'Continental Scenic Train Journey',
-    tagKo: '유레일 / 북유럽➔서유럽',
-    tagEn: 'Eurail Corridor',
-    summaryKo: '웁살라에서 기차 타고 코펜하겐 -> 함부르크 -> 네덜란드 -> 벨기에',
-    summaryEn: 'Train from Uppsala to Copenhagen ➔ Hamburg ➔ Netherlands ➔ Belgium',
+    titleKo: '기차 이동 (서유럽 루트)',
+    titleEn: 'Train Route (Western Europe)',
+    tagKo: '기차 이동',
+    tagEn: 'Train Transit',
+    summaryKo: '웁살라에서 출발해 기차로 코펜하겐, 함부르크, 네덜란드, 벨기에 순으로 이동하는 루트.',
+    summaryEn: 'Train from Uppsala through Copenhagen, Hamburg, Netherlands, and Belgium.',
     detailsKo: [
-      '비행기 대신 유럽 기차(SJ, DSB, DB)로 유럽 대륙을 횡단하는 낭만 코스!',
-      '스웨덴 웁살라 출발 ➔ 덴마크 코펜하겐 ➔ 독일 함부르크 항구 야경',
-      '암스테르담 운하 및 미술관 ➔ 벨기에 브뤼셀 & 중세 운하 마을 브뤼허',
+      '웁살라 ➔ 코펜하겐 ➔ 함부르크 기차 이동',
+      '네덜란드 (암스테르담 등) 경유',
+      '벨기에 (브뤼셀, 브뤼허 등) 이동',
     ],
     detailsEn: [
-      'Scenic overland continental train odyssey without flight hassles!',
-      'Uppsala ➔ Copenhagen ➔ Hamburg historic harbor & Speicherstadt',
-      'Amsterdam canal belt ➔ Brussels Grand Place & fairy-tale Bruges',
+      'Train route: Uppsala ➔ Copenhagen ➔ Hamburg',
+      'Transit through the Netherlands (Amsterdam, etc.)',
+      'Transit through Belgium (Brussels, Bruges, etc.)',
     ],
   },
   {
     id: 'route-east-europe',
     num: 3,
     emoji: '🏰',
-    titleKo: '동유럽 여행 (오스트리아·헝가리·체코·슬로바키아)',
-    titleEn: 'Central & Eastern Europe Classic',
-    tagKo: '★헝가리 친구 접선 예정!',
-    tagEn: '★Meet Friend in Hungary!',
-    summaryKo: '오스트리아, 헝가리, 체코, 슬로바키아. 이때 헝가리에서는 만나야 하는 친구 있음.',
-    summaryEn: 'Austria, Hungary, Czechia, Slovakia. Meeting a good friend in Hungary!',
+    titleKo: '동유럽 (오스트리아·헝가리·체코·슬로바키아)',
+    titleEn: 'Central & Eastern Europe',
+    tagKo: '헝가리 친구 만남',
+    tagEn: 'Meeting Friend in Hungary',
+    summaryKo: '오스트리아, 헝가리, 체코, 슬로바키아. 헝가리에서 만날 친구 있음.',
+    summaryEn: 'Austria, Hungary, Czechia, Slovakia. Planning to meet a friend in Hungary.',
     detailsKo: [
-      '기차(ÖBB/RegioJet)로 직결되는 중동유럽 골든 동선',
-      '프라하 카를교 야경 ➔ 빈 합스부르크 궁전 & 미술관 ➔ 브라티슬라바',
-      '부다페스트 국회의사당 야경 & 온천 (★헝가리에서 현지 친구와 만날 예정!)',
+      '빈, 프라하, 브라티슬라바, 부다페스트 연계',
+      '기차 이동 중심 동선',
+      '헝가리에서 현지 친구 만나는 일정 포함',
     ],
     detailsEn: [
-      'Direct rail links across four imperial central European capitals',
-      'Prague Charles Bridge ➔ Vienna palaces ➔ Bratislava Old Town',
-      'Budapest Parliament illuminations & baths (★Meeting a friend in Hungary!)',
+      'Connect Vienna, Prague, Bratislava, and Budapest by rail',
+      'Standard rail travel itinerary',
+      'Includes schedule to meet a friend in Hungary',
     ],
   },
   {
     id: 'route-germany',
     num: 4,
     emoji: '🇩🇪',
-    titleKo: '독일 여행 (다양한 도시 & 유연한 연계)',
-    titleEn: 'Germany Multi-City Exploration',
-    tagKo: '벨기에/체코 이동 시 연계',
-    tagEn: 'Flexible Route Links',
-    summaryKo: '베를린, 드레스덴, 뮌헨 등 여러 도시를 갈 건데, 벨기에를 갈 때 독일 서부를, 체코를 갈 때 독일 동부를 갈 생각도 있음.',
-    summaryEn: 'Berlin, Dresden, Munich, etc. Flexible linking: West Germany with Belgium, East Germany with Czechia.',
+    titleKo: '독일 (도시 연계)',
+    titleEn: 'Germany (City Connections)',
+    tagKo: '경유 연계 가능',
+    tagEn: 'Transit Option',
+    summaryKo: '베를린, 드레스덴, 뮌헨 등. 벨기에 갈 때 서부 경유, 체코 갈 때 동부 경유 가능.',
+    summaryEn: 'Berlin, Dresden, Munich, etc. Flexible linking with Belgium (West) or Czechia (East).',
     detailsKo: [
-      '베를린 현대사/문화, 드레스덴 고전 건축 & 겨울 크리스마스 마켓, 뮌헨 전통',
-      '벨기에 갈 때: 쾰른/뒤셀도르프 등 독일 서부를 묶어서 이동',
-      '체코 갈 때: 드레스덴/라이프치히 등 독일 동부를 묶어서 이동',
+      '베를린, 드레스덴, 뮌헨 등 주요 도시',
+      '벨기에 방향 이동 시 독일 서부(쾰른 등) 경유',
+      '체코 방향 이동 시 독일 동부(드레스덴 등) 경유',
     ],
     detailsEn: [
-      'Berlin modern history & culture, Dresden Christmas market, Munich beer halls',
-      'When heading to Belgium: link with Western Germany (Cologne/Düsseldorf)',
-      'When heading to Czechia: link with Eastern Germany (Dresden/Leipzig)',
+      'Major cities like Berlin, Dresden, and Munich',
+      'Route via Western Germany if traveling toward Belgium',
+      'Route via Eastern Germany if traveling toward Czechia',
     ],
   },
   {
     id: 'route-ancient',
     num: 5,
     emoji: '🏺',
-    titleKo: '터키, 그리스, 이집트 (신화와 고대 문명)',
-    titleEn: 'Türkiye, Greece & Egypt (Ancient Civilizations)',
-    tagKo: '누구든 대환영! (한국/유럽 친구)',
-    tagEn: 'All Friends Welcome!',
-    summaryKo: '웁살라에서 친해진 친구여도 좋고 한국에서 오는 친구여도 좋음.',
-    summaryEn: 'Great with international friends made in Uppsala or friends flying from Korea!',
+    titleKo: '터키, 그리스, 이집트',
+    titleEn: 'Türkiye, Greece & Egypt',
+    tagKo: '일정 조율 가능',
+    tagEn: 'Flexible Schedule',
+    summaryKo: '터키, 그리스, 이집트 중 일정 맞는 곳. 웁살라 친구든 한국에서 오는 친구든 가능.',
+    summaryEn: 'Visit destinations that fit the schedule. Open to friends from Uppsala or Korea.',
     detailsKo: [
-      '이스탄불 성 소피아/보스포루스 해협 + 카파도키아 일출 열기구 투어',
-      '아테네 아크로폴리스 + 기암괴석 위 공중 수도원 메테오라',
-      '카이로 기자 피라미드 + 룩소르 왕가의 계곡 (12~1월이 1년 중 가장 쾌적한 여행 적기!)',
-      '웁살라에서 사귄 교환학생 친구든, 한국에서 날아올 친구든 누구든 환영!',
+      '터키: 이스탄불, 카파도키아 등',
+      '그리스: 아테네, 메테오라 등',
+      '이집트: 카이로, 룩소르 등 (겨울 시즌)',
     ],
     detailsEn: [
-      'Hagia Sophia & Bosphorus in Istanbul + Cappadocia hot air balloon flight',
-      'Athens Acropolis + surreal cliff-top monasteries of Meteora',
-      'Cairo Great Pyramids + Luxor Valley of the Kings (pleasant winter season)',
-      'Open to any friends from Uppsala or friends flying in from Korea!',
+      'Türkiye: Istanbul, Cappadocia, etc.',
+      'Greece: Athens, Meteora, etc.',
+      'Egypt: Cairo, Luxor, etc. (winter season)',
     ],
   },
   {
     id: 'route-musical',
     num: 6,
     emoji: '🎭',
-    titleKo: '뮤지컬 & 콘서트 문화 투어',
-    titleEn: 'World-Class Musicals & Shows',
-    tagKo: '런던 / 뉴욕 필수 관람',
-    tagEn: 'West End & Broadway',
-    summaryKo: '영국이나 미국을 간다면 뮤지컬을 볼 생각이 있음.',
-    summaryEn: 'Definitely planning to watch world-class musicals if visiting the UK or US.',
+    titleKo: '뮤지컬 관람',
+    titleEn: 'Musicals & Shows',
+    tagKo: '영국 / 미국',
+    tagEn: 'UK / US',
+    summaryKo: '영국이나 미국 쪽으로 갈 경우 현지에서 뮤지컬 관람.',
+    summaryEn: 'Watch musicals if traveling to the UK or the US.',
     detailsKo: [
-      '영국 런던 웨스트엔드: 오페라의 유령, 레미제라블, 위키드 등 오리지널 시어터 관람',
-      '미국 뉴욕 방문 시: 타임스스퀘어 브로드웨이 뮤지컬 및 콘서트 직관',
-      '공연/음악을 좋아하는 친구들과 함께 현지 예매 후 문화 예술 투어 즐기기',
+      '영국 방문 시 런던 웨스트엔드 공연 관람',
+      '미국 방문 시 브로드웨이 뮤지컬 관람',
+      '공연 일정에 맞춰 예매 진행',
     ],
     detailsEn: [
-      'London West End: legendary productions of Phantom, Les Misérables, Wicked',
-      'New York Broadway: world-famous theater district in Times Square',
-      'A memorable experience to share with fellow arts & music lovers',
+      'West End shows if visiting London',
+      'Broadway shows if visiting New York',
+      'Book according to performance schedules',
     ],
   },
   {
     id: 'route-pgw',
     num: 7,
     emoji: '🎮',
-    titleKo: '파리게임위크 (Paris Games Week 2026)',
-    titleEn: 'Paris Games Week 2026',
-    tagKo: '★10/22 ~ 10/25 (수업 없음!)',
-    tagEn: '★Oct 22-25 (Zero Classes!)',
-    summaryKo: '10/22~10/25까지 진행되는 파리게임위크 구경 갈 생각이 있음.',
-    summaryEn: 'Planning to visit Paris Games Week happening between Oct 22 and Oct 25.',
+    titleKo: '파리게임위크 (Paris Games Week)',
+    titleEn: 'Paris Games Week',
+    tagKo: '10/22 ~ 10/25',
+    tagEn: 'Oct 22 - 25',
+    summaryKo: '10/22~10/25 기간에 열리는 파리게임위크 관람.',
+    summaryEn: 'Visit Paris Games Week held during Oct 22–25.',
     detailsKo: [
-      '유럽 최대 규모의 비디오 게임 박람회 Paris Games Week 참관!',
-      '★황금 타이밍: 10/22(목)부터 10/25(일)까지 4일 연속 수업이 전혀 없는 일정!',
-      '신작 게임 체험 + 가을 파리 시내(에펠탑, 루브르, 센강) 산책 병행 코스',
+      '10/22(목) ~ 10/25(일) 수업 없는 일정 활용',
+      '파리게임위크 전시장 관람',
+      '파리 시내 일정 병행',
     ],
     detailsEn: [
-      'One of Europe’s premier video game expos held in Paris!',
-      '★Perfect timing: Oct 22 (Thu) to Oct 25 (Sun) has ZERO classes scheduled!',
-      'Combine gaming expo excitement with romantic autumn Paris strolls',
+      'Oct 22 (Thu) – Oct 25 (Sun) without classes',
+      'Visit Paris Games Week expo',
+      'Paris city sightseeing',
     ],
     targetMonthIdx: 1,
     targetDate: '2026-10-22',
@@ -618,42 +616,38 @@ export const travelIdeaRoutes: TravelIdeaRoute[] = [
     id: 'route-football',
     num: 8,
     emoji: '⚽',
-    titleKo: '각종 유럽 축구 경기 직관',
-    titleEn: 'Live European Football Matches',
+    titleKo: '유럽 축구 경기 직관',
+    titleEn: 'European Football Matches',
     tagKo: 'EPL / 분데스리가 / UCL',
-    tagEn: 'Stadium Passion',
-    summaryKo: '유럽에 온 이상 축구 경기 직관을 하고 가고 싶음.',
-    summaryEn: 'Since I am in Europe, experiencing live European football in a packed stadium is a must.',
+    tagEn: 'EPL / Bundesliga / UCL',
+    summaryKo: '유럽에 있는 동안 현지 축구 경기 직관.',
+    summaryEn: 'Watch a live football match while in Europe.',
     detailsKo: [
-      '영국 프리미어리그(EPL): 런던, 맨체스터, 리버풀 구단 홈경기 직관',
-      '독일 분데스리가(바이에른 뮌헨, 도르트문트) 또는 UEFA 챔피언스리그 경기',
-      '현지 서포터들의 압도적인 응원 열기와 스타디움 투어 체감하기',
+      '영국 EPL, 독일 분데스리가 또는 챔피언스리그 경기',
+      '경기 일정 및 티켓 상황에 따라 조율',
     ],
     detailsEn: [
-      'English Premier League (EPL): electric atmospheres in London or Manchester',
-      'German Bundesliga or UEFA Champions League evening fixtures',
-      'Chanting with local fans and taking historic club stadium tours',
+      'Premier League, Bundesliga, or Champions League matches',
+      'Coordinate based on schedule and ticket availability',
     ],
   },
   {
     id: 'route-easygoing',
     num: 9,
     emoji: '🙋‍♂️',
-    titleKo: '기타 등등 (★가면감맨 모드★)',
-    titleEn: 'Anything Goes (★"If You Go, I Go!" Mode★)',
-    tagKo: '무조건 콜! / 시간만 되면 감',
-    tagEn: '100% Down to Travel!',
-    summaryKo: '사실 친구랑 가기만 하면 뭘 하든지 좋아하는 가면감맨이라서 시간만 된다면 무조건 감.',
-    summaryEn: 'Honestly, I love doing whatever as long as I go with friends! If time aligns, I am 100% in.',
+    titleKo: '기타 일정',
+    titleEn: 'Other Ideas',
+    tagKo: '일정 조율 가능',
+    tagEn: 'Flexible',
+    summaryKo: '시간 맞으면 어디든 상관없이 같이 갈 수 있음.',
+    summaryEn: 'Open to traveling anywhere if schedules align.',
     detailsKo: [
-      '어디든 좋은 친구들과 함께라면 200% 즐길 준비 완료!',
-      '위 리스트 외에도 "나 이때 여기 갈 건데 같이 갈래?" 제안 대환영!',
-      '달력에서 초록색(수업 없음)이나 주황색(온라인 줌) 날짜 보이면 편하게 찔러봐줘!',
+      '위 목록 외 다른 여행지 제안도 가능',
+      '달력에서 수업 없는 날이나 줌 수업 날짜 맞춰서 조율',
     ],
     detailsEn: [
-      'Always ready to have a blast anywhere as long as the company is great!',
-      'Have another destination in mind? Just invite me: "Want to join me for this?"',
-      'Spot green (no class) or orange (Zoom only) days on my calendar? Reach out anytime!',
+      'Open to destinations outside this list',
+      'Coordinate based on free days or online Zoom days on calendar',
     ],
   },
 ]
@@ -812,12 +806,12 @@ export const translations = {
     agendaTrips: '이번 달 여행 일정',
     agendaClasses: '날짜별 상세 일정',
     noTripsThisMonth: '이번 달 등록된 여행 일정이 없습니다.',
-    routesSectionBadge: '💡 함께 떠날 친구 구함 🙌',
-    routesSectionTitle: '이런 코스를 생각 중이야! (여행 코스 & 테마 아이디어보드)',
-    routesSectionSubtitle: '친구들에게 나 이때 이런 여행을 갈 생각이 있다고 안내하기 위한 코스들입니다. 일정이 맞거나 관심 있는 코스가 있다면 언제든 편하게 말해줘!',
-    routesActionJoin: '이 코스 같이 갈래?',
-    routesActionCopied: '공유 링크 복사 완료!',
-    routesActionViewCalendar: '달력에서 일정 확인',
+    routesSectionBadge: '아이디어',
+    routesSectionTitle: '생각 중인 코스',
+    routesSectionSubtitle: '이건 그냥 아직 아이디어 정도.',
+    routesActionJoin: '일정 공유',
+    routesActionCopied: '복사 완료!',
+    routesActionViewCalendar: '달력에서 확인',
   },
   en: {
     siteTitle: 'Travel Idea Board',
@@ -868,11 +862,11 @@ export const translations = {
     agendaTrips: 'Trips This Month',
     agendaClasses: 'Daily Schedule',
     noTripsThisMonth: 'No trips scheduled for this month.',
-    routesSectionBadge: '💡 Looking for Travel Buddies 🙌',
-    routesSectionTitle: 'Travel Routes & Themes I\'m Considering',
-    routesSectionSubtitle: 'Here are the potential trip routes I have in mind to coordinate with friends. If your timing aligns or you\'re interested, let me know anytime!',
-    routesActionJoin: 'Want to join this trip?',
-    routesActionCopied: 'Share link copied!',
+    routesSectionBadge: 'Ideas',
+    routesSectionTitle: 'Routes Under Consideration',
+    routesSectionSubtitle: 'Just rough ideas for now.',
+    routesActionJoin: 'Share Link',
+    routesActionCopied: 'Copied!',
     routesActionViewCalendar: 'View on Calendar',
   },
 }
@@ -994,7 +988,7 @@ export function SemesterPlannerMain() {
     if (typeof window === 'undefined') return
     const title = lang === 'en' ? route.titleEn : route.titleKo
     const summary = lang === 'en' ? route.summaryEn : route.summaryKo
-    const textToCopy = `[${title}]\n${summary}\n\n👉 여행 일정 보드 확인하기: ${window.location.href}`
+    const textToCopy = `[${title}]\n${summary}\n\n여행 일정 보드: ${window.location.href}`
     navigator.clipboard.writeText(textToCopy)
     setRouteCopiedId(route.id)
     setTimeout(() => setRouteCopiedId(null), 2500)
@@ -1768,26 +1762,26 @@ export function SemesterPlannerMain() {
           </div>
         </div>
 
-        {/* 4. PROPOSED TRAVEL ROUTES & THEMES (이런 코스를 생각 중이야! 박스) */}
+        {/* 4. PROPOSED TRAVEL ROUTES & THEMES (생각 중인 코스) */}
         <section className="mt-8 rounded-2xl border border-zinc-200 bg-white p-5 sm:p-7 shadow-xs dark:border-zinc-800 dark:bg-[#13161f]">
           {/* Section Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-100 pb-4 dark:border-zinc-800">
             <div>
-              <div className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 px-3 py-1 text-xs font-bold text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300 mb-2">
-                <Sparkles className="size-3.5" />
+              <div className="inline-flex items-center gap-1.5 rounded-full bg-zinc-100 px-3 py-1 text-xs font-semibold text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300 mb-2">
+                <Compass className="size-3.5 text-zinc-500" />
                 <span>{curT.routesSectionBadge}</span>
               </div>
-              <h2 className="text-lg sm:text-xl font-extrabold text-zinc-900 dark:text-zinc-100">
+              <h2 className="text-lg sm:text-xl font-bold text-zinc-900 dark:text-zinc-100">
                 {curT.routesSectionTitle}
               </h2>
-              <p className="mt-1 text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-3xl">
+              <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed max-w-3xl">
                 {curT.routesSectionSubtitle}
               </p>
             </div>
 
             <div className="flex items-center gap-2 shrink-0 self-start sm:self-auto">
-              <span className="rounded-md bg-zinc-100 dark:bg-zinc-800 px-2.5 py-1 text-xs font-bold text-zinc-600 dark:text-zinc-300">
-                {travelIdeaRoutes.length} {lang === 'en' ? 'Themes' : '개 테마 코스'}
+              <span className="rounded-md bg-zinc-100 dark:bg-zinc-800 px-2.5 py-1 text-xs font-semibold text-zinc-600 dark:text-zinc-300">
+                {travelIdeaRoutes.length} {lang === 'en' ? 'Routes' : '개 코스'}
               </span>
             </div>
           </div>
@@ -1804,45 +1798,35 @@ export function SemesterPlannerMain() {
               return (
                 <div
                   key={route.id}
-                  className={cn(
-                    'group relative rounded-xl border p-4 transition-all flex flex-col justify-between',
-                    'border-zinc-200 bg-zinc-50/50 hover:border-indigo-400 hover:bg-white hover:shadow-md',
-                    'dark:border-zinc-800 dark:bg-zinc-900/40 dark:hover:border-indigo-500/60 dark:hover:bg-zinc-850/80',
-                    route.num === 9 && 'border-amber-300/80 bg-amber-50/40 dark:border-amber-800/60 dark:bg-amber-950/20'
-                  )}
+                  className="group relative rounded-xl border border-zinc-200 bg-zinc-50/50 hover:border-zinc-300 hover:bg-white hover:shadow-2xs transition-all flex flex-col justify-between p-4 dark:border-zinc-800 dark:bg-zinc-900/40 dark:hover:border-zinc-700 dark:hover:bg-zinc-850/80"
                 >
                   <div>
                     {/* Top Row: Emoji, Tag Badge */}
                     <div className="flex items-center justify-between gap-2 mb-2">
-                      <span className="text-2xl leading-none select-none">{route.emoji}</span>
+                      <span className="text-xl leading-none select-none">{route.emoji}</span>
                       <Badge
                         variant="secondary"
-                        className={cn(
-                          'text-[10px] font-bold px-2 py-0.5 rounded-full',
-                          route.num === 9
-                            ? 'bg-amber-200 text-amber-950 dark:bg-amber-900 dark:text-amber-100 font-black'
-                            : 'bg-indigo-50 text-indigo-700 dark:bg-indigo-950/80 dark:text-indigo-300'
-                        )}
+                        className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-zinc-100 text-zinc-700 border border-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:border-zinc-700"
                       >
                         {tag}
                       </Badge>
                     </div>
 
                     {/* Title */}
-                    <h3 className="font-extrabold text-sm text-zinc-900 dark:text-zinc-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                    <h3 className="font-bold text-sm text-zinc-900 dark:text-zinc-100 transition-colors">
                       {title}
                     </h3>
 
-                    {/* Summary Quote */}
-                    <div className="mt-2 rounded-md bg-white/90 dark:bg-zinc-800/90 p-2.5 border border-zinc-200/80 dark:border-zinc-700/60 text-xs font-bold text-zinc-800 dark:text-zinc-200 leading-snug">
-                      "{summary}"
+                    {/* Summary */}
+                    <div className="mt-2 rounded-md bg-white dark:bg-zinc-800/80 p-2.5 border border-zinc-200/70 dark:border-zinc-700/60 text-xs text-zinc-700 dark:text-zinc-300 leading-relaxed">
+                      {summary}
                     </div>
 
                     {/* Detail Bullets */}
                     <ul className="mt-3 space-y-1.5 text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
                       {details.map((detail, dIdx) => (
                         <li key={dIdx} className="flex items-start gap-1.5">
-                          <span className="text-indigo-500 dark:text-indigo-400 font-bold shrink-0 mt-0.5">•</span>
+                          <span className="text-zinc-400 font-bold shrink-0 mt-0.5">•</span>
                           <span>{detail}</span>
                         </li>
                       ))}
@@ -1856,7 +1840,7 @@ export function SemesterPlannerMain() {
                       <button
                         type="button"
                         onClick={() => handleViewOnCalendar(route.targetMonthIdx, route.targetDate)}
-                        className="flex items-center gap-1 text-[11px] font-bold text-indigo-600 dark:text-indigo-400 hover:underline"
+                        className="flex items-center gap-1 text-[11px] font-semibold text-zinc-700 dark:text-zinc-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:underline"
                         title={curT.routesActionViewCalendar}
                       >
                         <Calendar className="size-3.5" />
@@ -1868,13 +1852,13 @@ export function SemesterPlannerMain() {
                       </span>
                     )}
 
-                    {/* 같이 갈래? 복사 버튼 */}
+                    {/* 일정 공유 복사 버튼 */}
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => handleCopyRoute(route)}
                       className={cn(
-                        'h-7 px-2 text-[11px] font-bold gap-1 rounded transition-colors',
+                        'h-7 px-2 text-[11px] font-semibold gap-1 rounded transition-colors',
                         isCopied
                           ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
                           : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-750'
