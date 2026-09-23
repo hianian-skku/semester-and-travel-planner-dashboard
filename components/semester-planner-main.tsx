@@ -172,13 +172,24 @@ export const scheduledTrips: ScheduledTrip[] = [
     note: '한국 친구들 밴드 공연 구경',
     noteEn: 'Watching Korean friends\' band live concert',
   },
+  {
+    id: 'p-clair-obscur',
+    destination: '클레르 옵스퀴르 콘서트',
+    destinationEn: 'Clair Obscur Concert',
+    startDate: '2027-01-28',
+    endDate: '2027-01-28',
+    category: 'planned',
+    badgeText: '클레르 옵스퀴르 (고민 중)',
+    badgeTextEn: 'Clair Obscur (Considering)',
+    note: '토요일 친구들 공연 취소 시',
+    noteEn: 'Only if Saturday friends\' band concert is cancelled',
+  },
 ]
 
-// ⭐️ 회색 처리 날짜 목록 (1/26~1/29, 1/31)
+// ⭐️ 회색 처리 날짜 목록 (1/26, 1/27, 1/29, 1/31)
 export const blockedGrayDates: Record<string, { labelKo: string; labelEn: string; noteKo: string; noteEn: string }> = {
   '2027-01-26': { labelKo: '회색 처리', labelEn: 'Unavailable', noteKo: '개인 일정 (여행 불가)', noteEn: 'Personal Schedule (Unavailable)' },
   '2027-01-27': { labelKo: '회색 처리', labelEn: 'Unavailable', noteKo: '개인 일정 (여행 불가)', noteEn: 'Personal Schedule (Unavailable)' },
-  '2027-01-28': { labelKo: '회색 처리', labelEn: 'Unavailable', noteKo: '개인 일정 (여행 불가)', noteEn: 'Personal Schedule (Unavailable)' },
   '2027-01-29': { labelKo: '회색 처리', labelEn: 'Unavailable', noteKo: '개인 일정 (여행 불가)', noteEn: 'Personal Schedule (Unavailable)' },
   '2027-01-31': { labelKo: '회색 처리', labelEn: 'Unavailable', noteKo: '개인 일정 (여행 불가)', noteEn: 'Personal Schedule (Unavailable)' },
 }
@@ -1008,20 +1019,6 @@ export function SemesterPlannerMain() {
 
   // Helper: 날짜별 수업 상태 및 여행 상태 판정
   const getDateStatus = (dateStr: string) => {
-    // ⭐️ 회색 처리 날짜 (1/26~1/29, 1/31) 우선 판정
-    const grayItem = blockedGrayDates[dateStr]
-    if (grayItem) {
-      return {
-        type: 'gray' as const,
-        label: lang === 'en' ? grayItem.labelEn : grayItem.labelKo,
-        note: lang === 'en' ? grayItem.noteEn : grayItem.noteKo,
-        trip: null,
-        bgClass: 'bg-zinc-200/80 text-zinc-700 border-zinc-300 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:border-zinc-700',
-        badgeClass: 'bg-zinc-300 text-zinc-800 dark:bg-zinc-700 dark:text-zinc-200 font-semibold',
-        classes: [],
-      }
-    }
-
     // 여행 상태 판정 (우선순위: visited 빨강, confirmed 하늘, planned 보라)
     const trip = scheduledTrips.find((t) => dateStr >= t.startDate && dateStr <= t.endDate)
 
@@ -1062,6 +1059,20 @@ export function SemesterPlannerMain() {
           badgeClass: 'bg-purple-600 text-white font-bold dark:bg-purple-600 dark:text-white',
           classes,
         }
+      }
+    }
+
+    // ⭐️ 회색 처리 날짜 (1/26, 1/27, 1/29, 1/31) 판정
+    const grayItem = blockedGrayDates[dateStr]
+    if (grayItem) {
+      return {
+        type: 'gray' as const,
+        label: lang === 'en' ? grayItem.labelEn : grayItem.labelKo,
+        note: lang === 'en' ? grayItem.noteEn : grayItem.noteKo,
+        trip: null,
+        bgClass: 'bg-zinc-200/80 text-zinc-700 border-zinc-300 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:border-zinc-700',
+        badgeClass: 'bg-zinc-300 text-zinc-800 dark:bg-zinc-700 dark:text-zinc-200 font-semibold',
+        classes: [],
       }
     }
 
@@ -1405,7 +1416,7 @@ export function SemesterPlannerMain() {
                                 >
                                   {trip.category === 'visited' && '✓ ' + destName}
                                   {trip.category === 'confirmed' && (trip.id === 'c-korea-arrive' ? '🛬 ' : trip.id === 'c-korea-band' ? '🎸 ' : '✈ ') + destName}
-                                  {trip.category === 'planned' && '💡 ' + destName}
+                                  {trip.category === 'planned' && (trip.id === 'p-clair-obscur' ? '🎵 ' : '💡 ') + destName}
                                 </div>
                               </div>
                             )}
@@ -1433,7 +1444,15 @@ export function SemesterPlannerMain() {
                                     </span>
                                   )}
                                   {trip.category === 'planned' && (
-                                    <span className="text-purple-700 dark:text-purple-300">{curT.tagPlanned} ({destName})</span>
+                                    <span className="text-purple-700 dark:text-purple-300">
+                                      {trip.id === 'p-clair-obscur' ? '🎵 ' : '💡 '}
+                                      {curT.tagPlanned} ({destName})
+                                    </span>
+                                  )}
+                                  {trip.note && (
+                                    <span className="block text-[8.5px] font-normal text-zinc-500 dark:text-zinc-400 truncate">
+                                      {lang === 'en' ? trip.noteEn : trip.note}
+                                    </span>
                                   )}
                                   {status.classes.length > 0 && (
                                     <span className="block text-[9px] font-normal opacity-85 truncate">
@@ -1503,8 +1522,8 @@ export function SemesterPlannerMain() {
                                   <div>
                                     <div className="font-bold flex items-center gap-1">
                                       {isVisited && '🚩'}
-                                      {isConfirmed && '✈️'}
-                                      {!isVisited && !isConfirmed && '💡'}
+                                      {isConfirmed && (t.id === 'c-korea-arrive' ? '🛬' : t.id === 'c-korea-band' ? '🎸' : '✈️')}
+                                      {!isVisited && !isConfirmed && (t.id === 'p-clair-obscur' ? '🎵' : '💡')}
                                       <span>{dest}</span>
                                       <span className="text-[10px] font-normal opacity-80">({note})</span>
                                     </div>
@@ -1569,7 +1588,7 @@ export function SemesterPlannerMain() {
                                 <span className="font-bold text-xs">
                                   {trip.category === 'visited' && '🚩 '}
                                   {trip.category === 'confirmed' && (trip.id === 'c-korea-arrive' ? '🛬 ' : trip.id === 'c-korea-band' ? '🎸 ' : '✈️ ')}
-                                  {trip.category === 'planned' && '💡 '}
+                                  {trip.category === 'planned' && (trip.id === 'p-clair-obscur' ? '🎵 ' : '💡 ')}
                                   {lang === 'en' ? trip.destinationEn : trip.destination}
                                   <span className="text-[10px] font-normal ml-1 opacity-80">
                                     ({lang === 'en' ? trip.noteEn : trip.note})
@@ -1625,7 +1644,8 @@ export function SemesterPlannerMain() {
 
                   {dateInfo.trip && dateInfo.trip.category === 'planned' && (
                     <Badge className="bg-purple-600 text-white font-bold text-[10px]">
-                      💡 {lang === 'en' ? dateInfo.trip.destinationEn : dateInfo.trip.destination} ({lang === 'en' ? dateInfo.trip.noteEn : dateInfo.trip.note})
+                      {dateInfo.trip.id === 'p-clair-obscur' ? '🎵 ' : '💡 '}
+                      {lang === 'en' ? dateInfo.trip.destinationEn : dateInfo.trip.destination} ({lang === 'en' ? dateInfo.trip.noteEn : dateInfo.trip.note})
                     </Badge>
                   )}
 
