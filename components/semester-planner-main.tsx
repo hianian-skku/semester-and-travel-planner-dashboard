@@ -111,7 +111,77 @@ export const scheduledTrips: ScheduledTrip[] = [
     note: '갈까 고민 중인 여행 (대면 수업 없음)',
     noteEn: 'Considering this trip (no on-campus classes)',
   },
+  // ⭐️ 2027년 1월 확정 여정
+  {
+    id: 'c-sweden-exit',
+    destination: '스웨덴 출국',
+    destinationEn: 'Depart Sweden',
+    startDate: '2027-01-22',
+    endDate: '2027-01-22',
+    category: 'confirmed',
+    badgeText: '스웨덴 출국',
+    badgeTextEn: 'Depart Sweden',
+    note: '기숙사 체크아웃 & 스웨덴 출국 (폴란드 이동)',
+    noteEn: 'Dorm checkout & departure from Sweden to Poland',
+  },
+  {
+    id: 'c-poland-transit',
+    destination: '폴란드 체류',
+    destinationEn: 'In Poland',
+    startDate: '2027-01-23',
+    endDate: '2027-01-23',
+    category: 'confirmed',
+    badgeText: '폴란드 체류',
+    badgeTextEn: 'In Poland',
+    note: '폴란드 경유 체류 (그단스크/바르샤바)',
+    noteEn: 'Transit stay in Poland (Gdańsk / Warsaw)',
+  },
+  {
+    id: 'c-poland-exit',
+    destination: '폴란드 출국',
+    destinationEn: 'Depart Poland',
+    startDate: '2027-01-24',
+    endDate: '2027-01-24',
+    category: 'confirmed',
+    badgeText: '폴란드 출국',
+    badgeTextEn: 'Depart Poland',
+    note: '폴란드 출국 (한국행 비행기 탑승)',
+    noteEn: 'Departure from Poland (Flight to Korea)',
+  },
+  {
+    id: 'c-korea-arrive',
+    destination: '한국 도착',
+    destinationEn: 'Arrive Korea',
+    startDate: '2027-01-25',
+    endDate: '2027-01-25',
+    category: 'confirmed',
+    badgeText: '한국 도착',
+    badgeTextEn: 'Arrive Korea',
+    note: '한국 인천공항 도착 (귀국 완료)',
+    noteEn: 'Arrival at Incheon Airport, Korea (Homecoming)',
+  },
+  {
+    id: 'c-korea-band',
+    destination: '밴드 공연',
+    destinationEn: 'Band Concert',
+    startDate: '2027-01-30',
+    endDate: '2027-01-30',
+    category: 'confirmed',
+    badgeText: '밴드 공연',
+    badgeTextEn: 'Band Concert',
+    note: '한국 친구들 밴드 공연 구경',
+    noteEn: 'Watching Korean friends\' band live concert',
+  },
 ]
+
+// ⭐️ 회색 처리 날짜 목록 (1/26~1/29, 1/31)
+export const blockedGrayDates: Record<string, { labelKo: string; labelEn: string; noteKo: string; noteEn: string }> = {
+  '2027-01-26': { labelKo: '회색 처리', labelEn: 'Unavailable', noteKo: '개인 일정 (여행 불가)', noteEn: 'Personal Schedule (Unavailable)' },
+  '2027-01-27': { labelKo: '회색 처리', labelEn: 'Unavailable', noteKo: '개인 일정 (여행 불가)', noteEn: 'Personal Schedule (Unavailable)' },
+  '2027-01-28': { labelKo: '회색 처리', labelEn: 'Unavailable', noteKo: '개인 일정 (여행 불가)', noteEn: 'Personal Schedule (Unavailable)' },
+  '2027-01-29': { labelKo: '회색 처리', labelEn: 'Unavailable', noteKo: '개인 일정 (여행 불가)', noteEn: 'Personal Schedule (Unavailable)' },
+  '2027-01-31': { labelKo: '회색 처리', labelEn: 'Unavailable', noteKo: '개인 일정 (여행 불가)', noteEn: 'Personal Schedule (Unavailable)' },
+}
 
 // ⭐️ 업데이트된 권역별 여행지 목록 (국문 & 영문)
 export const travelDestinations: TripDestination[] = [
@@ -938,6 +1008,20 @@ export function SemesterPlannerMain() {
 
   // Helper: 날짜별 수업 상태 및 여행 상태 판정
   const getDateStatus = (dateStr: string) => {
+    // ⭐️ 회색 처리 날짜 (1/26~1/29, 1/31) 우선 판정
+    const grayItem = blockedGrayDates[dateStr]
+    if (grayItem) {
+      return {
+        type: 'gray' as const,
+        label: lang === 'en' ? grayItem.labelEn : grayItem.labelKo,
+        note: lang === 'en' ? grayItem.noteEn : grayItem.noteKo,
+        trip: null,
+        bgClass: 'bg-zinc-200/80 text-zinc-700 border-zinc-300 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:border-zinc-700',
+        badgeClass: 'bg-zinc-300 text-zinc-800 dark:bg-zinc-700 dark:text-zinc-200 font-semibold',
+        classes: [],
+      }
+    }
+
     // 여행 상태 판정 (우선순위: visited 빨강, confirmed 하늘, planned 보라)
     const trip = scheduledTrips.find((t) => dateStr >= t.startDate && dateStr <= t.endDate)
 
@@ -1320,8 +1404,17 @@ export function SemesterPlannerMain() {
                                   )}
                                 >
                                   {trip.category === 'visited' && '✓ ' + destName}
-                                  {trip.category === 'confirmed' && '✈ ' + destName}
+                                  {trip.category === 'confirmed' && (trip.id === 'c-korea-arrive' ? '🛬 ' : trip.id === 'c-korea-band' ? '🎸 ' : '✈ ') + destName}
                                   {trip.category === 'planned' && '💡 ' + destName}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* 모바일 회색 처리 뱃지 */}
+                            {!trip && status.type === 'gray' && (
+                              <div className="sm:hidden my-auto w-full">
+                                <div className="text-[8px] font-bold px-0.5 py-0.5 rounded text-center truncate tracking-tighter leading-none block w-full bg-zinc-300 text-zinc-800 dark:bg-zinc-700 dark:text-zinc-200">
+                                  {status.label}
                                 </div>
                               </div>
                             )}
@@ -1334,7 +1427,10 @@ export function SemesterPlannerMain() {
                                     <span className="text-red-700 dark:text-red-300">{curT.tagVisited} ({destName})</span>
                                   )}
                                   {trip.category === 'confirmed' && (
-                                    <span className="text-sky-700 dark:text-sky-300">{curT.tagConfirmed} ({destName})</span>
+                                    <span className="text-sky-700 dark:text-sky-300">
+                                      {trip.id === 'c-korea-arrive' ? '🛬 ' : trip.id === 'c-korea-band' ? '🎸 ' : '✈️ '}
+                                      {curT.tagConfirmed} ({destName})
+                                    </span>
                                   )}
                                   {trip.category === 'planned' && (
                                     <span className="text-purple-700 dark:text-purple-300">{curT.tagPlanned} ({destName})</span>
@@ -1344,6 +1440,10 @@ export function SemesterPlannerMain() {
                                       {curT.classPrefix}{status.classes[0].course.split(' ')[0]}
                                     </span>
                                   )}
+                                </div>
+                              ) : status.type === 'gray' ? (
+                                <div className="text-[10px] font-semibold text-zinc-600 dark:text-zinc-300 truncate">
+                                  {status.note || '개인 일정'}
                                 </div>
                               ) : status.classes.length > 0 ? (
                                 <div className="text-[10px] leading-tight opacity-90 truncate font-medium">
@@ -1468,12 +1568,16 @@ export function SemesterPlannerMain() {
                               {trip ? (
                                 <span className="font-bold text-xs">
                                   {trip.category === 'visited' && '🚩 '}
-                                  {trip.category === 'confirmed' && '✈️ '}
+                                  {trip.category === 'confirmed' && (trip.id === 'c-korea-arrive' ? '🛬 ' : trip.id === 'c-korea-band' ? '🎸 ' : '✈️ ')}
                                   {trip.category === 'planned' && '💡 '}
                                   {lang === 'en' ? trip.destinationEn : trip.destination}
                                   <span className="text-[10px] font-normal ml-1 opacity-80">
                                     ({lang === 'en' ? trip.noteEn : trip.note})
                                   </span>
+                                </span>
+                              ) : status.type === 'gray' ? (
+                                <span className="font-semibold text-xs text-zinc-600 dark:text-zinc-300">
+                                  {status.note || '개인 일정 (여행 불가)'}
                                 </span>
                               ) : status.classes.length > 0 ? (
                                 <span className="font-semibold text-xs text-zinc-800 dark:text-zinc-200">
@@ -1514,7 +1618,8 @@ export function SemesterPlannerMain() {
 
                   {dateInfo.trip && dateInfo.trip.category === 'confirmed' && (
                     <Badge className="bg-sky-500 text-white font-bold text-[10px]">
-                      ✈️ {lang === 'en' ? dateInfo.trip.destinationEn : dateInfo.trip.destination} ({lang === 'en' ? dateInfo.trip.noteEn : dateInfo.trip.note})
+                      {dateInfo.trip.id === 'c-korea-arrive' ? '🛬 ' : dateInfo.trip.id === 'c-korea-band' ? '🎸 ' : '✈️ '}
+                      {lang === 'en' ? dateInfo.trip.destinationEn : dateInfo.trip.destination} ({lang === 'en' ? dateInfo.trip.noteEn : dateInfo.trip.note})
                     </Badge>
                   )}
 
@@ -1528,13 +1633,19 @@ export function SemesterPlannerMain() {
                     {dateInfo.label}
                   </Badge>
 
+                  {dateInfo.type === 'gray' && (
+                    <span className="text-zinc-600 dark:text-zinc-400 font-medium">
+                      {dateInfo.note || '개인 일정 (여행 불가)'}
+                    </span>
+                  )}
+
                   {dateInfo.classes.length > 0 && (
                     <span className="text-zinc-600 dark:text-zinc-400 block sm:inline">
                       {curT.classPrefix}{dateInfo.classes.map((c) => `${c.course} (${c.time})`).join(', ')}
                     </span>
                   )}
 
-                  {dateInfo.classes.length === 0 && !dateInfo.trip && (
+                  {dateInfo.classes.length === 0 && !dateInfo.trip && dateInfo.type !== 'gray' && (
                     <span className="text-emerald-700 dark:text-emerald-400 font-medium">
                       {curT.inspectorFree}
                     </span>
