@@ -42,6 +42,9 @@ export interface TripDestination {
   durationEn: string // Recommended stay (English)
   description: string
   descriptionEn: string
+  isConfirmed?: boolean
+  confirmedTagKo?: string
+  confirmedTagEn?: string
 }
 
 export type TripCategory = 'visited' | 'confirmed' | 'planned'
@@ -206,6 +209,9 @@ export const travelDestinations: TripDestination[] = [
     nameEn: 'Helsinki, Finland',
     duration: '2박 3일',
     durationEn: '2 nights 3 days',
+    isConfirmed: true,
+    confirmedTagKo: '확정됨 (10/9~10/11)',
+    confirmedTagEn: 'Confirmed (Oct 9~11)',
     description: '수오멘린나 요새, 템펠리아우키오 암석교회, 헬싱키 대성당, 로컬 사우나 체험. 도시 규모가 작아 2박이면 시내를 충분히 둘러봅니다.',
     descriptionEn: 'Suomenlinna fortress, Temppeliaukio Rock Church, Helsinki Cathedral, and authentic local sauna experience. Compact city ideal for 2 nights.',
   },
@@ -1721,20 +1727,33 @@ export function SemesterPlannerMain() {
                   onClick={() => setSelectedDestination(dest)}
                   className={cn(
                     'group cursor-pointer rounded-lg border p-3 transition-colors flex items-center justify-between',
-                    'border-zinc-200 bg-white hover:border-zinc-400 hover:bg-zinc-50/80',
-                    'dark:border-zinc-800 dark:bg-[#13161f] dark:hover:border-zinc-700 dark:hover:bg-zinc-850'
+                    dest.isConfirmed
+                      ? 'border-sky-300 bg-sky-50/50 hover:border-sky-400 hover:bg-sky-100/60 dark:border-sky-800 dark:bg-sky-950/20 dark:hover:border-sky-700'
+                      : 'border-zinc-200 bg-white hover:border-zinc-400 hover:bg-zinc-50/80 dark:border-zinc-800 dark:bg-[#13161f] dark:hover:border-zinc-700 dark:hover:bg-zinc-850'
                   )}
                 >
-                  <div className="flex flex-col">
-                    <span className="text-[11px] text-zinc-400 font-medium">
-                      {lang === 'en' ? dest.regionNameEn : dest.regionName}
-                    </span>
-                    <span className="font-bold text-sm text-zinc-900 group-hover:text-indigo-600 dark:text-zinc-100 dark:group-hover:text-indigo-400 mt-0.5">
+                  <div className="flex flex-col min-w-0 pr-2">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span className="text-[11px] text-zinc-400 font-medium">
+                        {lang === 'en' ? dest.regionNameEn : dest.regionName}
+                      </span>
+                      {dest.isConfirmed && (
+                        <Badge className="bg-sky-500 hover:bg-sky-500 text-white font-bold text-[10px] px-1.5 py-0 h-4 leading-none">
+                          ✈️ {lang === 'en' ? 'Confirmed' : '확정됨'}
+                        </Badge>
+                      )}
+                    </div>
+                    <span className="font-bold text-sm text-zinc-900 group-hover:text-indigo-600 dark:text-zinc-100 dark:group-hover:text-indigo-400 mt-0.5 truncate">
                       {lang === 'en' ? dest.nameEn : dest.name}
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 shrink-0">
+                    {dest.isConfirmed && (
+                      <Badge className="hidden sm:inline-flex bg-sky-100 text-sky-800 border-sky-300 dark:bg-sky-950/80 dark:text-sky-300 dark:border-sky-800 font-bold text-[11px] px-2 py-0.5">
+                        {lang === 'en' ? (dest.confirmedTagEn || 'Confirmed') : (dest.confirmedTagKo || '확정됨')}
+                      </Badge>
+                    )}
                     <Badge
                       variant="outline"
                       className="border-zinc-300 bg-zinc-50 font-bold text-zinc-800 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 text-xs px-2.5 py-1"
@@ -1878,10 +1897,17 @@ export function SemesterPlannerMain() {
           {selectedDestination && (
             <div className="flex flex-col gap-3">
               <DialogHeader>
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-zinc-500 font-medium">
-                    {lang === 'en' ? selectedDestination.regionNameEn : selectedDestination.regionName}
-                  </span>
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-zinc-500 font-medium">
+                      {lang === 'en' ? selectedDestination.regionNameEn : selectedDestination.regionName}
+                    </span>
+                    {selectedDestination.isConfirmed && (
+                      <Badge className="bg-sky-500 text-white text-[10px] font-bold px-2 py-0.5">
+                        ✈️ {lang === 'en' ? (selectedDestination.confirmedTagEn || 'Confirmed') : (selectedDestination.confirmedTagKo || '확정됨')}
+                      </Badge>
+                    )}
+                  </div>
                   <Badge className="bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 text-xs font-bold">
                     {curT.modalDurationLabel} {lang === 'en' ? selectedDestination.durationEn : selectedDestination.duration}
                   </Badge>
