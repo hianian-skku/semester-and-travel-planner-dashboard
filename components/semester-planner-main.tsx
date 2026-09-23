@@ -1798,7 +1798,12 @@ export function SemesterPlannerMain() {
               return (
                 <div
                   key={route.id}
-                  className="group relative rounded-xl border border-zinc-200 bg-zinc-50/50 hover:border-zinc-300 hover:bg-white hover:shadow-2xs transition-all flex flex-col justify-between p-4 dark:border-zinc-800 dark:bg-zinc-900/40 dark:hover:border-zinc-700 dark:hover:bg-zinc-850/80"
+                  className={cn(
+                    'group relative rounded-xl border transition-all flex flex-col justify-between p-4',
+                    route.id === 'route-easygoing'
+                      ? 'border-indigo-300 bg-indigo-50/25 hover:border-indigo-400 hover:bg-indigo-50/40 dark:border-indigo-800/80 dark:bg-indigo-950/20 dark:hover:border-indigo-700 shadow-xs ring-1 ring-indigo-400/20'
+                      : 'border-zinc-200 bg-zinc-50/50 hover:border-zinc-300 hover:bg-white hover:shadow-2xs dark:border-zinc-800 dark:bg-zinc-900/40 dark:hover:border-zinc-700 dark:hover:bg-zinc-850/80'
+                  )}
                 >
                   <div>
                     {/* Top Row: Emoji, Tag Badge */}
@@ -1806,7 +1811,12 @@ export function SemesterPlannerMain() {
                       <span className="text-xl leading-none select-none">{route.emoji}</span>
                       <Badge
                         variant="secondary"
-                        className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-zinc-100 text-zinc-700 border border-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:border-zinc-700"
+                        className={cn(
+                          'text-[10px] font-semibold px-2 py-0.5 rounded-md border',
+                          route.id === 'route-easygoing'
+                            ? 'bg-indigo-100 text-indigo-900 border-indigo-300 dark:bg-indigo-900/70 dark:text-indigo-200 dark:border-indigo-700 font-bold'
+                            : 'bg-zinc-100 text-zinc-700 border-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:border-zinc-700'
+                        )}
                       >
                         {tag}
                       </Badge>
@@ -1818,7 +1828,14 @@ export function SemesterPlannerMain() {
                     </h3>
 
                     {/* Summary */}
-                    <div className="mt-2 rounded-md bg-white dark:bg-zinc-800/80 p-2.5 border border-zinc-200/70 dark:border-zinc-700/60 text-xs text-zinc-700 dark:text-zinc-300 leading-relaxed">
+                    <div
+                      className={cn(
+                        'mt-2 rounded-md p-2.5 text-xs leading-relaxed',
+                        route.id === 'route-easygoing'
+                          ? 'bg-indigo-50/90 border-2 border-indigo-400 text-indigo-950 font-extrabold text-xs sm:text-[13px] dark:bg-indigo-950/70 dark:border-indigo-500 dark:text-indigo-100 shadow-2xs'
+                          : 'bg-white dark:bg-zinc-800/80 border border-zinc-200/70 dark:border-zinc-700/60 text-zinc-700 dark:text-zinc-300 font-medium'
+                      )}
+                    >
                       {summary}
                     </div>
 
@@ -1826,7 +1843,7 @@ export function SemesterPlannerMain() {
                     <ul className="mt-3 space-y-1.5 text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
                       {details.map((detail, dIdx) => (
                         <li key={dIdx} className="flex items-start gap-1.5">
-                          <span className="text-zinc-400 font-bold shrink-0 mt-0.5">•</span>
+                          <span className={cn('font-bold shrink-0 mt-0.5', route.id === 'route-easygoing' ? 'text-indigo-600 dark:text-indigo-400' : 'text-zinc-400')}>•</span>
                           <span>{detail}</span>
                         </li>
                       ))}
