@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
+import Link from 'next/link'
 import {
   Calendar,
   CalendarDays,
@@ -17,6 +18,7 @@ import {
   Moon,
   Navigation,
   Plane,
+  Shield,
   Sparkles,
   Sun,
   X,
@@ -27,6 +29,20 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Switch } from '@/components/ui/switch'
 import { cn } from '@/lib/utils'
+import {
+  getStoredTrips,
+  getStoredBlockedDates,
+  getStoredClasses,
+  getStoredDestinations,
+  getStoredIdeaRoutes,
+} from '@/lib/storage'
+import {
+  initialScheduledTrips,
+  initialBlockedGrayDates,
+  initialTravelDestinations,
+  initialTravelIdeaRoutes,
+  initialTimeEditClasses,
+} from '@/lib/planner-data'
 
 // Types
 export type TripRegionKey = 'nordic' | 'uk' | 'central_west' | 'south_baltic' | 'med_nafrica' | 'americas'
@@ -913,9 +929,29 @@ export function SemesterPlannerMain() {
   // ⭐️ 기본 라이트 모드 (dark = false)
   const [dark, setDark] = useState<boolean>(false)
 
+  // ⭐️ 동적 일정 상태 (로컬 스토리지에 저장된 사용자 추가 데이터 반영)
+  const [scheduledTrips, setScheduledTrips] = useState<ScheduledTrip[]>(initialScheduledTrips)
+  const [blockedGrayDates, setBlockedGrayDates] = useState<Record<string, BlockedDateItem>>(initialBlockedGrayDates)
+  const [timeEditClasses, setTimeEditClasses] = useState<ClassEvent[]>(initialTimeEditClasses)
+  const [travelDestinations, setTravelDestinations] = useState<TripDestination[]>(initialTravelDestinations)
+  const [travelIdeaRoutes, setTravelIdeaRoutes] = useState<TravelIdeaRoute[]>(initialTravelIdeaRoutes)
+
   const curT = translations[lang]
 
   useEffect(() => {
+    // 0. 로컬 스토리지 동적 데이터 불러오기 및 실시간 동기화 리스너
+    const reloadStoredData = () => {
+      setScheduledTrips(getStoredTrips())
+      setBlockedGrayDates(getStoredBlockedDates())
+      setTimeEditClasses(getStoredClasses())
+      setTravelDestinations(getStoredDestinations())
+      setTravelIdeaRoutes(getStoredIdeaRoutes())
+    }
+    reloadStoredData()
+
+    window.addEventListener('planner_data_updated', reloadStoredData)
+    window.addEventListener('storage', reloadStoredData)
+
     // 1. 언어 설정 감지 (URL param ?lang=en 우선, 그 다음 localStorage)
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search)
@@ -954,6 +990,11 @@ export function SemesterPlannerMain() {
     const monthIdx = calendarMonths.findIndex((cm) => cm.year === y && cm.month === now.getMonth() + 1)
     if (monthIdx !== -1) {
       setSelectedMonthIdx(monthIdx)
+    }
+
+    return () => {
+      window.removeEventListener('planner_data_updated', reloadStoredData)
+      window.removeEventListener('storage', reloadStoredData)
     }
   }, [])
 
@@ -1021,7 +1062,7 @@ export function SemesterPlannerMain() {
   const filteredDestinations = useMemo(() => {
     if (selectedRegion === 'all') return travelDestinations
     return travelDestinations.filter((d) => d.region === selectedRegion)
-  }, [selectedRegion])
+  }, [selectedRegion, travelDestinations])
 
   // Helper: 날짜별 수업 상태 및 여행 상태 판정
   const getDateStatus = (dateStr: string) => {
@@ -1128,7 +1169,7 @@ export function SemesterPlannerMain() {
       dayOfWeek,
       ...status,
     }
-  }, [selectedDate, showSciComp, lang])
+  }, [selectedDate, showSciComp, lang, scheduledTrips, timeEditClasses, blockedGrayDates])
 
   return (
     <div className={cn('min-h-screen transition-colors duration-150', dark ? 'dark bg-[#0d1017] text-zinc-100' : 'bg-[#fafafa] text-zinc-900')}>
@@ -1166,6 +1207,19 @@ export function SemesterPlannerMain() {
               {copySuccess ? <Check className="size-3.5 text-emerald-600" /> : <Copy className="size-3.5" />}
               <span>{copySuccess ? curT.copied : curT.copyLink}</span>
             </Button>
+
+            {/* 🛠️ 관리자 페이지 바로가기 버튼 */}
+            <Link href="/admin">
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-1.5 border-zinc-300 bg-white text-xs font-semibold text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-850 dark:text-zinc-300 px-2.5"
+                title={lang === 'en' ? 'Admin Center (Manage Plans)' : '관리자 센터 (계획 직접 추가/수정)'}
+              >
+                <Shield className="size-3.5 text-zinc-500" />
+                <span className="font-semibold">{lang === 'en' ? 'Admin' : '관리자'}</span>
+              </Button>
+            </Link>
 
             <Button
               variant="outline"
