@@ -205,6 +205,29 @@ export const academicMilestones: AcademicMilestone[] = [
 // Updated 2026-2027 Realistic Trip Mock Data
 const initialTrips2026: Trip[] = [
   {
+    id: 'trip-uk-scotland-france',
+    emoji: '🇬🇧🇫🇷',
+    title: '영국, 스코틀랜드, 프랑스 (런던·축구·대자연·파리게임위크·몽생미셸)',
+    period: '2026-10-13 ~ 10-24 · 화~토 (11박 12일)',
+    startDate: '2026-10-13',
+    endDate: '2026-10-24',
+    status: 'planning',
+    keyTheme: '런던 산책 & EPL 축구 & 스코틀랜드 대자연 & 파리 게임 위크 & 몽생미셸',
+    academicOverlapNote: '10/16(금) 13:15 XR 줌 수업 1회 (온라인 수강 가능), 대면 수업 일체 없음 (10/26 XR 발표 전 복귀)',
+    academicRiskLevel: 'low',
+    routeOptions: [
+      { name: '루트 A (영국 ➔ 스코틀랜드 ➔ 유로스타 ➔ 프랑스)', transport: '항공 + 기차 + 유로스타', description: '런던(가볍게 시내 산책 + EPL 경기 직관) ➔ 에든버러 & 하이랜드 대자연 ➔ 유로스타로 파리 이동(파리 게임 위크 + 몽생미셸 당일 투어)', pros: '5대 희망 코스를 빠짐없이 연결하는 황금 동선', meta: '11박 12일 일정' },
+    ],
+    notes: '• 런던 가볍게 보기: 빅벤, 웨스트엔드 등 런던 시내 명소 산책\n• 축구 보기: 영국 EPL 프리미어리그 직관\n• 스코틀랜드 대자연 구경하기: 에든버러 및 하이랜드/스카이섬 대자연\n• 파리 게임 위크 구경: Paris Games Week(PGW) 관람\n• 몽생미셸 당일 투어: 파리 출발 몽생미셸 수도원 투어',
+    checklist: [
+      { id: 'chk-uk1', text: '런던-파리 유로스타 티켓 확인', done: false },
+      { id: 'chk-uk2', text: 'EPL 축구 경기 일정 및 티켓 예매', done: false },
+      { id: 'chk-uk3', text: '파리 게임 위크(PGW) 티켓 예매', done: false },
+      { id: 'chk-uk4', text: '몽생미셸 당일 투어 예약', done: false },
+    ],
+    weeks: ['w42', 'w43'],
+  },
+  {
     id: 'trip-kiruna',
     emoji: '🌌',
     title: '키루나 & 아비스코 · 북극권 오로라 헌팅',

@@ -64,7 +64,7 @@ export interface ScheduledTrip {
 
 // 1. 이미 다녀온 여행 (빨간색)
 // 2. 확정된 여행 (하늘색): 10/9~10/11 핀란드 헬싱키 (외국인 친구들이랑)
-// 3. 고민 중인 여행 (보라색): 10/13~10/21 영국
+// 3. 고민 중인 여행 (보라색): 10/13~10/24 영국, 스코틀랜드, 프랑스
 export const scheduledTrips: ScheduledTrip[] = [
   {
     id: 'v-cph',
@@ -104,15 +104,15 @@ export const scheduledTrips: ScheduledTrip[] = [
   },
   {
     id: 'p-uk',
-    destination: '영국',
-    destinationEn: 'United Kingdom',
+    destination: '영국, 스코틀랜드, 프랑스',
+    destinationEn: 'UK, Scotland & France',
     startDate: '2026-10-13',
-    endDate: '2026-10-21',
+    endDate: '2026-10-24',
     category: 'planned',
-    badgeText: '영국 (고민 중)',
-    badgeTextEn: 'UK (Considering)',
-    note: '갈까 고민 중인 여행 (대면 수업 없음)',
-    noteEn: 'Considering this trip (no on-campus classes)',
+    badgeText: '영국·스코틀랜드·프랑스 (고민 중)',
+    badgeTextEn: 'UK, Scotland & France (Considering)',
+    note: '런던 가볍게 보기 / 축구 직관 / 스코틀랜드 대자연 / 파리 게임 위크 / 몽생미셸 당일 투어',
+    noteEn: 'Light London tour, football match, Scotland nature, Paris Games Week, Mont Saint-Michel day tour',
   },
   // ⭐️ 2027년 1월 확정 여정
   {
@@ -264,18 +264,18 @@ export const travelDestinations: TripDestination[] = [
     descriptionEn: 'Reykjavik, Golden Circle, South Coast (Black Sand Beach, Jökulsárlón glacier lagoon), winter-exclusive blue ice cave exploration and road trip.',
   },
 
-  // 2. 영국 & 스코틀랜드
+  // 2. 영국 & 스코틀랜드 (프랑스 연계)
   {
-    id: 'uk-scotland',
+    id: 'uk-scotland-france',
     region: 'uk',
-    regionName: '2. 영국 & 스코틀랜드',
-    regionNameEn: '2. UK & Scotland',
-    name: '영국 / 스코틀랜드 종합 코스',
-    nameEn: 'UK & Scotland Complete Route',
-    duration: '7박 ~ 8박',
-    durationEn: '7 ~ 8 nights',
-    description: '• 런던 & 요크 (2박): 런던 입국 후 가벼운 시내 산책, 중세 성곽 도시 요크(대성당, 샴블즈 골목) 경유.\n• 에든버러 (2박): 에든버러 성, 로열 마일, 칼튼 힐, 아서스 시트 트레킹.\n• 스카이섬 & 하이랜드 (3박): 글렌코 협곡, 네스호, 스카이섬 핵심 트레킹(Old Man of Storr, Quiraing, Neist Point 등).',
-    descriptionEn: '• London & York (2 nights): City stroll in London, scenic stop in medieval walled city York (Minster, Shambles).\n• Edinburgh (2 nights): Edinburgh Castle, Royal Mile, Calton Hill, Arthur\'s Seat hike.\n• Isle of Skye & Highlands (3 nights): Glencoe Valley, Loch Ness, and dramatic Skye hikes (Old Man of Storr, Quiraing, Neist Point).',
+    regionName: '2. 영국 & 스코틀랜드 / 프랑스',
+    regionNameEn: '2. UK, Scotland & France',
+    name: '영국, 스코틀랜드, 프랑스 종합 코스',
+    nameEn: 'UK, Scotland & France Complete Route',
+    duration: '11박 12일 (10/13~10/24)',
+    durationEn: '11 nights 12 days (Oct 13~24)',
+    description: '• 런던 가볍게 보기: 빅벤, 런던아이, 웨스트엔드 등 런던 시내 핵심 명소 가볍게 산책.\n• 축구 보기: 영국 프리미어리그(EPL) 현지 축구 경기 직관.\n• 스코틀랜드 대자연 구경하기: 에든버러 및 하이랜드/스카이섬 대자연 웅장한 풍경 탐방.\n• 파리 게임 위크 구경: 유로스타/항공으로 파리 이동 후 Paris Games Week(PGW) 관람.\n• 몽생미셸 당일 투어: 파리에서 출발하는 몽생미셸 수도원 당일치기 투어 연계.',
+    descriptionEn: '• Light London sightseeing: Relaxed stroll around Big Ben, London Eye, and West End.\n• Watch football: Live Premier League match experience in London.\n• Scotland nature sightseeing: Edinburgh Castle, Royal Mile, and scenic Highlands / Isle of Skye tours.\n• Paris Games Week: Travel to Paris via Eurostar/flight to visit Paris Games Week (PGW).\n• Mont Saint-Michel day tour: Day excursion to the magical Mont Saint-Michel abbey from Paris.',
   },
 
   // 3. 중유럽 & 서유럽
@@ -464,22 +464,26 @@ export const travelIdeaRoutes: TravelIdeaRoute[] = [
   {
     id: 'route-uk',
     num: 1,
-    emoji: '🇬🇧',
-    titleKo: '영국 & 스코틀랜드',
-    titleEn: 'UK & Scotland',
-    tagKo: '런던 IN/OUT',
-    tagEn: 'London IN/OUT',
-    summaryKo: '런던 들어가서 축구 경기 보고 스코틀랜드 둘러본 뒤 런던에서 복귀하는 루트.',
-    summaryEn: 'Fly into London, watch a match, explore Scotland, and return via London.',
+    emoji: '🇬🇧🇫🇷',
+    titleKo: '영국 · 스코틀랜드 · 프랑스',
+    titleEn: 'UK, Scotland & France',
+    tagKo: '10/13 ~ 10/24 (11박 12일)',
+    tagEn: 'Oct 13 - 24 (11N 12D)',
+    summaryKo: '런던과 스코틀랜드 대자연을 둘러본 뒤 프랑스 파리로 이동하여 파리 게임 위크와 몽생미셸 당일 투어까지 완성하는 황금 코스.',
+    summaryEn: 'Explore London and Scotland nature, then travel to Paris for Paris Games Week and a Mont Saint-Michel day tour.',
     detailsKo: [
-      '런던 입국 후 축구 경기 관람 및 시내 이동',
-      '요크 경유 후 에든버러 이동',
-      '스카이섬 / 하이랜드 이동 후 런던 복귀',
+      '런던 가볍게 보기 (시내 중심부 및 주요 랜드마크 산책)',
+      '축구 보기 (영국 EPL 경기 현장 직관)',
+      '스코틀랜드 대자연 구경하기 (에든버러 & 하이랜드/스카이섬)',
+      '파리 게임 위크 구경 (10/22~ 프랑스 최대 게임쇼 PGW)',
+      '몽생미셸 당일 투어 (파리 출발 노르망디 대표 명소 투어)',
     ],
     detailsEn: [
-      'Arrive in London, watch football match & city transit',
-      'Transit through York to Edinburgh',
-      'Visit Isle of Skye / Highlands and return to London',
+      'Light London sightseeing (city center & key landmarks stroll)',
+      'Watch football (live EPL Premier League matchday)',
+      'Explore Scotland nature (Edinburgh & Highlands / Isle of Skye)',
+      'Visit Paris Games Week (PGW expo in Paris from Oct 22)',
+      'Mont Saint-Michel day tour (Normandy day trip from Paris)',
     ],
     targetMonthIdx: 1,
     targetDate: '2026-10-13',
@@ -597,17 +601,17 @@ export const travelIdeaRoutes: TravelIdeaRoute[] = [
     titleEn: 'Paris Games Week',
     tagKo: '10/22 ~ 10/25',
     tagEn: 'Oct 22 - 25',
-    summaryKo: '10/22~10/25 기간에 열리는 파리게임위크 관람.',
-    summaryEn: 'Visit Paris Games Week held during Oct 22–25.',
+    summaryKo: '10/22~10/25 기간에 열리는 파리게임위크 관람. (10/13~10/24 영국·스코틀랜드·프랑스 연계 일정에 포함)',
+    summaryEn: 'Visit Paris Games Week held during Oct 22–25. (Included in the Oct 13-24 UK/Scotland/France combined route)',
     detailsKo: [
-      '10/22(목) ~ 10/25(일) 수업 없는 일정 활용',
-      '파리게임위크 전시장 관람',
-      '파리 시내 일정 병행',
+      '10/22(목) ~ 10/24(토) 파리 체류 중 전시장 관람',
+      '파리게임위크 전시장(Paris Expo Porte de Versailles) 방문',
+      '몽생미셸 당일 투어 및 파리 시내 일정 병행',
     ],
     detailsEn: [
-      'Oct 22 (Thu) – Oct 25 (Sun) without classes',
-      'Visit Paris Games Week expo',
-      'Paris city sightseeing',
+      'Visit PGW expo during Paris stay between Oct 22-24',
+      'Held at Paris Expo Porte de Versailles',
+      'Combined with Mont Saint-Michel day tour and Paris sightseeing',
     ],
     targetMonthIdx: 1,
     targetDate: '2026-10-22',
@@ -620,15 +624,17 @@ export const travelIdeaRoutes: TravelIdeaRoute[] = [
     titleEn: 'European Football Matches',
     tagKo: 'EPL / 분데스리가 / UCL',
     tagEn: 'EPL / Bundesliga / UCL',
-    summaryKo: '유럽에 있는 동안 현지 축구 경기 직관.',
-    summaryEn: 'Watch a live football match while in Europe.',
+    summaryKo: '유럽에 있는 동안 현지 축구 경기 직관. (10/13~10/24 영국 런던 일정 중 EPL 경기 관람 연계)',
+    summaryEn: 'Watch a live football match while in Europe. (Linked with live EPL match during the London stay)',
     detailsKo: [
-      '영국 EPL, 독일 분데스리가 또는 챔피언스리그 경기',
-      '경기 일정 및 티켓 상황에 따라 조율',
+      '영국 런던 일정 중 프리미어리그(EPL) 홈 경기 직관',
+      '경기 일정 및 티켓 상황에 맞춰 예매 진행',
+      '챔피언스리그 또는 분데스리가 경기 추가 옵션',
     ],
     detailsEn: [
-      'Premier League, Bundesliga, or Champions League matches',
-      'Coordinate based on schedule and ticket availability',
+      'Watch live Premier League (EPL) home game in London',
+      'Coordinate bookings based on match schedule and ticket availability',
+      'Additional options for Champions League or Bundesliga matches',
     ],
   },
   {
@@ -883,7 +889,7 @@ const calendarMonths = [
 const regionFilterTabs = [
   { key: 'all', labelKo: '전체 보기', labelEn: 'All' },
   { key: 'nordic', labelKo: '1. 북유럽/극지방', labelEn: '1. Nordic & Arctic' },
-  { key: 'uk', labelKo: '2. 영국/스코틀랜드', labelEn: '2. UK & Scotland' },
+  { key: 'uk', labelKo: '2. 영국/스코틀랜드/프랑스', labelEn: '2. UK, Scotland & France' },
   { key: 'central_west', labelKo: '3. 중유럽/서유럽', labelEn: '3. Central & West' },
   { key: 'south_baltic', labelKo: '4. 남유럽/발트/폴란드', labelEn: '4. South & Baltic' },
   { key: 'med_nafrica', labelKo: '5. 지중해동부/북아프리카', labelEn: '5. E.Med & N.Africa' },
