@@ -29,6 +29,17 @@ function notifyDataUpdated() {
   }
 }
 
+async function triggerCloudPush() {
+  if (typeof window !== 'undefined') {
+    try {
+      const { pushAllToSupabase } = await import('./supabase-sync')
+      await pushAllToSupabase()
+    } catch {
+      // Optional background sync
+    }
+  }
+}
+
 // 1. Trips
 export function getStoredTrips(): ScheduledTrip[] {
   if (typeof window === 'undefined') return initialScheduledTrips
@@ -43,11 +54,12 @@ export function getStoredTrips(): ScheduledTrip[] {
   }
 }
 
-export function saveStoredTrips(trips: ScheduledTrip[]) {
+export function saveStoredTrips(trips: ScheduledTrip[], syncToCloud = true) {
   if (typeof window === 'undefined') return
   try {
     window.localStorage.setItem(KEYS.TRIPS, JSON.stringify(trips))
     notifyDataUpdated()
+    if (syncToCloud) triggerCloudPush()
   } catch (err) {
     console.error('Failed to save trips to storage:', err)
   }
@@ -67,11 +79,12 @@ export function getStoredBlockedDates(): Record<string, BlockedDateItem> {
   }
 }
 
-export function saveStoredBlockedDates(dates: Record<string, BlockedDateItem>) {
+export function saveStoredBlockedDates(dates: Record<string, BlockedDateItem>, syncToCloud = true) {
   if (typeof window === 'undefined') return
   try {
     window.localStorage.setItem(KEYS.BLOCKED_DATES, JSON.stringify(dates))
     notifyDataUpdated()
+    if (syncToCloud) triggerCloudPush()
   } catch (err) {
     console.error('Failed to save blocked dates to storage:', err)
   }
@@ -91,11 +104,12 @@ export function getStoredClasses(): ClassEvent[] {
   }
 }
 
-export function saveStoredClasses(classes: ClassEvent[]) {
+export function saveStoredClasses(classes: ClassEvent[], syncToCloud = true) {
   if (typeof window === 'undefined') return
   try {
     window.localStorage.setItem(KEYS.CLASSES, JSON.stringify(classes))
     notifyDataUpdated()
+    if (syncToCloud) triggerCloudPush()
   } catch (err) {
     console.error('Failed to save classes to storage:', err)
   }
@@ -115,11 +129,12 @@ export function getStoredDestinations(): TripDestination[] {
   }
 }
 
-export function saveStoredDestinations(destinations: TripDestination[]) {
+export function saveStoredDestinations(destinations: TripDestination[], syncToCloud = true) {
   if (typeof window === 'undefined') return
   try {
     window.localStorage.setItem(KEYS.DESTINATIONS, JSON.stringify(destinations))
     notifyDataUpdated()
+    if (syncToCloud) triggerCloudPush()
   } catch (err) {
     console.error('Failed to save destinations to storage:', err)
   }
@@ -139,11 +154,12 @@ export function getStoredIdeaRoutes(): TravelIdeaRoute[] {
   }
 }
 
-export function saveStoredIdeaRoutes(routes: TravelIdeaRoute[]) {
+export function saveStoredIdeaRoutes(routes: TravelIdeaRoute[], syncToCloud = true) {
   if (typeof window === 'undefined') return
   try {
     window.localStorage.setItem(KEYS.IDEAS, JSON.stringify(routes))
     notifyDataUpdated()
+    if (syncToCloud) triggerCloudPush()
   } catch (err) {
     console.error('Failed to save idea routes to storage:', err)
   }
@@ -232,6 +248,7 @@ export function importAllPlannerData(jsonStr: string): { success: boolean; error
     }
 
     notifyDataUpdated()
+    triggerCloudPush()
     return { success: true }
   } catch (err: unknown) {
     return { success: false, error: err instanceof Error ? err.message : 'JSON 파싱 중 오류가 발생했습니다.' }
@@ -246,4 +263,5 @@ export function resetAllPlannerDataToDefault() {
   window.localStorage.removeItem(KEYS.DESTINATIONS)
   window.localStorage.removeItem(KEYS.IDEAS)
   notifyDataUpdated()
+  triggerCloudPush()
 }

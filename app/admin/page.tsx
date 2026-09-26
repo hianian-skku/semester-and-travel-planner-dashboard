@@ -61,6 +61,8 @@ import {
   importAllPlannerData,
   resetAllPlannerDataToDefault,
 } from '@/lib/storage'
+import { isSupabaseConfigured } from '@/lib/supabase'
+import { syncFromSupabase, pushAllToSupabase } from '@/lib/supabase-sync'
 
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -96,6 +98,7 @@ export default function AdminPage() {
     if (isAdminLoggedIn()) {
       setIsAuthenticated(true)
       reloadData()
+      syncFromSupabase().then(() => reloadData())
     }
   }, [])
 
@@ -554,6 +557,16 @@ export default function AdminPage() {
               <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-300 dark:bg-emerald-950/40 dark:text-emerald-300 text-[10px] font-bold">
                 Admin Mode
               </Badge>
+              {isSupabaseConfigured ? (
+                <Badge variant="outline" className="bg-sky-50 text-sky-700 border-sky-300 dark:bg-sky-950/40 dark:text-sky-300 text-[10px] font-bold flex items-center gap-1">
+                  <span className="size-1.5 rounded-full bg-sky-500 animate-pulse" />
+                  Supabase 연동됨
+                </Badge>
+              ) : (
+                <Badge variant="outline" className="bg-zinc-100 text-zinc-600 border-zinc-300 dark:bg-zinc-800 dark:text-zinc-400 text-[10px] font-medium">
+                  로컬 모드
+                </Badge>
+              )}
             </div>
           </div>
 

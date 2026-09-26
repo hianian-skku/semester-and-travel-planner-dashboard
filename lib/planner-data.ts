@@ -116,6 +116,18 @@ export const initialScheduledTrips: ScheduledTrip[] = [
     note: '런던 가볍게 보기 / 축구 직관 / 스코틀랜드 대자연 / 파리 게임 위크 / 몽생미셸 당일 투어',
     noteEn: 'Light London tour, football match, Scotland nature, Paris Games Week, Mont Saint-Michel day tour',
   },
+  {
+    id: 'p-rovaniemi',
+    destination: '핀란드 로바니에미',
+    destinationEn: 'Rovaniemi, Finland',
+    startDate: '2026-11-19',
+    endDate: '2026-11-22',
+    category: 'planned',
+    badgeText: '로바니에미 (논의 중)',
+    badgeTextEn: 'Rovaniemi (Considering)',
+    note: '한국 친구들과 같이 (논의 중인 여행)',
+    noteEn: 'Trip with Korean friends (Considering)',
+  },
   // ⭐️ 2027년 1월 확정 여정
   {
     id: 'c-sweden-exit',
