@@ -612,6 +612,30 @@ export default function AdminPage() {
             <Button
               variant="outline"
               size="sm"
+              onClick={handleCloudPush}
+              disabled={cloudSyncing}
+              className="gap-1.5 text-xs font-semibold border-indigo-200 text-indigo-700 bg-indigo-50/50 hover:bg-indigo-100 dark:border-indigo-800 dark:text-indigo-300 dark:bg-indigo-950/40"
+              title="클라우드 DB로 즉시 업로드"
+            >
+              <Cloud className={cn("w-3.5 h-3.5", cloudSyncing && "animate-bounce")} />
+              <span className="hidden sm:inline">DB 업로드</span>
+            </Button>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleCloudPull}
+              disabled={cloudSyncing}
+              className="gap-1.5 text-xs font-semibold border-zinc-300 dark:border-zinc-700"
+              title="클라우드 DB에서 최신 데이터 가져오기"
+            >
+              <RefreshCw className={cn("w-3.5 h-3.5", cloudSyncing && "animate-spin")} />
+              <span className="hidden sm:inline">DB 동기화</span>
+            </Button>
+
+            <Button
+              variant="outline"
+              size="sm"
               onClick={handleCopyJSON}
               className="gap-1.5 text-xs font-semibold border-zinc-300 dark:border-zinc-700"
               title="데이터 백업 복사"
@@ -683,6 +707,66 @@ export default function AdminPage() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Supabase Cloud Sync Card (Always Visible on Admin) */}
+        <Card className="mb-6 border-indigo-200 dark:border-indigo-900/60 bg-gradient-to-br from-indigo-50/50 via-white to-sky-50/40 dark:from-indigo-950/30 dark:via-[#12151d] dark:to-sky-950/20 shadow-xs">
+          <CardHeader className="pb-3 border-b border-indigo-100 dark:border-indigo-900/40">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <CardTitle className="text-base font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+                <Database className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                Supabase 실시간 클라우드 DB 연동
+              </CardTitle>
+              <div className="flex items-center gap-2">
+                {isSupabaseConfigured ? (
+                  <Badge className="bg-emerald-600/10 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800 text-xs font-semibold flex items-center gap-1.5 py-0.5">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    실시간 클라우드 DB 연결됨
+                  </Badge>
+                ) : (
+                  <Badge variant="destructive" className="text-xs">
+                    클라우드 DB 미연결 (로컬 전용)
+                  </Badge>
+                )}
+              </div>
+            </div>
+            <CardDescription className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
+              PC와 스마트폰 등 서로 다른 기기 간에 여행 일정이 자동으로 실시간 동기화됩니다. 한 기기에서 저장하면 다른 기기에도 즉시 반영됩니다.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="pt-4 space-y-3">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white/80 dark:bg-zinc-900/60 p-3.5 rounded-xl border border-indigo-100/70 dark:border-indigo-950">
+              <div className="text-xs text-zinc-600 dark:text-zinc-300">
+                <p className="font-semibold text-zinc-800 dark:text-zinc-200">
+                  기기 간 일정이 다르게 보일 때:
+                </p>
+                <p className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5">
+                  PC의 최신 일정을 모바일로 즉시 보내려면 <strong>클라우드로 업로드</strong>를 누르고, 모바일에서 최신 일정을 강제로 받으려면 <strong>클라우드에서 불러오기</strong>를 누르세요.
+                </p>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <Button
+                  onClick={handleCloudPush}
+                  disabled={cloudSyncing}
+                  size="sm"
+                  className="text-xs font-semibold gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white"
+                >
+                  <Cloud className={cn("w-3.5 h-3.5", cloudSyncing && "animate-bounce")} />
+                  클라우드로 업로드 (Push)
+                </Button>
+                <Button
+                  onClick={handleCloudPull}
+                  disabled={cloudSyncing}
+                  variant="outline"
+                  size="sm"
+                  className="text-xs font-semibold gap-1.5 border-zinc-300 dark:border-zinc-700"
+                >
+                  <RefreshCw className={cn("w-3.5 h-3.5", cloudSyncing && "animate-spin")} />
+                  클라우드에서 불러오기 (Pull)
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Tab Navigation */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-2 mb-6 border-b border-zinc-200 dark:border-zinc-800">
