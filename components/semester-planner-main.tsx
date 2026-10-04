@@ -491,13 +491,18 @@ export function SemesterPlannerMain() {
       {/* 1. Header */}
       <header className="sticky top-0 z-30 border-b border-zinc-200 bg-white/95 backdrop-blur-md dark:border-zinc-800 dark:bg-[#0d1017]/95">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
-          <div className="flex items-center gap-2">
-            <span className="font-bold text-sm text-zinc-900 dark:text-zinc-100">
-              {curT.siteTitle}
-            </span>
-            <span className="rounded bg-zinc-100 px-2 py-0.5 text-xs text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300 font-medium">
-              {curT.semesterTag}
-            </span>
+          <div className="flex items-center gap-2.5">
+            <div className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-sky-400 via-sky-500 to-indigo-600 text-white shadow-xs ring-1 ring-sky-500/20 shrink-0 transition-transform duration-200 hover:scale-105">
+              <Plane className="size-4.5 rotate-[-20deg]" />
+            </div>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2">
+              <span className="font-bold text-sm sm:text-base text-zinc-900 dark:text-zinc-100 tracking-tight">
+                {curT.siteTitle}
+              </span>
+              <span className="w-fit rounded bg-zinc-100 px-2 py-0.5 text-[11px] text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300 font-medium">
+                {curT.semesterTag}
+              </span>
+            </div>
           </div>
 
           <div className="flex items-center gap-2">
