@@ -46,16 +46,17 @@ export async function syncFromSupabase(): Promise<boolean> {
     }
 
     if (data) {
-      // Check if cloud data is outdated (contains old trips like 'p-uk' / '2026-10-13' or old Stockholm end date)
+      // Check if cloud data is outdated (contains old trips like 'p-uk' / '2026-10-13' or old Stockholm end date, or lacks new planned trips)
       const isOutdatedTrips =
         Array.isArray(data.trips) &&
-        data.trips.some(
-          (t: { id?: string; startDate?: string; endDate?: string }) =>
-            t.startDate === '2026-10-13' ||
-            t.id === 'p-uk' ||
-            (t.id === 'c-helsinki' && (t as { category?: string }).category !== 'visited') ||
-            (t.id === 'c-stockholm-friend' && t.endDate === '2026-11-30')
-        )
+        (!data.trips.some((t: { id?: string }) => t.id === 'p-xmas-market' || t.id === 'p-morocco') ||
+          data.trips.some(
+            (t: { id?: string; startDate?: string; endDate?: string }) =>
+              t.startDate === '2026-10-13' ||
+              t.id === 'p-uk' ||
+              (t.id === 'c-helsinki' && (t as { category?: string }).category !== 'visited') ||
+              (t.id === 'c-stockholm-friend' && t.endDate === '2026-11-30')
+          ))
 
       const isOutdatedClasses =
         Array.isArray(data.classes) &&

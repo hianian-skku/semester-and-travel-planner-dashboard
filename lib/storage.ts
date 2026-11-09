@@ -12,10 +12,10 @@ import {
 } from './planner-data'
 
 const KEYS = {
-  TRIPS: 'planner_scheduled_trips_v3',
+  TRIPS: 'planner_scheduled_trips_v4',
   BLOCKED_DATES: 'planner_blocked_dates_v2',
   CLASSES: 'planner_timeedit_classes_v2',
-  DESTINATIONS: 'planner_destinations_v3',
+  DESTINATIONS: 'planner_destinations_v4',
   IDEAS: 'planner_idea_routes_v2',
   ADMIN_PIN: 'planner_admin_pin_v1',
   ADMIN_AUTH: 'planner_admin_session_auth_v1',
@@ -258,6 +258,7 @@ export function importAllPlannerData(jsonStr: string): { success: boolean; error
 export function resetAllPlannerDataToDefault() {
   if (typeof window === 'undefined') return
   window.localStorage.removeItem(KEYS.TRIPS)
+  window.localStorage.removeItem('planner_scheduled_trips_v3')
   window.localStorage.removeItem('planner_scheduled_trips_v2')
   window.localStorage.removeItem('planner_scheduled_trips_v1')
   window.localStorage.removeItem(KEYS.BLOCKED_DATES)
@@ -265,6 +266,7 @@ export function resetAllPlannerDataToDefault() {
   window.localStorage.removeItem(KEYS.CLASSES)
   window.localStorage.removeItem('planner_timeedit_classes_v1')
   window.localStorage.removeItem(KEYS.DESTINATIONS)
+  window.localStorage.removeItem('planner_destinations_v3')
   window.localStorage.removeItem('planner_destinations_v2')
   window.localStorage.removeItem('planner_destinations_v1')
   window.localStorage.removeItem(KEYS.IDEAS)
