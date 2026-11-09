@@ -77,7 +77,7 @@ export const translations = {
     legendVisited: '다녀옴 (빨강)',
     legendConfirmed: '확정 여행 (하늘)',
     legendPlanned: '고민 중 (보라)',
-    weekdays: ['월', '화', '수', '목', '금', '토', '일'],
+    weekdays: ['일', '월', '화', '수', '목', '금', '토'],
     labelFree: '수업 없음',
     labelZoom: '줌(온라인) 수업',
     labelClass: '대면 수업/실습',
@@ -702,23 +702,29 @@ export function SemesterPlannerMain() {
                   <>
                     {/* Weekday headers */}
                     <div className="grid grid-cols-7 gap-1 pb-1 text-center text-xs font-bold text-zinc-500">
-                      {curT.weekdays.map((w, idx) => (
-                        <div
-                          key={w}
-                          className={cn(
-                            idx === 6 && 'text-rose-500',
-                            idx === 5 && 'text-zinc-400'
-                          )}
-                        >
-                          {w}
-                        </div>
-                      ))}
+                      {curT.weekdays.map((w, idx) => {
+                        const isSunday = lang === 'ko' ? idx === 0 : idx === 6
+                        const isSaturday = lang === 'ko' ? idx === 6 : idx === 5
+                        return (
+                          <div
+                            key={w}
+                            className={cn(
+                              isSunday && 'text-rose-500',
+                              isSaturday && (lang === 'ko' ? 'text-blue-500 dark:text-blue-400' : 'text-zinc-400')
+                            )}
+                          >
+                            {w}
+                          </div>
+                        )
+                      })}
                     </div>
 
                     {/* Grid days */}
                     <div className="grid grid-cols-7 gap-1">
                       {/* Padding previous month */}
-                      {Array.from({ length: (curMonth.startDay + 6) % 7 }).map((_, idx) => (
+                      {Array.from({
+                        length: lang === 'ko' ? curMonth.startDay : (curMonth.startDay + 6) % 7,
+                      }).map((_, idx) => (
                         <div key={`empty-${idx}`} className="h-14 sm:h-20 rounded border border-transparent bg-zinc-50/20 opacity-30" />
                       ))}
 
@@ -748,6 +754,7 @@ export function SemesterPlannerMain() {
                                 className={cn(
                                   'text-xs sm:text-sm font-bold leading-none',
                                   dayOfWeek === 0 && 'text-rose-600 dark:text-rose-400',
+                                  dayOfWeek === 6 && (lang === 'ko' ? 'text-blue-600 dark:text-blue-400' : 'text-zinc-600 dark:text-zinc-400'),
                                   trip?.category === 'visited' && 'text-red-700 font-extrabold',
                                   trip?.category === 'confirmed' && 'text-sky-800 dark:text-sky-200 font-extrabold',
                                   trip?.category === 'planned' && 'text-purple-800 dark:text-purple-200 font-extrabold',
@@ -943,7 +950,7 @@ export function SemesterPlannerMain() {
                               className={cn(
                                 'font-bold w-12 text-center text-xs shrink-0',
                                 dayOfWeek === 0 && 'text-rose-600',
-                                dayOfWeek === 6 && 'text-zinc-500'
+                                dayOfWeek === 6 && (lang === 'ko' ? 'text-blue-600' : 'text-zinc-500')
                               )}
                             >
                               {curMonth.month}/{dayNum} ({curT.dayOfWeekNames[dayOfWeek]})

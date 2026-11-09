@@ -1746,7 +1746,7 @@ export default function AdminPage() {
               </CardHeader>
               <CardContent className="pt-4 space-y-4">
                 <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                  초기 상태(헬싱키 확정, 영국/스코틀랜드/프랑스 고민 중, 1월 귀국 여정 등)로 언제든지 되돌릴 수 있습니다.
+                  초기 상태(다녀온 여행, 확정된 여행, 1월 귀국 여정 등)로 언제든지 되돌릴 수 있습니다.
                 </p>
 
                 <Button

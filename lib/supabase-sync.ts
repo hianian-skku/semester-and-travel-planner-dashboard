@@ -46,6 +46,20 @@ export async function syncFromSupabase(): Promise<boolean> {
     }
 
     if (data) {
+      // Check if cloud data is outdated (contains old trips like 'p-uk' / '2026-10-13')
+      const isOutdatedTrips =
+        Array.isArray(data.trips) &&
+        data.trips.some(
+          (t: { id?: string; startDate?: string }) =>
+            t.startDate === '2026-10-13' || t.id === 'p-uk' || (t.id === 'c-helsinki' && (t as { category?: string }).category !== 'visited')
+        )
+
+      if (isOutdatedTrips) {
+        // Cloud has outdated legacy trip data. Overwrite cloud with fresh updated dataset!
+        await pushAllToSupabase()
+        return true
+      }
+
       if (Array.isArray(data.trips)) {
         saveStoredTrips(data.trips, false)
       }
@@ -116,13 +130,13 @@ export function subscribeToSupabaseChanges(onUpdate: () => void) {
       (payload) => {
         const newData = payload.new as CloudPlannerData
         if (newData) {
-          if (Array.isArray(newData.trips)) saveStoredTrips(newData.trips, false)
+          if (Array.isArray(newData.trips)) saveStoredTrips(newData.trips as any, false)
           if (newData.blocked_dates && typeof newData.blocked_dates === 'object') {
             saveStoredBlockedDates(newData.blocked_dates as any, false)
           }
-          if (Array.isArray(newData.classes)) saveStoredClasses(newData.classes, false)
-          if (Array.isArray(newData.destinations)) saveStoredDestinations(newData.destinations, false)
-          if (Array.isArray(newData.idea_routes)) saveStoredIdeaRoutes(newData.idea_routes, false)
+          if (Array.isArray(newData.classes)) saveStoredClasses(newData.classes as any, false)
+          if (Array.isArray(newData.destinations)) saveStoredDestinations(newData.destinations as any, false)
+          if (Array.isArray(newData.idea_routes)) saveStoredIdeaRoutes(newData.idea_routes as any, false)
           onUpdate()
         }
       }
@@ -130,6 +144,6 @@ export function subscribeToSupabaseChanges(onUpdate: () => void) {
     .subscribe()
 
   return () => {
-    supabase.removeChannel(channel)
+    supabase?.removeChannel(channel)
   }
 }

@@ -623,11 +623,9 @@ export function SemesterDashboard() {
 
             {/* New Trip Dialog */}
             <Dialog open={newOpen} onOpenChange={setNewOpen}>
-              <DialogTrigger asChild>
-                <Button size="sm" className="gap-1.5 bg-indigo-600 font-semibold text-white shadow hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400">
-                  <Plus className="size-4" />
-                  <span>새 여행 등록</span>
-                </Button>
+              <DialogTrigger className="inline-flex items-center justify-center gap-1.5 rounded-md px-3 py-1.5 text-sm bg-indigo-600 font-semibold text-white shadow hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400">
+                <Plus className="size-4" />
+                <span>새 여행 등록</span>
               </DialogTrigger>
               <DialogContent className="max-h-[90vh] overflow-y-auto border-zinc-200 bg-white text-zinc-900 shadow-2xl dark:border-zinc-800 dark:bg-[#161922] dark:text-zinc-100 sm:max-w-[540px]">
                 <DialogHeader>
@@ -1073,21 +1071,21 @@ export function SemesterDashboard() {
                 </CardHeader>
 
                 <CardContent className="p-3 sm:p-5">
-                  {/* Days of week header (월 화 수 목 금 토 일) */}
+                  {/* Days of week header (일 월 화 수 목 금 토) */}
                   <div className="grid grid-cols-7 gap-1 pb-2 text-center text-xs font-bold text-zinc-500 dark:text-zinc-400">
+                    <div className="text-rose-500 dark:text-rose-400">일 (Sun)</div>
                     <div className="text-zinc-700 dark:text-zinc-300">월 (Mon)</div>
                     <div className="text-zinc-700 dark:text-zinc-300">화 (Tue)</div>
                     <div className="text-zinc-700 dark:text-zinc-300">수 (Wed)</div>
                     <div className="text-zinc-700 dark:text-zinc-300">목 (Thu)</div>
                     <div className="text-zinc-700 dark:text-zinc-300">금 (Fri)</div>
-                    <div className="text-zinc-400 dark:text-zinc-500">토 (Sat)</div>
-                    <div className="text-rose-500 dark:text-rose-400">일 (Sun)</div>
+                    <div className="text-blue-500 dark:text-blue-400">토 (Sat)</div>
                   </div>
 
                   {/* Calendar Grid cells */}
                   <div className="grid grid-cols-7 gap-1 sm:gap-2">
                     {/* Empty placeholder cells for previous month padding */}
-                    {Array.from({ length: (currentMonth.startDay + 6) % 7 }).map((_, idx) => (
+                    {Array.from({ length: currentMonth.startDay }).map((_, idx) => (
                       <div
                         key={`pad-${idx}`}
                         className="min-h-[96px] rounded-lg border border-dashed border-zinc-100 bg-zinc-50/30 p-1.5 opacity-40 dark:border-zinc-800/40 dark:bg-zinc-900/20"
