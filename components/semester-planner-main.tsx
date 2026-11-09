@@ -74,6 +74,7 @@ export const translations = {
     legendFree: '수업 없음 (초록)',
     legendZoom: '줌 수업 (주황)',
     legendClass: '수업/실습 (회색)',
+    legendMandatory: '필수 수업 (검정)',
     legendVisited: '다녀옴 (빨강)',
     legendConfirmed: '확정 여행 (하늘)',
     legendPlanned: '고려 중 (보라 테두리)',
@@ -81,6 +82,7 @@ export const translations = {
     labelFree: '수업 없음',
     labelZoom: '줌(온라인) 수업',
     labelClass: '대면 수업/실습',
+    labelMandatory: '필수 수업',
     labelVisited: '다녀온 여행',
     labelConfirmed: '확정된 여행',
     labelPlanned: '고려 중인 여행',
@@ -130,6 +132,7 @@ export const translations = {
     legendFree: 'No Class (Green)',
     legendZoom: 'Zoom Class (Orange)',
     legendClass: 'On-Campus (Gray)',
+    legendMandatory: 'Mandatory (Black)',
     legendVisited: 'Visited (Red)',
     legendConfirmed: 'Confirmed (Sky)',
     legendPlanned: 'Considering (Purple border)',
@@ -137,6 +140,7 @@ export const translations = {
     labelFree: 'No Class',
     labelZoom: 'Online Zoom',
     labelClass: 'On-Campus Class',
+    labelMandatory: 'Mandatory Class',
     labelVisited: 'Visited Trip',
     labelConfirmed: 'Confirmed Trip',
     labelPlanned: 'Considering Trip',
@@ -450,13 +454,13 @@ export function SemesterPlannerMain() {
     const hasMandatory = classes.some((c) => c.isMandatory)
     return {
       type: 'class' as const,
-      label: hasMandatory ? (lang === 'en' ? 'Mandatory' : '필수 수업') : curT.labelClass,
+      label: hasMandatory ? curT.labelMandatory : curT.labelClass,
       trip: null,
       bgClass: hasMandatory
-        ? 'bg-rose-50/70 text-rose-950 border-2 border-rose-300 hover:bg-rose-100/60 dark:bg-rose-950/30 dark:text-rose-200 dark:border-rose-900/70'
+        ? 'bg-zinc-900 text-zinc-50 border-2 border-black hover:bg-zinc-850 shadow-xs dark:bg-zinc-950 dark:text-zinc-100 dark:border-zinc-600'
         : 'bg-zinc-100 text-zinc-800 border-zinc-200 hover:bg-zinc-200/70 dark:bg-zinc-850 dark:text-zinc-200 dark:border-zinc-750',
       badgeClass: hasMandatory
-        ? 'bg-rose-600 text-white font-bold dark:bg-rose-600 dark:text-white'
+        ? 'bg-black text-white font-bold ring-1 ring-zinc-700 dark:bg-white dark:text-zinc-950 dark:ring-0'
         : 'bg-zinc-200 text-zinc-700 dark:bg-zinc-750 dark:text-zinc-300',
       classes,
     }
@@ -693,6 +697,10 @@ export function SemesterPlannerMain() {
                     <span className="size-2 sm:size-2.5 rounded bg-zinc-200 border border-zinc-300 shrink-0" />
                     <span className="text-zinc-600 dark:text-zinc-400 font-medium truncate">{curT.legendClass}</span>
                   </span>
+                  <span className="flex items-center gap-1 font-bold text-zinc-900 dark:text-zinc-100">
+                    <span className="size-2 sm:size-2.5 rounded bg-zinc-900 border border-black dark:bg-white dark:border-zinc-300 shrink-0" />
+                    <span className="truncate">{curT.legendMandatory}</span>
+                  </span>
                   <span className="flex items-center gap-1 font-bold text-red-600 dark:text-red-400">
                     <span className="size-2 sm:size-2.5 rounded border-2 border-red-500 bg-red-100 shrink-0" />
                     <span className="truncate">{curT.legendVisited}</span>
@@ -769,7 +777,8 @@ export function SemesterPlannerMain() {
                                   trip?.category === 'visited' && 'text-red-700 font-extrabold',
                                   trip?.category === 'confirmed' && 'text-sky-800 dark:text-sky-200 font-extrabold',
                                   trip?.category === 'planned' && 'text-purple-800 dark:text-purple-200 font-extrabold',
-                                  isToday && 'text-blue-700 dark:text-blue-300 font-black'
+                                  !trip && status.classes.some((c) => c.isMandatory) && 'text-white dark:text-zinc-100 font-black',
+                                  isToday && 'text-blue-400 dark:text-blue-300 font-black'
                                 )}
                               >
                                 {dayNum}
@@ -798,10 +807,10 @@ export function SemesterPlannerMain() {
                                     className={cn(
                                       'size-1.5 rounded-full shrink-0',
                                       status.classes.some((c) => c.isMandatory)
-                                        ? 'bg-rose-600 ring-2 ring-rose-400'
+                                        ? 'bg-zinc-950 ring-2 ring-zinc-400 dark:bg-white dark:ring-zinc-400'
                                         : 'bg-zinc-500'
                                     )}
-                                    title={status.classes.some((c) => c.isMandatory) ? 'Mandatory' : 'Class'}
+                                    title={status.classes.some((c) => c.isMandatory) ? curT.labelMandatory : 'Class'}
                                   />
                                 )}
                               </div>
@@ -861,7 +870,7 @@ export function SemesterPlannerMain() {
                                       className={cn(
                                         'block text-[9px] truncate font-medium',
                                         status.classes.some((c) => c.isMandatory)
-                                          ? 'text-rose-600 dark:text-rose-300 font-bold'
+                                          ? 'text-zinc-950 dark:text-zinc-100 font-extrabold'
                                           : 'opacity-85'
                                       )}
                                     >
@@ -877,7 +886,7 @@ export function SemesterPlannerMain() {
                               ) : status.classes.length > 0 ? (
                                 <div className="text-[10px] leading-tight opacity-90 truncate font-medium">
                                   {status.classes.some((c) => c.isMandatory) && (
-                                    <span className="text-rose-600 dark:text-rose-400 font-extrabold mr-0.5">[필수]</span>
+                                    <span className="text-zinc-300 dark:text-zinc-300 font-black mr-0.5">[필수]</span>
                                   )}
                                   {status.classes[0].course.split(' ')[0]} {status.classes.length > 1 && `+${status.classes.length - 1}`}
                                 </div>

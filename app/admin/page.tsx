@@ -1391,7 +1391,7 @@ export default function AdminPage() {
                         <span className="text-zinc-500 font-mono text-[11px]">{cls.time}</span>
                         <span className="font-bold text-zinc-900 dark:text-zinc-100 truncate">{cls.course}</span>
                         {cls.isMandatory && (
-                          <Badge className="bg-rose-600 text-white text-[10px] font-bold">필수</Badge>
+                          <Badge className="bg-zinc-900 text-white text-[10px] font-bold dark:bg-zinc-100 dark:text-zinc-950">필수</Badge>
                         )}
                         {cls.isZoom ? (
                           <Badge className="bg-amber-500 text-white text-[10px]">Zoom</Badge>
