@@ -13,8 +13,8 @@ import {
 
 const KEYS = {
   TRIPS: 'planner_scheduled_trips_v3',
-  BLOCKED_DATES: 'planner_blocked_dates_v1',
-  CLASSES: 'planner_timeedit_classes_v1',
+  BLOCKED_DATES: 'planner_blocked_dates_v2',
+  CLASSES: 'planner_timeedit_classes_v2',
   DESTINATIONS: 'planner_destinations_v3',
   IDEAS: 'planner_idea_routes_v2',
   ADMIN_PIN: 'planner_admin_pin_v1',
@@ -261,7 +261,9 @@ export function resetAllPlannerDataToDefault() {
   window.localStorage.removeItem('planner_scheduled_trips_v2')
   window.localStorage.removeItem('planner_scheduled_trips_v1')
   window.localStorage.removeItem(KEYS.BLOCKED_DATES)
+  window.localStorage.removeItem('planner_blocked_dates_v1')
   window.localStorage.removeItem(KEYS.CLASSES)
+  window.localStorage.removeItem('planner_timeedit_classes_v1')
   window.localStorage.removeItem(KEYS.DESTINATIONS)
   window.localStorage.removeItem('planner_destinations_v2')
   window.localStorage.removeItem('planner_destinations_v1')

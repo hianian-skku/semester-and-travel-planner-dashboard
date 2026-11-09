@@ -57,8 +57,13 @@ export async function syncFromSupabase(): Promise<boolean> {
             (t.id === 'c-stockholm-friend' && t.endDate === '2026-11-30')
         )
 
-      if (isOutdatedTrips) {
-        // Cloud has outdated legacy trip data. Overwrite cloud with fresh updated dataset!
+      const isOutdatedClasses =
+        Array.isArray(data.classes) &&
+        (!data.classes.some((c: { course?: string }) => c.course?.includes('노벨상') || c.course?.includes('필수')) ||
+          data.classes.some((c: { date?: string; time?: string }) => c.date === '2026-11-10' && c.time === '15:15 - 17:00'))
+
+      if (isOutdatedTrips || isOutdatedClasses) {
+        // Cloud has outdated legacy data. Overwrite cloud with fresh updated dataset!
         await pushAllToSupabase()
         return true
       }

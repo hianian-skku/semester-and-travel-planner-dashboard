@@ -62,6 +62,7 @@ export interface ClassEvent {
   course: string
   room: string
   isZoom: boolean
+  isMandatory?: boolean // ⭐️ 필수 참석 여부
 }
 
 // 1. 이미 다녀온 여행 (빨간색)
@@ -251,8 +252,14 @@ export const initialScheduledTrips: ScheduledTrip[] = [
   },
 ]
 
-// ⭐️ 회색 처리 날짜 목록 (1/26, 1/27, 1/29, 1/31)
+// ⭐️ 특별 일정 및 회색 처리 날짜 목록 (12/13 노벨상 강연, 1/26, 1/27, 1/29, 1/31)
 export const initialBlockedGrayDates: Record<string, BlockedDateItem> = {
+  '2026-12-13': {
+    labelKo: '노벨상 강연',
+    labelEn: 'Nobel Lecture',
+    noteKo: '웁살라 대학교 노벨상 수상자 강연',
+    noteEn: 'Nobel Laureate Lectures at Uppsala University',
+  },
   '2027-01-26': { labelKo: '회색 처리', labelEn: 'Unavailable', noteKo: '개인 일정 (여행 불가)', noteEn: 'Personal Schedule (Unavailable)' },
   '2027-01-27': { labelKo: '회색 처리', labelEn: 'Unavailable', noteKo: '개인 일정 (여행 불가)', noteEn: 'Personal Schedule (Unavailable)' },
   '2027-01-29': { labelKo: '회색 처리', labelEn: 'Unavailable', noteKo: '개인 일정 (여행 불가)', noteEn: 'Personal Schedule (Unavailable)' },
@@ -818,23 +825,46 @@ export const initialTimeEditClasses: ClassEvent[] = [
   { date: '2026-12-16', time: '08:15 - 10:00', course: 'Introduction to Scientific Computing', room: 'Ångström', isZoom: false },
   { date: '2027-01-11', time: '08:00 - 17:00', course: 'Introduction to Scientific Computing Exam', room: 'Ladok', isZoom: false },
 
-  // 11월 ~ 12월: HCI & Fails in Physics (고정)
+  // 11월 ~ 12월: TimeEdit 업데이트 (HCI & Fails in Physics)
   { date: '2026-11-04', time: '08:15 - 10:00', course: 'Human-Computer Interaction', room: '80127 Ångström', isZoom: false },
-  { date: '2026-11-09', time: '08:15 - 10:00', course: 'Human-Computer Interaction', room: '80101 Ångström', isZoom: false },
-  { date: '2026-11-09', time: '10:15 - 12:00', course: 'Fails in Physics', room: '80115 Ångström', isZoom: false },
-  { date: '2026-11-10', time: '15:15 - 17:00', course: 'Human-Computer Interaction', room: '80121 Ångström', isZoom: false },
-  { date: '2026-11-13', time: '15:15 - 17:00', course: 'Human-Computer Interaction', room: '80127 Ångström', isZoom: false },
-  { date: '2026-11-17', time: '08:15 - 10:00', course: 'Human-Computer Interaction', room: '80127 Ångström', isZoom: false },
-  { date: '2026-11-18', time: '15:15 - 17:00', course: 'Human-Computer Interaction', room: '80121 Ångström', isZoom: false },
-  { date: '2026-11-25', time: '15:15 - 17:00', course: 'Human-Computer Interaction', room: '80121 Ångström', isZoom: false },
-  { date: '2026-12-09', time: '10:15 - 12:00', course: 'Human-Computer Interaction', room: '80121 Ångström', isZoom: false },
-  { date: '2026-12-11', time: '15:15 - 17:00', course: 'Human-Computer Interaction', room: '80121 Ångström', isZoom: false },
-  { date: '2026-12-14', time: '08:15 - 17:00', course: 'Fails in Physics (세미나)', room: 'Ångström', isZoom: false },
-  { date: '2026-12-14', time: '13:15 - 15:00', course: 'Human-Computer Interaction', room: 'Ångström', isZoom: false },
-  { date: '2026-12-15', time: '08:15 - 17:00', course: 'Fails in Physics (세미나)', room: 'Ångström', isZoom: false },
-  { date: '2026-12-16', time: '08:15 - 17:00', course: 'Fails in Physics (세미나)', room: 'Ångström', isZoom: false },
-  { date: '2026-12-17', time: '08:15 - 17:00', course: 'Fails in Physics (세미나)', room: 'Ångström', isZoom: false },
-  { date: '2026-12-18', time: '13:15 - 15:00', course: 'Human-Computer Interaction (종강)', room: 'Ångström', isZoom: false },
+  // w46
+  { date: '2026-11-09', time: '08:15 - 10:00', course: 'Human-Computer Interaction', room: '80101, Ångström', isZoom: false },
+  { date: '2026-11-09', time: '10:15 - 12:00', course: 'Fails in Physics', room: '80115, Ångström', isZoom: false },
+  { date: '2026-11-13', time: '08:15 - 10:00', course: 'Human-Computer Interaction (필수)', room: '4101, Ångström', isZoom: false, isMandatory: true },
+  { date: '2026-11-13', time: '15:15 - 17:00', course: 'Human-Computer Interaction', room: '80127, Ångström', isZoom: false },
+
+  // w47
+  { date: '2026-11-17', time: '08:15 - 10:00', course: 'Human-Computer Interaction', room: '80127, Ångström', isZoom: false },
+
+  // w48
+  { date: '2026-11-24', time: '13:15 - 15:00', course: 'Human-Computer Interaction (필수)', room: '10134, Polhemsalen, Ångström', isZoom: false, isMandatory: true },
+  { date: '2026-11-25', time: '08:15 - 10:00', course: 'Human-Computer Interaction', room: '2005, Ångström', isZoom: false },
+  { date: '2026-11-27', time: '08:15 - 10:00', course: 'Human-Computer Interaction (필수)', room: '2001, Ångström', isZoom: false, isMandatory: true },
+
+  // w50
+  { date: '2026-12-10', time: '13:15 - 15:00', course: 'Human-Computer Interaction (세미나 S1)', room: '2001, Ångström', isZoom: false },
+  { date: '2026-12-11', time: '15:15 - 17:00', course: 'Human-Computer Interaction (필수 세미나 S2)', room: '80121, Ångström', isZoom: false, isMandatory: true },
+
+  // 12/13 노벨상 강연
+  { date: '2026-12-13', time: '10:00 - 15:00', course: '노벨상 강연 (Nobel Lectures)', room: 'Universitetshuset', isZoom: false, isMandatory: true },
+
+  // w51: Fails in Physics 세미나 (필수 참석)
+  { date: '2026-12-14', time: '08:15 - 17:00', course: 'Fails in Physics (필수 세미나)', room: '4006, Ångström', isZoom: false, isMandatory: true },
+  { date: '2026-12-15', time: '08:15 - 17:00', course: 'Fails in Physics (필수 세미나)', room: '4006, Ångström', isZoom: false, isMandatory: true },
+  { date: '2026-12-16', time: '08:15 - 17:00', course: 'Fails in Physics (필수 세미나)', room: '80115, Ångström', isZoom: false, isMandatory: true },
+  { date: '2026-12-17', time: '08:15 - 17:00', course: 'Fails in Physics (필수 세미나)', room: '80115, Ångström', isZoom: false, isMandatory: true },
+
+  // w51: HCI 세미나
+  { date: '2026-12-18', time: '08:15 - 10:00', course: 'Human-Computer Interaction (세미나 S3)', room: '2005, Ångström', isZoom: false },
+  { date: '2026-12-18', time: '13:15 - 15:00', course: 'Human-Computer Interaction (세미나 S4 · 종강)', room: '80101, Ångström', isZoom: false },
+
+  // ⭐️ 스웨덴 공휴일 (TimeEdit 반영)
+  { date: '2026-12-24', time: '종일', course: '크리스마스 이브 (Julafton)', room: '공휴일', isZoom: false },
+  { date: '2026-12-25', time: '종일', course: '크리스마스 (Juldagen)', room: '공휴일', isZoom: false },
+  { date: '2026-12-26', time: '종일', course: '성 스테파노의 날 (Annandag jul)', room: '공휴일', isZoom: false },
+  { date: '2026-12-31', time: '종일', course: '새해 전야 (Nyårsafton)', room: '공휴일', isZoom: false },
+  { date: '2027-01-01', time: '종일', course: '신정 (Nyårsdagen)', room: '공휴일', isZoom: false },
+  { date: '2027-01-06', time: '종일', course: '주현절 (Trettondedag jul)', room: '공휴일', isZoom: false },
 ]
 
 // 5 Months Calendar Config (2026.09 ~ 2027.01)
