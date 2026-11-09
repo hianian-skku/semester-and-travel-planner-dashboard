@@ -67,7 +67,7 @@ export const translations = {
     langButtonText: 'ENG',
     bannerTitle: '여행계획 아이디어보드',
     bannerDesc:
-      '녹색(수업 없음)과 주황색(온라인 줌) 날짜를 참고하여 여행 일정을 조율할 수 있음. 확정된 여행은 하늘색, 고민 중인 여행은 보라색이야. 여행 같이 가면 좋으니 겹치면 같이 가자!!!',
+      '녹색(수업 없음)과 주황색(온라인 줌) 날짜를 참고하여 여행 일정을 조율할 수 있음. 확정된 여행은 하늘색, 고려 중인 여행은 초록 바탕에 보라색 테두리로 표시되어 있어. 여행 같이 가면 좋으니 겹치면 같이 가자!!!',
     sciCompLabel: 'Scientific Computing 표시:',
     sciCompOn: 'ON',
     sciCompOff: 'OFF (드랍 모드)',
@@ -76,17 +76,17 @@ export const translations = {
     legendClass: '수업/실습 (회색)',
     legendVisited: '다녀옴 (빨강)',
     legendConfirmed: '확정 여행 (하늘)',
-    legendPlanned: '고민 중 (보라)',
+    legendPlanned: '고려 중 (보라 테두리)',
     weekdays: ['일', '월', '화', '수', '목', '금', '토'],
     labelFree: '수업 없음',
     labelZoom: '줌(온라인) 수업',
     labelClass: '대면 수업/실습',
     labelVisited: '다녀온 여행',
     labelConfirmed: '확정된 여행',
-    labelPlanned: '고민 중인 여행',
+    labelPlanned: '고려 중인 여행',
     tagVisited: '✓ 다녀옴',
     tagConfirmed: '✈️ 확정',
-    tagPlanned: '💡 고민 중',
+    tagPlanned: '💡 고려 중',
     weekend: '주말',
     freeDay: '자유 일정',
     classPrefix: '수업: ',
@@ -123,7 +123,7 @@ export const translations = {
     langButtonText: 'KOR',
     bannerTitle: 'Travel Idea Board',
     bannerDesc:
-      'Check green (no class) and orange (online Zoom) dates to coordinate travel. Confirmed trips are in sky blue, trips under consideration are in purple. Let\'s travel together if schedules align!',
+      'Check green (no class) and orange (online Zoom) dates to coordinate travel. Confirmed trips are in sky blue, trips under consideration have purple borders on green. Let\'s travel together if schedules align!',
     sciCompLabel: 'Scientific Computing:',
     sciCompOn: 'ON',
     sciCompOff: 'OFF (Dropped)',
@@ -132,7 +132,7 @@ export const translations = {
     legendClass: 'On-Campus (Gray)',
     legendVisited: 'Visited (Red)',
     legendConfirmed: 'Confirmed (Sky)',
-    legendPlanned: 'Considering (Purple)',
+    legendPlanned: 'Considering (Purple border)',
     weekdays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
     labelFree: 'No Class',
     labelZoom: 'Online Zoom',
@@ -397,7 +397,8 @@ export function SemesterPlannerMain() {
           type: 'planned' as const,
           label: curT.labelPlanned,
           trip,
-          bgClass: 'bg-purple-50 text-purple-950 border-2 border-purple-400 shadow-xs dark:bg-purple-950/40 dark:text-purple-200 dark:border-purple-500',
+          bgClass:
+            'bg-emerald-50/90 text-emerald-950 border-2 border-purple-500 ring-1 ring-purple-400/40 hover:bg-emerald-100/80 shadow-xs dark:bg-emerald-950/35 dark:text-emerald-100 dark:border-purple-400 dark:ring-purple-500/30',
           badgeClass: 'bg-purple-600 text-white font-bold dark:bg-purple-600 dark:text-white',
           classes,
         }
@@ -701,7 +702,7 @@ export function SemesterPlannerMain() {
                     <span className="truncate">{curT.legendConfirmed}</span>
                   </span>
                   <span className="flex items-center gap-1 font-bold text-purple-600 dark:text-purple-400">
-                    <span className="size-2 sm:size-2.5 rounded border-2 border-purple-400 bg-purple-100 shrink-0" />
+                    <span className="size-2 sm:size-2.5 rounded border-2 border-purple-500 bg-emerald-100 dark:bg-emerald-950/60 shrink-0" />
                     <span className="truncate">{curT.legendPlanned}</span>
                   </span>
                 </div>
